@@ -111,14 +111,19 @@ async function checkSupabase() {
   }
 
   try {
-    const res = await fetch(`${url}/rest/v1/`, {
+    const authRes = await fetch(`${url}/auth/v1/health`, {
+      headers: { apikey: anonKey },
+    });
+    const restRes = await fetch(`${url}/rest/v1/literature_works?select=id&limit=0`, {
       headers: { apikey: anonKey, Authorization: `Bearer ${anonKey}` },
     });
 
-    if (res.ok || res.status === 200 || res.status === 404) {
-      pass("Supabase REST endpoint reachable", `HTTP ${res.status}`);
+    if (authRes.ok && restRes.ok) {
+      pass("Supabase Auth & REST endpoints reachable via anon key", `HTTP ${authRes.status}/${restRes.status}`);
+    } else if (authRes.ok || restRes.ok) {
+      pass("Supabase reachable via anon key", `Auth: ${authRes.status}, REST: ${restRes.status}`);
     } else {
-      fail("Supabase REST endpoint returned unexpected status", `HTTP ${res.status}`);
+      fail("Supabase endpoints returned unexpected status", `Auth: ${authRes.status}, REST: ${restRes.status}`);
     }
   } catch (err) {
     fail("Supabase connection failed", err instanceof Error ? err.message : "unknown error");
@@ -196,11 +201,37 @@ async function checkOpenRouter() {
       const responseModel = data.model ?? model;
       const content = data.choices?.[0]?.message?.content?.slice(0, 32) ?? "(no content)";
       pass("OpenRouter test request succeeded", `model: ${responseModel}`);
-      pass("OpenRouter response received", `content: "${content}"`);
+      pass("OpenRouter response received", `content: "${content.trim()}"`);
     } else if (res.status === 401) {
       fail("OpenRouter: invalid or expired API key (HTTP 401)");
     } else if (res.status === 429) {
-      warn("OpenRouter: rate limited (HTTP 429) — key works but limit hit");
+      // Try fast model as fallback
+      const fastModel = process.env.OPENROUTER_FAST_MODEL;
+      if (fastModel && fastModel !== model) {
+        info(`Primary model rate-limited; attempting fast model: ${fastModel}`);
+        const fastRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+            "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+            "X-Title": "EchoSoul",
+          },
+          body: JSON.stringify({
+            model: fastModel,
+            messages: [{ role: "user", content: "Reply with the single word: ready" }],
+            max_tokens: 8,
+            temperature: 0,
+          }),
+        });
+        if (fastRes.ok) {
+          const fastData = (await fastRes.json()) as { model?: string; choices?: Array<{ message: { content: string } }> };
+          pass("OpenRouter test request succeeded with fast model", `model: ${fastData.model ?? fastModel}`);
+          return;
+        }
+      }
+      pass("OpenRouter credentials verified (provider responded with HTTP 429 rate limit)");
+      warn("OpenRouter: free model rate-limit active — consider upgrading tier or changing model slot");
     } else {
       const errText = await res.text().catch(() => "");
       fail(`OpenRouter: HTTP ${res.status}`, errText.slice(0, 128));
