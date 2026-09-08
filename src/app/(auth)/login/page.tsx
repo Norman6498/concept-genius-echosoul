@@ -47,7 +47,7 @@ export default function LoginPage() {
           password,
         });
         if (error) throw error;
-        router.push("/");
+        router.push("/app");
       }
     } catch (err: any) {
       setMessage({ type: "error", text: err.message || "Authentication failed." });
@@ -58,7 +58,7 @@ export default function LoginPage() {
 
   const handleGuestDemo = () => {
     signInAsGuest();
-    router.push("/");
+    router.push("/app");
   };
 
   return (

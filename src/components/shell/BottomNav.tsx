@@ -9,11 +9,11 @@ export function BottomNav() {
   const pathname = usePathname();
 
   const navItems = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/moments", label: "Moments", icon: Calendar },
-    { href: "/talk", label: "Talk", icon: Mic, isCenter: true },
-    { href: "/words", label: "Words", icon: BookOpen },
-    { href: "/journey", label: "Journey", icon: Compass },
+    { href: "/app", label: "Home", icon: Home },
+    { href: "/app/moments", label: "Moments", icon: Calendar },
+    { href: "/app/talk", label: "Talk", icon: Mic, isCenter: true },
+    { href: "/app/words", label: "Words", icon: BookOpen },
+    { href: "/app/journey", label: "Journey", icon: Compass },
   ];
 
   return (

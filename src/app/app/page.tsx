@@ -58,13 +58,13 @@ export default function HomePage() {
 
             {/* Talk & Type CTAs */}
             <div className="flex items-center gap-3 pt-2">
-              <Link href="/talk">
+              <Link href="/app/talk">
                 <Button variant="primary" size="md" className="gap-2">
                   <Mic className="h-4 w-4" />
                   <span>Talk</span>
                 </Button>
               </Link>
-              <Link href="/talk?mode=type">
+              <Link href="/app/talk?mode=type">
                 <Button variant="secondary" size="md" className="gap-2">
                   <PenTool className="h-4 w-4" />
                   <span>Type</span>
@@ -95,13 +95,13 @@ export default function HomePage() {
           <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
             Continue Your Story
           </h3>
-          <Link href="/moments" className="text-xs text-amber-400/90 hover:text-amber-300 flex items-center gap-1">
+          <Link href="/app/moments" className="text-xs text-amber-400/90 hover:text-amber-300 flex items-center gap-1">
             <span>View chapters</span>
             <ChevronRight className="h-3 w-3" />
           </Link>
         </div>
 
-        <Link href="/moments">
+        <Link href="/app/moments">
           <GlassCard hoverable className="flex items-center justify-between gap-4 p-4 md:p-5">
             <div className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-xl bg-amber-500/15 border border-amber-400/20 flex flex-col items-center justify-center text-amber-300 shrink-0">
@@ -129,7 +129,7 @@ export default function HomePage() {
         </h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <Link href="/words">
+          <Link href="/app/words">
             <GlassCard hoverable className="p-4 text-center space-y-2 flex flex-col items-center justify-center">
               <div className="h-9 w-9 rounded-full bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-amber-300">
                 <BookOpen className="h-4 w-4" />
@@ -139,7 +139,7 @@ export default function HomePage() {
             </GlassCard>
           </Link>
 
-          <Link href="/scenes">
+          <Link href="/app/scenes">
             <GlassCard hoverable className="p-4 text-center space-y-2 flex flex-col items-center justify-center">
               <div className="h-9 w-9 rounded-full bg-indigo-400/10 border border-indigo-400/20 flex items-center justify-center text-indigo-300">
                 <Music className="h-4 w-4" />
@@ -149,7 +149,7 @@ export default function HomePage() {
             </GlassCard>
           </Link>
 
-          <Link href="/scenes">
+          <Link href="/app/scenes">
             <GlassCard hoverable className="p-4 text-center space-y-2 flex flex-col items-center justify-center">
               <div className="h-9 w-9 rounded-full bg-sky-400/10 border border-sky-400/20 flex items-center justify-center text-sky-300">
                 <Film className="h-4 w-4" />
@@ -159,7 +159,7 @@ export default function HomePage() {
             </GlassCard>
           </Link>
 
-          <Link href="/journey">
+          <Link href="/app/journey">
             <GlassCard hoverable className="p-4 text-center space-y-2 flex flex-col items-center justify-center">
               <div className="h-9 w-9 rounded-full bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center text-emerald-300">
                 <Calendar className="h-4 w-4" />

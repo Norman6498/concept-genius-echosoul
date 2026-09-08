@@ -34,7 +34,7 @@ export function TopBar() {
         <PrivacyIndicator />
 
         <Link
-          href="/settings"
+          href="/app/settings"
           className="flex items-center gap-2 p-1.5 rounded-full hover:bg-white/[0.06] transition-colors"
           title="Profile & Settings"
         >

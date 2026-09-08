@@ -23,17 +23,17 @@ export function Sidebar() {
   const { profile, isGuest, signOut } = useAuth();
 
   const primaryNav = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/moments", label: "Moments", icon: Calendar },
-    { href: "/talk", label: "Talk", icon: Mic, highlight: true },
-    { href: "/words", label: "Words", icon: BookOpen },
-    { href: "/journey", label: "Journey", icon: Compass },
+    { href: "/app", label: "Home", icon: Home },
+    { href: "/app/moments", label: "Moments", icon: Calendar },
+    { href: "/app/talk", label: "Talk", icon: Mic, highlight: true },
+    { href: "/app/words", label: "Words", icon: BookOpen },
+    { href: "/app/journey", label: "Journey", icon: Compass },
   ];
 
   const secondaryNav = [
-    { href: "/scenes", label: "Scenes", icon: Film },
-    { href: "/memory", label: "Memory", icon: Archive },
-    { href: "/settings", label: "Settings", icon: Settings },
+    { href: "/app/scenes", label: "Scenes", icon: Film },
+    { href: "/app/memory", label: "Memory", icon: Archive },
+    { href: "/app/settings", label: "Settings", icon: Settings },
   ];
 
   return (
@@ -133,7 +133,7 @@ export function Sidebar() {
         </div>
 
         <div className="flex items-center justify-between p-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-          <Link href="/settings" className="flex items-center gap-2.5 overflow-hidden">
+          <Link href="/app/settings" className="flex items-center gap-2.5 overflow-hidden">
             <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-amber-500/40 to-indigo-500/40 border border-white/20 flex items-center justify-center text-xs font-serif-display font-medium text-amber-200 shrink-0">
               {profile.name.slice(0, 1).toUpperCase()}
             </div>
