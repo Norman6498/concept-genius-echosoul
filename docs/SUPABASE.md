@@ -97,12 +97,11 @@ Create these buckets:
 | `generated-scenes` | ❌ Private | AI-generated scene images |
 | `generated-videos` | ❌ Private | AI-generated videos |
 | `generated-audio` | ❌ Private | TTS audio, experience audio |
-| `literature-assets` | ✅ Public | Cover images for literary works (no PII) |
+| `literature-assets` | ❌ Private | Controlled literature assets (rights & provenance gated) |
 
-For each **private** bucket, set the access policy:
-- No public access
-- Authenticated users can only access their own objects
-  (path format: `user_id/filename`)
+For all **private** buckets:
+- Personal buckets (`user-media`, `generated-*`): Authenticated users can only access their own objects (path format: `user_id/filename`).
+- Literature bucket (`literature-assets`): Private by default. Access controlled via server-side signed URLs based on the work's `rights_status` in the database. Never publicly listable.
 
 ---
 

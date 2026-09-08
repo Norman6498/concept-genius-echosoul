@@ -154,7 +154,7 @@ create policy "journey_events: owner access"
 -- generated-scenes  PRIVATE  AI-generated scene images
 -- generated-videos  PRIVATE  AI-generated video outputs
 -- generated-audio   PRIVATE  TTS audio, experience audio
--- literature-assets PUBLIC   Cover images for literature works (no PII)
+-- literature-assets PRIVATE  Controlled literature assets (rights & provenance gated)
 --
 -- Storage bucket policies are configured via Supabase Dashboard →
 -- Storage → Policies, or via the Supabase CLI.
