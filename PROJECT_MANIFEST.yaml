@@ -1,0 +1,20 @@
+project: EchoSoul
+organization: Concept Genius
+package_version: 1.0.0
+purpose: production-oriented product specification and staged Antigravity build kit
+languages:
+  launch: [en, hi, hinglish]
+  future: [ur, more_indian_languages]
+literature_policy: authentic_rights_safe_retrieval
+build_agent: Antigravity
+build_style: staged_agentic_coding
+stage_count: 15
+entry_point: README.md
+critical_files:
+  - 01_product/01_PRD.md
+  - 03_architecture/02_database_schema.sql
+  - 04_ai/01_prompt_system.md
+  - 05_content/01_literature_engine.md
+  - 06_safety/01_safety_architecture.md
+  - 07_build/02_antigravity_master_prompt.md
+  - 07_build/03_antigravity_stage_prompts.md

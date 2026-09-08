@@ -1,0 +1,5 @@
+-- EchoSoul — Seed File
+-- INTENTIONALLY EMPTY for production-oriented setup.
+-- Do NOT insert fake user data, test conversations, or synthetic memories.
+-- Test data belongs in automated test fixtures only.
+-- See docs/SUPABASE.md for the corpus ingestion workflow (Stage 6).

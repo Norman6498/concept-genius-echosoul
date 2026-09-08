@@ -1,0 +1,92 @@
+# ============================================================
+# EchoSoul — .gitignore
+# ============================================================
+
+# ── Environment & Secrets ──────────────────────────────────
+.env
+.env.*
+!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ── Secret file patterns ───────────────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+*.cert
+*.cer
+id_rsa
+id_ed25519
+*.secret
+service-account*.json
+firebase-adminsdk*.json
+gcloud-credentials*.json
+
+# ── Node / npm ─────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ── Next.js ────────────────────────────────────────────────
+.next/
+out/
+build/
+dist/
+
+# ── Supabase local development ─────────────────────────────
+supabase/.temp/
+supabase/.branches/
+.supabase/
+
+# ── TypeScript ─────────────────────────────────────────────
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ── Testing ────────────────────────────────────────────────
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# ── OS ─────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── Editor ─────────────────────────────────────────────────
+.vscode/settings.json
+.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Logs ───────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log
+
+# ── Build artefacts ────────────────────────────────────────
+.vercel
+.netlify
+
+# ── Misc ───────────────────────────────────────────────────
+*.local
