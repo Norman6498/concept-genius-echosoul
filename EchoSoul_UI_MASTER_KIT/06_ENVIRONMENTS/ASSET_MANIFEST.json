@@ -1,0 +1,73 @@
+{
+  "brand": [
+    "echosoul-mark.svg",
+    "echosoul-wordmark-dark.svg",
+    "echosoul-wordmark-light.svg"
+  ],
+  "icons": [
+    "talk.svg",
+    "music.svg",
+    "words.svg",
+    "scenes.svg",
+    "moments.svg",
+    "journey.svg",
+    "settings.svg",
+    "heart.svg",
+    "search.svg",
+    "play.svg",
+    "microphone.svg"
+  ],
+  "environment_layers": [
+    "sky",
+    "sun_moon",
+    "clouds_far",
+    "clouds_near",
+    "mountains",
+    "trees_mid",
+    "foliage_front",
+    "room_base",
+    "window",
+    "lamp_body",
+    "lamp_glow",
+    "candle_flame",
+    "mist",
+    "rain_or_snow",
+    "particles"
+  ],
+  "time_of_day": [
+    "early_morning",
+    "morning",
+    "late_morning",
+    "afternoon",
+    "evening",
+    "night",
+    "late_night"
+  ],
+  "motion": [
+    "cloud_drift",
+    "foliage_sway",
+    "lamp_flicker",
+    "path_glow",
+    "parallax",
+    "weather",
+    "cursor_local_response",
+    "reduced_motion"
+  ],
+  "pages": [
+    "01_Landing",
+    "02_Login",
+    "03_Personalization",
+    "04_Home",
+    "05_Talk",
+    "06_Music",
+    "07_Words",
+    "08_Scenes",
+    "09_Moments",
+    "10_Journey",
+    "11_Life_Novel",
+    "12_Settings",
+    "13_InApp_Premium",
+    "14_Public_Pricing",
+    "15_How_It_Works"
+  ]
+}

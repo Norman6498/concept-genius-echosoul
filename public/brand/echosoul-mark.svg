@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="EchoSoul mark">
+<defs><radialGradient id="g" cx="45%" cy="40%"><stop offset="0" stop-color="#F7D57B"/><stop offset=".55" stop-color="#D9A441"/><stop offset="1" stop-color="#8B5D17"/></radialGradient></defs>
+<circle cx="64" cy="64" r="54" fill="#07131B" stroke="#D9A441" stroke-width="3"/>
+<path d="M82 31c-25-9-45 8-45 30 0 20 15 34 35 34 10 0 19-4 25-11-7 4-14 5-21 3-13-4-20-14-20-27 0-15 10-25 26-29z" fill="url(#g)"/>
+<path d="M42 61c9-4 18-4 27 0" fill="none" stroke="#07131B" stroke-width="5" stroke-linecap="round"/>
+</svg>

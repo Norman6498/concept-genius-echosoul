@@ -1,0 +1,67 @@
+{
+  "total_agents": 27,
+  "priority": {
+    "P0": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      23,
+      26,
+      27
+    ],
+    "P1": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      24,
+      25
+    ],
+    "P2": [
+      19,
+      20,
+      21,
+      22
+    ]
+  },
+  "prompt_files": [
+    "01_SUPERVISOR.md",
+    "02_SAFETY_GATE.md",
+    "03_CONTEXT_INTERPRETER.md",
+    "04_SUPPORT_ROUTER.md",
+    "05_MEMORY_EXTRACTOR.md",
+    "06_MEMORY_RETRIEVER.md",
+    "07_RESPONSE_COMPOSER.md",
+    "08_REFLECTION.md",
+    "09_PLAN.md",
+    "10_LITERATURE_QUERY.md",
+    "11_LITERATURE_RERANKER.md",
+    "12_LITERATURE_EXPLAINER.md",
+    "13_MUSIC_CURATOR.md",
+    "14_SCENE_DIRECTOR.md",
+    "15_SCENE_PERSONALIZER.md",
+    "16_MOMENT_EXTRACTOR.md",
+    "17_REFLECTIVE_ENTRY.md",
+    "18_JOURNEY_NARRATOR.md",
+    "19_NOVEL_ARCHITECT.md",
+    "20_NOVEL_WRITER.md",
+    "21_NOVEL_VALIDATOR.md",
+    "22_CONTINUITY_EDITOR.md",
+    "23_PERSONALIZATION.md",
+    "24_VOICE_AGENT.md",
+    "25_ENTITLEMENT.md",
+    "26_QUALITY_JUDGE.md",
+    "27_UNTRUSTED_CONTENT_GUARD.md"
+  ]
+}

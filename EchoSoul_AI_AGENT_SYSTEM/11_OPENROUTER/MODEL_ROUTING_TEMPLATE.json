@@ -1,0 +1,51 @@
+{
+  "supervisor": {
+    "capability": "reasoning_orchestration",
+    "preferred": [
+      "nemotron-3-ultra-free",
+      "inkling-free"
+    ],
+    "fallback": "openrouter/free"
+  },
+  "conversation": {
+    "capability": "multilingual_conversation",
+    "preferred": [
+      "inkling-free",
+      "gpt-oss-20b-free"
+    ],
+    "fallback": "openrouter/free"
+  },
+  "structured_extractors": {
+    "capability": "structured_json",
+    "preferred": [
+      "gpt-oss-20b-free",
+      "nemotron-nano-9b-v2-free"
+    ],
+    "fallback": "openrouter/free"
+  },
+  "literature": {
+    "capability": "multilingual_reasoning_and_reranking",
+    "preferred": [
+      "inkling-free",
+      "nemotron-3-ultra-free"
+    ],
+    "fallback": "openrouter/free"
+  },
+  "novel": {
+    "capability": "long_context_writing",
+    "preferred": [
+      "nemotron-3-ultra-free",
+      "inkling-free"
+    ],
+    "fallback": "openrouter/free"
+  },
+  "quality_judge": {
+    "capability": "reasoning_and_critique",
+    "preferred": [
+      "nemotron-3-ultra-free",
+      "gpt-oss-20b-free"
+    ],
+    "fallback": "openrouter/free"
+  },
+  "note": "Model slugs must be resolved against the live OpenRouter catalog before deployment."
+}
