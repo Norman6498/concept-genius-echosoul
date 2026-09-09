@@ -1,0 +1,20 @@
+/* EchoSoul reusable motion primitives */
+:root{--es-ease:cubic-bezier(.22,.61,.36,1)}
+.es-cloud{animation:es-cloud-drift 36s linear infinite}
+.es-cloud.slow{animation-duration:70s}
+.es-leaves{transform-origin:center bottom;animation:es-leaf-sway 7.5s ease-in-out infinite alternate}
+.es-lamp-glow{animation:es-lamp-flicker 3.7s ease-in-out infinite}
+.es-particles{animation:es-particle-float 14s ease-in-out infinite alternate}
+.es-path-glow{stroke-dasharray:12 20;animation:es-path-travel 3.8s linear infinite}
+.es-fade-up{animation:es-fade-up .42s var(--es-ease) both}
+.es-crossfade{animation:es-crossfade 2.4s var(--es-ease) both}
+.es-hover-lift{transition:transform .28s var(--es-ease),border-color .28s ease,box-shadow .28s ease}
+.es-hover-lift:hover{transform:translateY(-3px)}
+@keyframes es-cloud-drift{from{transform:translateX(-5%)}to{transform:translateX(8%)}}
+@keyframes es-leaf-sway{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
+@keyframes es-lamp-flicker{0%,100%{opacity:.82;filter:blur(.1px)}25%{opacity:.98}45%{opacity:.76}70%{opacity:.92}}
+@keyframes es-particle-float{from{transform:translate3d(0,4px,0)}to{transform:translate3d(8px,-18px,0)}}
+@keyframes es-path-travel{to{stroke-dashoffset:-64}}
+@keyframes es-fade-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes es-crossfade{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.es-cloud,.es-leaves,.es-lamp-glow,.es-particles,.es-path-glow{animation:none}.es-hover-lift{transition:none}.es-fade-up,.es-crossfade{animation:none}}

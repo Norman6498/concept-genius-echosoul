@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "presets": {
+    "cloud_drift": {
+      "duration_ms": 36000,
+      "easing": "linear",
+      "loop": true,
+      "translate_x_percent": [
+        -5,
+        8
+      ]
+    },
+    "leaf_sway": {
+      "duration_ms": 7500,
+      "easing": "ease-in-out",
+      "alternate": true,
+      "rotate_deg": [
+        -1.4,
+        1.4
+      ]
+    },
+    "lamp_flicker": {
+      "duration_ms": 3700,
+      "irregular_opacity": [
+        0.76,
+        0.98
+      ]
+    },
+    "particle_float": {
+      "duration_ms": 14000,
+      "translate": [
+        [
+          0,
+          4
+        ],
+        [
+          8,
+          -18
+        ]
+      ]
+    },
+    "journey_path_glow": {
+      "duration_ms": 3800,
+      "dash_offset": [
+        0,
+        -64
+      ],
+      "loop": true
+    },
+    "page_reveal": {
+      "duration_ms": 420,
+      "translate_y_px": [
+        12,
+        0
+      ],
+      "opacity": [
+        0,
+        1
+      ]
+    }
+  },
+  "reduced_motion": "disable continuous transforms and use opacity/crossfade only"
+}

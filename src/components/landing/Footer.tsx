@@ -1,101 +1,143 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 
 export function Footer() {
   return (
-    <footer className="bg-[#050B10] border-t border-[#D9A441]/15 relative z-10 pt-16 pb-12">
+    <footer className="w-full bg-[#050B10] border-t border-[#D9A441]/20 text-[#CFC5B5] font-ui pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-[#D9A441]/10">
-          {/* Col 1: Brand & Provenance */}
-          <div className="md:col-span-5 space-y-4">
-            <BrandLogo size={42} />
-            <p className="font-ui text-sm text-[#CFC5B5] max-w-sm leading-relaxed pt-2">
-              An intimate AI emotional companion that listens without judgment,
-              preserves authentic literature, and weaves your thoughts into the living
-              novel of your life.
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 mb-12">
+          {/* Brand Column (2 cols on lg) */}
+          <div className="lg:col-span-2 space-y-4">
+            <BrandLogo href="/" />
+            <p className="text-xs sm:text-sm text-[#9AA8B0] font-light max-w-sm leading-relaxed">
+              EchoSoul brings together deep listening, authentic world literature, ambient soundscapes,
+              and your private life chronicle in a space designed to hold what you feel.
             </p>
-            <div className="text-xs text-[#9AA8B0] font-medium pt-1">
-              <span>A </span>
-              <strong className="text-[#F5EBD6]">Concept Genius</strong>
-              <span> startup project.</span>
+            <div className="pt-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0C1B25] border border-[#D9A441]/25 text-xs text-[#F2C86A]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F2C86A]" />
+                <span className="font-medium tracking-wide">A Concept Genius Creation</span>
+              </div>
             </div>
           </div>
 
-          {/* Col 2: Sanctuaries */}
-          <div className="md:col-span-3 space-y-3">
-            <h4 className="text-xs font-semibold uppercase tracking-widest text-[#D9A441]">
+          {/* Col 1: Sanctuaries */}
+          <div>
+            <h4 className="font-display text-sm text-[#F5EBD6] font-semibold uppercase tracking-wider mb-4">
               Sanctuaries
             </h4>
-            <ul className="space-y-2 text-sm text-[#CFC5B5]">
+            <ul className="space-y-2.5 text-xs">
               <li>
-                <a href="#experiences" className="hover:text-[#F5EBD6] transition-colors">
-                  Authentic Literature
+                <a href="#experiences" className="hover:text-[#F2C86A] transition-colors">
+                  Speak Freely (Voice)
                 </a>
               </li>
               <li>
-                <a href="#experiences" className="hover:text-[#F5EBD6] transition-colors">
-                  Listening Presence
+                <a href="#experiences" className="hover:text-[#F2C86A] transition-colors">
+                  Find Your Words (Literature)
                 </a>
               </li>
               <li>
-                <a href="#experiences" className="hover:text-[#F5EBD6] transition-colors">
-                  Living Scenes
+                <a href="#experiences" className="hover:text-[#F2C86A] transition-colors">
+                  Music for the Moment
                 </a>
               </li>
               <li>
-                <a href="#how-it-works" className="hover:text-[#F5EBD6] transition-colors">
-                  The Life Novel
+                <a href="#experiences" className="hover:text-[#F2C86A] transition-colors">
+                  Living Scenes & Rooms
+                </a>
+              </li>
+              <li>
+                <a href="#how-it-works" className="hover:text-[#F2C86A] transition-colors">
+                  Your Life Novel
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Ethical Commitments */}
-          <div className="md:col-span-4 space-y-3">
-            <h4 className="text-xs font-semibold uppercase tracking-widest text-[#D9A441]">
-              Ethics & Trust
+          {/* Col 2: Principles */}
+          <div>
+            <h4 className="font-display text-sm text-[#F5EBD6] font-semibold uppercase tracking-wider mb-4">
+              Trust & Ethics
             </h4>
-            <ul className="space-y-2 text-sm text-[#CFC5B5]">
+            <ul className="space-y-2.5 text-xs">
               <li>
-                <a href="#safety" className="hover:text-[#F5EBD6] transition-colors">
-                  Non-Clinical Boundaries
+                <a href="#safety" className="hover:text-[#F2C86A] transition-colors">
+                  Zero Model Training
                 </a>
               </li>
               <li>
-                <a href="#safety" className="hover:text-[#F5EBD6] transition-colors">
-                  Zero AI Model Training
+                <a href="#safety" className="hover:text-[#F2C86A] transition-colors">
+                  Non-Clinical Charter
                 </a>
               </li>
               <li>
-                <a href="#safety" className="hover:text-[#F5EBD6] transition-colors">
-                  Memory Ownership & Purge
+                <a href="#safety" className="hover:text-[#F2C86A] transition-colors">
+                  Data Sovereignty
                 </a>
               </li>
               <li>
-                <a href="#pricing" className="hover:text-[#F5EBD6] transition-colors">
-                  Dignity-First Monetization
+                <Link href="/privacy" className="hover:text-[#F2C86A] transition-colors">
+                  Privacy Architecture
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-[#F2C86A] transition-colors">
+                  Terms of Sanctuary
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 3: Crisis & Lifelines */}
+          <div>
+            <h4 className="font-display text-sm text-[#F5EBD6] font-semibold uppercase tracking-wider mb-4">
+              Crisis & Support
+            </h4>
+            <ul className="space-y-2.5 text-xs">
+              <li className="text-[#F2C86A] font-semibold">
+                <span>988 Lifeline (US/CA)</span>
+              </li>
+              <li className="text-[#F2C86A] font-semibold">
+                <span>112 Emergency (EU)</span>
+              </li>
+              <li className="text-[#F2C86A] font-semibold">
+                <span>+91 9999 666 555 (IN)</span>
+              </li>
+              <li className="pt-1 text-[#9AA8B0]">
+                Text HOME to 741741
+              </li>
+              <li>
+                <a href="mailto:support@echosoul.space" className="hover:text-[#F2C86A] transition-colors">
+                  support@echosoul.space
                 </a>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright & Ethical Notice */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#9AA8B0]">
-          <p>
-            &copy; {new Date().getFullYear()} EchoSoul. All rights reserved. Made with reverence by Concept Genius.
-          </p>
+        {/* Ethical Non-Clinical Disclaimer Strip */}
+        <div className="p-4 rounded-xl bg-[#08131B] border border-[#D9A441]/20 my-8 text-center text-xs text-[#9AA8B0] leading-relaxed max-w-4xl mx-auto">
+          <span className="text-[#F2C86A] font-medium">Non-Clinical Notice:</span> EchoSoul is an empathetic AI sanctuary and literary space, not a medical clinic, licensed psychotherapist, or crisis helpline. If you are experiencing acute psychological distress or thoughts of harm, please reach out directly to 988 or your local medical professional.
+        </div>
+
+        {/* Bottom Copyright & Links */}
+        <div className="pt-6 border-t border-[#D9A441]/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#9AA8B0]">
+          <p>&copy; {new Date().getFullYear()} Concept Genius Inc. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <a href="#safety" className="hover:text-[#F5EBD6] transition-colors">
-              Privacy & Data Rights
-            </a>
-            <a href="#safety" className="hover:text-[#F5EBD6] transition-colors">
-              Ethical Terms
-            </a>
-            <Link href="/login" className="text-[#D9A441] hover:underline font-medium">
-              Sign In
+            <Link href="/privacy" className="hover:text-[#F5EBD6] transition-colors">
+              Privacy
             </Link>
+            <Link href="/terms" className="hover:text-[#F5EBD6] transition-colors">
+              Terms
+            </Link>
+            <a href="#how-it-works" className="hover:text-[#F5EBD6] transition-colors">
+              Philosophy
+            </a>
           </div>
         </div>
       </div>

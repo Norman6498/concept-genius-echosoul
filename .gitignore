@@ -90,3 +90,7 @@ npm-debug.log
 
 # ── Misc ───────────────────────────────────────────────────
 *.local
+
+# Test Screenshots
+*_landing_cdp.png
+*_fullpage.png

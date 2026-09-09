@@ -1,0 +1,149 @@
+{
+  "purpose": "Complete EchoSoul UI/UX visual implementation kit",
+  "source_of_truth": [
+    "locked page references",
+    "EchoSoul UI Master Kit",
+    "EchoSoul Production Asset Kit",
+    "previous Antigravity UI kit",
+    "previous UI Layer Build Pack"
+  ],
+  "all_current_png_reference_files": [
+    "46767b77-7640-4d65-8fdf-23840cfb0f9a.png",
+    "5d3e47b3-2410-4810-8ecd-597db73e4b6f.png",
+    "68c4da49-930d-4be4-aa93-513f29a17204.png",
+    "9e2d3898-68c5-4469-ab8c-03e23a6a1036.png",
+    "a_cinematic_dark_elegant_ui_website_onboarding.png",
+    "a_cinematic_dark_themed_ui_mockup_onboarding_flo.png",
+    "a_cinematic_high_end_ui_ux_presentation_lock_in_b.png",
+    "a_cinematic_moody_high_end_website_landing_page.png",
+    "a_dark_cinematic_cozy_ui_concept_collage_for_an.png",
+    "a_dark_cinematic_high_end_ui_mockup_dashboard_sc.png",
+    "a_detailed_cinematic_ui_concept_illustration_and.png",
+    "a_detailed_infographic_ux_design_plan_poster_for.png",
+    "a_detailed_wide_cinematic_fantasy_ui_mockup_da.png",
+    "a_large_dark_themed_ui_ux_concept_board_image_for.png",
+    "a_large_polished_ui_concept_poster_moodboard_sh.png",
+    "a_vertical_promotional_concept_ui_showcase_image_o.png",
+    "a_wide_atmospheric_cinematic_ui_mockup_dashboa.png",
+    "a_wide_cinematic_cozy_dark_themed_ui_mockup_of_a.png",
+    "a_wide_cinematic_cozy_high_detail_ui_dashboard.png",
+    "a_wide_cinematic_dark_themed_app_ui_screenshot.png",
+    "a_wide_cinematic_dark_themed_ui_dashboard_mockup.png",
+    "a_wide_cinematic_dark_themed_ui_dashboard_websit.png",
+    "a_wide_cinematic_dark_themed_ui_mockup_dashboard.png",
+    "a_wide_cinematic_dark_themed_ui_ux_concept_for_a.png",
+    "a_wide_cinematic_dark_themed_ui_ux_design_board.png",
+    "a_wide_cinematic_dark_themed_ui_ux_mockup_of_a.png",
+    "a_wide_cinematic_dark_themed_ui_website_app_conc.png",
+    "a_wide_cinematic_dark_themed_user_interface_scree.png",
+    "a_wide_cinematic_high_detail_ui_mockup_of_a_pric.png",
+    "a_wide_cinematic_high_fidelity_ui_web_page_layou.png",
+    "a_wide_cinematic_ui_concept_mockup_of_a_meditatio.png",
+    "a_wide_cinematic_ui_ux_mockup_of_a_dark_dreamy.png",
+    "a_wide_cinematic_ultra_detailed_ui_concept_poste.png",
+    "a_wide_cinematic_ultra_detailed_ui_ux_concept_ar.png",
+    "a_wide_dark_themed_cinematic_ui_infographic_webpa.png",
+    "a_wide_dark_themed_ui_marketing_dashboard_screensh.png",
+    "a_wide_detailed_cozy_cinematic_dark_themed_app.png",
+    "a_wide_high_resolution_dark_themed_promotional_i.png",
+    "a_wide_multi_panel_ui_mockup_concept_art_image_o.png",
+    "a_widescreen_cinematic_ui_ux_mockup_of_a_calm_i.png",
+    "a_widescreen_dark_cinematic_ui_design_scene_a_p.png",
+    "a_widescreen_dark_cinematic_ui_mockup_theme_onboa.png",
+    "a_widescreen_dark_themed_ui_dashboard_illustration.png",
+    "wide_cinematic_dark_mode_ui_mockup_of_a_reading_p.png",
+    "wide_cinematic_desktop_ui_of_a_dark_warm_cozy_a.png",
+    "wide_cinematic_ui_mockup_of_a_desktop_app_website.png",
+    "wide_cinematic_website_landing_pricing_page_mockup.png",
+    "wide_polished_dark_themed_website_pricing_page_mo.png"
+  ],
+  "known_page_groups": {
+    "Page_01_Landing": [
+      "a_cinematic_moody_high_end_website_landing_page.png",
+      "a_cinematic_high_end_ui_ux_presentation_lock_in_b.png"
+    ],
+    "Page_02_Login_Signup": [
+      "a_wide_cinematic_dark_themed_ui_mockup_dashboard.png",
+      "68c4da49-930d-4be4-aa93-513f29a17204.png"
+    ],
+    "Page_03_Personalization_Onboarding": [
+      "a_cinematic_dark_elegant_ui_website_onboarding.png",
+      "a_cinematic_dark_themed_ui_mockup_onboarding_flo.png"
+    ],
+    "Page_04_Home": [
+      "a_wide_cinematic_dark_themed_ui_dashboard_mockup.png",
+      "a_wide_atmospheric_cinematic_ui_mockup_dashboa.png",
+      "a_wide_cinematic_cozy_high_detail_ui_dashboard.png"
+    ],
+    "Page_05_Talk": [
+      "a_widescreen_cinematic_ui_ux_mockup_of_a_calm_i.png",
+      "a_wide_cinematic_dark_themed_ui_dashboard_websit.png"
+    ],
+    "Page_06_Music": [
+      "a_wide_cinematic_ui_concept_mockup_of_a_meditatio.png",
+      "a_wide_cinematic_ui_concept_mockup_of_a_meditatio.png",
+      "a_wide_cinematic_ui_concept_mockup_of_a_meditatio.png"
+    ],
+    "Page_07_Words_LOCKED": [
+      "5d3e47b3-2410-4810-8ecd-597db73e4b6f.png",
+      "a_wide_cinematic_cozy_high_detail_ui_dashboard.png",
+      "wide_cinematic_dark_mode_ui_mockup_of_a_reading_p.png"
+    ],
+    "Page_08_Scenes": [
+      "a_cinematic_high_end_ui_ux_presentation_lock_in_b.png",
+      "a_widescreen_dark_cinematic_ui_design_scene_a_p.png",
+      "a_wide_cinematic_ui_ux_mockup_of_a_dark_dreamy.png"
+    ],
+    "Page_09_Moments": [
+      "a_detailed_cinematic_ui_concept_illustration_and.png",
+      "a_detailed_wide_cinematic_fantasy_ui_mockup_da.png",
+      "a_wide_cinematic_dark_themed_ui_mockup_dashboard.png"
+    ],
+    "Page_10_Journey": [
+      "a_widescreen_dark_themed_ui_dashboard_illustration.png",
+      "a_wide_cinematic_dark_themed_ui_ux_design_board.png"
+    ],
+    "Page_11_Life_Novel": [
+      "a_detailed_wide_cinematic_fantasy_ui_mockup_da.png",
+      "a_dark_cinematic_cozy_ui_concept_collage_for_an.png",
+      "wide_cinematic_dark_mode_ui_mockup_of_a_reading_p.png"
+    ],
+    "Page_12_Settings": [
+      "a_wide_cinematic_dark_themed_ui_ux_mockup_of_a.png",
+      "68c4da49-930d-4be4-aa93-513f29a17204.png"
+    ],
+    "Page_13_Premium": [
+      "a_wide_cinematic_high_detail_ui_mockup_of_a_pric.png",
+      "a_wide_high_resolution_dark_themed_promotional_i.png"
+    ],
+    "Page_14_Public_Pricing": [
+      "wide_polished_dark_themed_website_pricing_page_mo.png",
+      "wide_cinematic_website_landing_pricing_page_mockup.png"
+    ],
+    "Page_15_How_It_Works": [
+      "a_large_polished_ui_concept_poster_moodboard_sh.png",
+      "a_detailed_infographic_ux_design_plan_poster_for.png"
+    ]
+  },
+  "implementation_rule": "Build one page at a time; use the page reference, page spec, component system and environment/motion system together.",
+  "critical_motion": [
+    "time-of-day transitions",
+    "cloud drift",
+    "leaf sway",
+    "lamp/candle flicker",
+    "local glow",
+    "mist/weather",
+    "particles",
+    "mountain/depth parallax",
+    "Journey path glow",
+    "cursor-local environment response",
+    "literature writing reveal",
+    "reduced motion fallback"
+  ],
+  "language": {
+    "English": "English/Latin",
+    "Hindi": "Hindi/Devanagari",
+    "Urdu": "Urdu language; Devanagari script when that is the user's chosen script",
+    "Hinglish": "Hindi/Urdu expression in Latin script when selected/used"
+  }
+}

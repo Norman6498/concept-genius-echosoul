@@ -1,78 +1,152 @@
+"use client";
+
 import React from "react";
 import { Icon } from "@/components/ui/Icon";
 
 export function SafetyTrustSection() {
   const trustPillars = [
     {
-      title: "Non-Clinical Companion",
-      description:
-        "EchoSoul is a reflective and creative companion, not a licensed therapist, psychologist, or medical provider. If you are in crisis, we transparently connect you with 24/7 human crisis support services.",
-    },
-    {
+      icon: "shield" as const,
       title: "Zero Model Training",
+      badge: "Absolute Privacy",
       description:
-        "Your private conversations, vulnerabilities, memories, and personal writings are never sold, never used for advertising, and never fed into public AI model training datasets.",
+        "Your private confessions, novel chapters, and midnight conversations are never used to train or fine-tune public AI models. Your words belong solely to you.",
     },
     {
-      title: "Complete Memory Ownership",
+      icon: "lock" as const,
+      title: "100% Data Sovereignty",
+      badge: "Encrypted Vault",
       description:
-        "You decide what EchoSoul remembers and what is forgotten. Every saved memory carries provenance, and you can edit, export, or permanently wipe your memory vault with a single click.",
+        "Your memories are stored with enterprise AES-256 encryption. Download your entire history in one click as a private archive, or purge it permanently at any time.",
     },
     {
-      title: "Encrypted & Row-Level Secured",
+      icon: "heart" as const,
+      title: "No Emotional Gamification",
+      badge: "Ethical Technology",
       description:
-        "Built on Supabase enterprise architecture with PostgreSQL Row Level Security (RLS). Only your authenticated account holds the cryptographic keys to read your personal reflections.",
+        "No streak guilt, no artificial dependency loops, and no dopamine notifications designed to hook you. EchoSoul is here when you need to exhale, and respects your real life.",
+    },
+    {
+      icon: "sparkles" as const,
+      title: "Human Authenticity First",
+      badge: "Careful Limits",
+      description:
+        "EchoSoul is honest about what it is: an empathetic AI companion and literary haven. It never pretends to be a biological human or an omniscient authority.",
+    },
+  ];
+
+  const crisisLines = [
+    {
+      region: "United States & Canada",
+      service: "988 Suicide & Crisis Lifeline",
+      contact: "Call or text 988",
+      availability: "24/7, Free & Confidential",
+    },
+    {
+      region: "United Kingdom",
+      service: "Samaritans Helpline",
+      contact: "Call 116 123",
+      availability: "24/7, Free from any phone",
+    },
+    {
+      region: "India",
+      service: "Vandrevala Foundation Helpline",
+      contact: "+91 9999 666 555",
+      availability: "24/7, Multilingual Support",
+    },
+    {
+      region: "International Emergency",
+      service: "Global Emergency Services",
+      contact: "Call 112 (EU) or 911 (US)",
+      availability: "Immediate emergency response",
     },
   ];
 
   return (
-    <section id="safety" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 overflow-hidden">
-      <div className="glass-panel p-6 sm:p-12 border border-[#D9A441]/25 relative overflow-hidden">
-        {/* Subtle background glow */}
-        <div className="absolute top-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-[#8DBA8F]/5 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-3xl mb-12">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#8DBA8F] mb-3">
-            <span className="w-2 h-2 rounded-full bg-[#8DBA8F]" />
-            <span>Ethical Architecture & Trust</span>
-          </div>
-          <h2 className="font-display text-3xl sm:text-5xl font-light text-[#F5EBD6] tracking-tight mb-5">
-            A Sacred, Private Space
+    <section id="safety" className="relative py-20 sm:py-28 bg-[#050B10] border-t border-[#D9A441]/15 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto">
+          <span className="text-xs uppercase tracking-[0.25em] font-semibold text-[#D9A441] block mb-3">
+            Safety, Ethics & Trust
+          </span>
+          <h2 className="font-display text-3xl sm:text-5xl text-[#F5EBD6] font-normal tracking-tight">
+            A sanctuary built on
+            <br />
+            <span className="italic text-[#F2C86A] font-light">sacred privacy & clear boundaries.</span>
           </h2>
-          <p className="font-ui text-base text-[#CFC5B5] leading-relaxed">
-            Emotional vulnerability requires uncompromising respect. We built EchoSoul with
-            strict ethical boundaries so you never have to wonder if your trust is being monetized.
+          <p className="mt-4 font-ui text-sm sm:text-base text-[#CFC5B5] font-light leading-relaxed">
+            Trust is not an afterthought in emotional spaces. It is the foundation.
+            Here is our unwavering pledge to your heart and privacy.
           </p>
         </div>
 
-        {/* 4 Trust Pillars Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* 4 Trust Pillars Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {trustPillars.map((pillar) => (
             <div
               key={pillar.title}
-              className="p-6 rounded-[14px] bg-[#07131B]/70 border border-[#D9A441]/15 hover:border-[#D9A441]/35 transition-colors"
+              className="glass-panel p-6 sm:p-7 border border-[#D9A441]/20 hover:border-[#D9A441]/40 transition-all flex flex-col justify-between"
             >
-              <h3 className="font-display text-xl text-[#F5EBD6] mb-2.5 font-normal">
-                {pillar.title}
-              </h3>
-              <p className="font-ui text-sm text-[#CFC5B5] leading-relaxed">
-                {pillar.description}
-              </p>
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-[#D9A441]/15 border border-[#D9A441]/30 flex items-center justify-center text-[#F2C86A]">
+                    <Icon name={pillar.icon} size={18} />
+                  </div>
+                  <span className="text-[10px] uppercase font-mono tracking-wider text-[#D9A441] bg-[#D9A441]/10 px-2 py-0.5 rounded-full">
+                    {pillar.badge}
+                  </span>
+                </div>
+                <h3 className="font-display text-lg sm:text-xl text-[#F5EBD6] font-medium mb-2">
+                  {pillar.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-[#CFC5B5] font-light leading-relaxed">
+                  {pillar.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Emergency Crisis Disclaimer Banner */}
-        <div className="mt-10 pt-8 border-t border-[#D9A441]/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-[#9AA8B0]">
-          <p className="max-w-2xl leading-relaxed">
-            <strong className="text-[#F5EBD6]">Important Notice:</strong> EchoSoul does not provide
-            medical diagnosis or therapy. If you or someone you know is in acute emotional crisis, please reach out to
-            the National Suicide and Crisis Lifeline by dialing <strong className="text-[#F2C86A]">988</strong> (US/Canada),
-            <strong className="text-[#F2C86A]"> 112</strong> (EU), or your local emergency healthcare services.
-          </p>
-          <span className="px-3 py-1.5 rounded-full bg-[#102531] text-[#8DBA8F] font-medium shrink-0">
-            Dignity First Pledged
-          </span>
+        {/* Ethical Non-Clinical Boundary Notice (GitHub Alert Style Box) */}
+        <div className="rounded-2xl bg-[#0C1B25]/90 border border-[#D9A441]/35 p-6 sm:p-8 relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+            <div className="w-12 h-12 rounded-2xl bg-[#D9A441]/20 border border-[#D9A441]/40 flex items-center justify-center text-[#F2C86A] shrink-0">
+              <Icon name="heart" size={22} />
+            </div>
+            <div className="space-y-2 flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs uppercase tracking-widest font-semibold text-[#D9A441]">
+                  Important Ethical & Medical Boundary
+                </span>
+              </div>
+              <h4 className="font-display text-xl text-[#F5EBD6] font-medium">
+                EchoSoul is an emotional companion, not clinical therapy.
+              </h4>
+              <p className="font-ui text-xs sm:text-sm text-[#CFC5B5] leading-relaxed font-light">
+                EchoSoul is designed to offer solace, reflective space, and literary companionship. It cannot diagnose, treat, or replace licensed medical care, psychiatric therapy, or emergency crisis response. If you are experiencing acute mental health distress or crisis, human help is available immediately.
+              </p>
+            </div>
+          </div>
+
+          {/* Crisis Hotlines Grid */}
+          <div className="mt-8 pt-6 border-t border-[#D9A441]/20">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {crisisLines.map((line) => (
+                <div
+                  key={line.region}
+                  className="p-4 rounded-xl bg-[#050B10]/70 border border-white/5 space-y-1"
+                >
+                  <span className="text-[11px] text-[#9AA8B0] block uppercase font-mono tracking-wider">
+                    {line.region}
+                  </span>
+                  <p className="text-xs font-semibold text-[#F5EBD6]">{line.service}</p>
+                  <p className="text-sm font-bold text-[#F2C86A] font-mono pt-1">{line.contact}</p>
+                  <p className="text-[11px] text-[#9AA8B0]">{line.availability}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -1,41 +1,23 @@
 import React from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
-import { ValuePillars } from "@/components/landing/ValuePillars";
-import { HowItWorksPreview } from "@/components/landing/HowItWorksPreview";
+import { ValuePillarsSection } from "@/components/landing/ValuePillarsSection";
 import { ExperiencesPreview } from "@/components/landing/ExperiencesPreview";
 import { SafetyTrustSection } from "@/components/landing/SafetyTrustSection";
 import { PricingPreviewSection } from "@/components/landing/PricingPreviewSection";
 import { Footer } from "@/components/landing/Footer";
 
-export default function Page01Landing() {
+export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#050B10] text-[#F5EBD6] flex flex-col selection:bg-[#D9A441]/30 selection:text-[#F2C86A]">
-      {/* 1. Public Top Navigation */}
+    <div className="min-h-screen bg-[#050B10] text-[#F5EBD6] selection:bg-[#D9A441]/30 selection:text-[#F2C86A] overflow-x-clip">
       <Navbar />
-
-      {/* 2. Main Page Content */}
-      <main className="flex-1 w-full max-w-full overflow-x-hidden">
-        {/* Cinematic Hero with Living Environment */}
+      <main id="main-content">
         <Hero />
-
-        {/* 4 Core Value Pillars */}
-        <ValuePillars />
-
-        {/* How EchoSoul Accompanies You Preview */}
-        <HowItWorksPreview />
-
-        {/* Three Intimate Sanctuaries Interactive Preview */}
+        <ValuePillarsSection />
         <ExperiencesPreview />
-
-        {/* Safety, Ethical Architecture & Trust */}
         <SafetyTrustSection />
-
-        {/* Transparent & Respectful Pricing Preview */}
         <PricingPreviewSection />
       </main>
-
-      {/* 3. Concept Genius Provenance & Public Footer */}
       <Footer />
     </div>
   );

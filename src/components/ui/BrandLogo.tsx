@@ -11,11 +11,11 @@ interface BrandLogoProps {
 export function BrandLogo({
   className = "",
   showWordmark = true,
-  size = 38,
+  size = 40,
   href = "/",
 }: BrandLogoProps) {
   const content = (
-    <div className={`inline-flex items-center gap-3 select-none group ${className}`}>
+    <div className={`inline-flex items-center gap-3.5 select-none group ${className}`}>
       {/* Official EchoSoul Mark SVG */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -24,35 +24,41 @@ export function BrandLogo({
         height={size}
         role="img"
         aria-label="EchoSoul mark"
-        className="shrink-0 transition-transform duration-300 group-hover:scale-105"
+        className="shrink-0 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_12px_rgba(217,164,65,0.4)]"
       >
         <defs>
-          <radialGradient id="echosoul-g" cx="45%" cy="40%">
-            <stop offset="0%" stopColor="#F7D57B" />
-            <stop offset="55%" stopColor="#D9A441" />
+          <radialGradient id="echosoul-gold-grad" cx="45%" cy="40%" r="60%">
+            <stop offset="0%" stopColor="#FFF2D1" />
+            <stop offset="35%" stopColor="#F2C86A" />
+            <stop offset="70%" stopColor="#D9A441" />
             <stop offset="100%" stopColor="#8B5D17" />
           </radialGradient>
         </defs>
-        <circle cx="64" cy="64" r="54" fill="#07131B" stroke="#D9A441" strokeWidth="3" />
+        {/* Outer subtle concentric circle */}
+        <circle cx="64" cy="64" r="58" fill="none" stroke="#D9A441" strokeWidth="1.5" strokeOpacity="0.4" strokeDasharray="3 4" />
+        {/* Inner dark core */}
+        <circle cx="64" cy="64" r="52" fill="#07131B" stroke="#D9A441" strokeWidth="2.5" />
+        {/* Glowing crescent soul */}
         <path
-          d="M82 31c-25-9-45 8-45 30 0 20 15 34 35 34 10 0 19-4 25-11-7 4-14 5-21 3-13-4-20-14-20-27 0-15 10-25 26-29z"
-          fill="url(#echosoul-g)"
+          d="M84 28c-26-9-48 9-48 33 0 22 17 37 38 37 11 0 21-4 28-12-8 4-16 5-23 3-14-4-22-15-22-29 0-16 11-27 27-32z"
+          fill="url(#echosoul-gold-grad)"
         />
+        {/* Inner gentle accent line */}
         <path
-          d="M42 61c9-4 18-4 27 0"
+          d="M44 63c9-4 20-4 30 0"
           fill="none"
           stroke="#07131B"
-          strokeWidth="5"
+          strokeWidth="4"
           strokeLinecap="round"
         />
       </svg>
 
       {showWordmark && (
         <div className="flex flex-col">
-          <span className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-[#F5EBD6] group-hover:text-[#F2C86A] transition-colors leading-none">
+          <span className="font-display text-2xl font-normal tracking-tight text-[#F5EBD6] group-hover:text-[#F2C86A] transition-colors leading-none">
             EchoSoul
           </span>
-          <span className="text-[9px] uppercase tracking-[0.24em] text-[#9AA8B0] font-medium mt-1 hidden sm:block">
+          <span className="text-[9px] uppercase tracking-[0.26em] text-[#9AA8B0] font-medium mt-1">
             Your story matters
           </span>
         </div>
@@ -62,7 +68,10 @@ export function BrandLogo({
 
   if (href) {
     return (
-      <Link href={href} className="inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D9A441] rounded-md">
+      <Link
+        href={href}
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8FAED9] rounded-md transition-opacity hover:opacity-95"
+      >
         {content}
       </Link>
     );

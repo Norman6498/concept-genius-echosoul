@@ -1,17 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter, Noto_Serif_Devanagari } from "next/font/google";
+import { Playfair_Display, Inter, Noto_Serif_Devanagari } from "next/font/google";
 import { AuthProvider } from "@/lib/auth/context";
 import "./globals.css";
 
-const cormorant = Cormorant_Garamond({
+const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-cormorant",
+  style: ["normal", "italic"],
+  variable: "--font-playfair",
   display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-inter",
   display: "swap",
 });
@@ -30,9 +32,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "EchoSoul — A kinder world within you",
+  title: "EchoSoul — Enter a realm where you can finally be you.",
   description:
-    "An AI companion for your thoughts, feelings, questions and the stories you're living.",
+    "An AI companion for your thoughts, feelings, questions and the stories you're living. Concept Genius.",
 };
 
 export default function RootLayout({
@@ -43,12 +45,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${inter.variable} ${devanagari.variable} dark overflow-x-hidden max-w-full`}
+      className={`${playfair.variable} ${inter.variable} ${devanagari.variable} dark overflow-x-clip max-w-full`}
     >
-      <body className="bg-[#050B10] text-[#F5EBD6] font-ui antialiased selection:bg-[#D9A441]/30 selection:text-[#F2C86A] overflow-x-hidden max-w-full">
+      <body className="bg-[#050B10] text-[#F5EBD6] font-ui antialiased selection:bg-[#D9A441]/30 selection:text-[#F2C86A] overflow-x-clip max-w-full min-h-screen">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
 }
-
