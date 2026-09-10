@@ -1,8 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Inter, Noto_Serif_Devanagari } from "next/font/google";
+import { Cormorant_Garamond, Playfair_Display, Inter, Noto_Serif_Devanagari } from "next/font/google";
 import { AuthProvider } from "@/lib/auth/context";
 import "./globals.css";
 
+// Headline font — Cormorant Garamond
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-cormorant",
+  display: "swap",
+});
+
+// Editorial display font — Playfair Display
 const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -11,6 +21,7 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
+// UI / body font — Inter
 const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -18,6 +29,7 @@ const inter = Inter({
   display: "swap",
 });
 
+// Authentic literature — Devanagari script
 const devanagari = Noto_Serif_Devanagari({
   subsets: ["devanagari", "latin"],
   weight: ["400", "500", "600", "700"],
@@ -45,9 +57,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfair.variable} ${inter.variable} ${devanagari.variable} dark overflow-x-clip max-w-full`}
+      className={`${cormorant.variable} ${playfair.variable} ${inter.variable} ${devanagari.variable} dark overflow-x-clip max-w-full`}
     >
-      <body className="bg-[#050B10] text-[#F5EBD6] font-ui antialiased selection:bg-[#D9A441]/30 selection:text-[#F2C86A] overflow-x-clip max-w-full min-h-screen">
+      <body className="bg-[#0B0F14] text-[#FFF8E1] font-ui antialiased selection:bg-[#F2D78A]/30 selection:text-[#F2D78A] overflow-x-clip max-w-full min-h-screen">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

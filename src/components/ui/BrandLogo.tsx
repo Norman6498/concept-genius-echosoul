@@ -1,81 +1,68 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 
 interface BrandLogoProps {
   className?: string;
-  showWordmark?: boolean;
-  size?: number;
+  size?: "sm" | "md" | "lg";
   href?: string;
 }
 
-export function BrandLogo({
-  className = "",
-  showWordmark = true,
-  size = 40,
-  href = "/",
-}: BrandLogoProps) {
-  const content = (
-    <div className={`inline-flex items-center gap-3.5 select-none group ${className}`}>
-      {/* Official EchoSoul Mark SVG */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 128 128"
-        width={size}
-        height={size}
-        role="img"
-        aria-label="EchoSoul mark"
-        className="shrink-0 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_12px_rgba(217,164,65,0.4)]"
-      >
-        <defs>
-          <radialGradient id="echosoul-gold-grad" cx="45%" cy="40%" r="60%">
-            <stop offset="0%" stopColor="#FFF2D1" />
-            <stop offset="35%" stopColor="#F2C86A" />
-            <stop offset="70%" stopColor="#D9A441" />
-            <stop offset="100%" stopColor="#8B5D17" />
-          </radialGradient>
-        </defs>
-        {/* Outer subtle concentric circle */}
-        <circle cx="64" cy="64" r="58" fill="none" stroke="#D9A441" strokeWidth="1.5" strokeOpacity="0.4" strokeDasharray="3 4" />
-        {/* Inner dark core */}
-        <circle cx="64" cy="64" r="52" fill="#07131B" stroke="#D9A441" strokeWidth="2.5" />
-        {/* Glowing crescent soul */}
-        <path
-          d="M84 28c-26-9-48 9-48 33 0 22 17 37 38 37 11 0 21-4 28-12-8 4-16 5-23 3-14-4-22-15-22-29 0-16 11-27 27-32z"
-          fill="url(#echosoul-gold-grad)"
-        />
-        {/* Inner gentle accent line */}
-        <path
-          d="M44 63c9-4 20-4 30 0"
-          fill="none"
-          stroke="#07131B"
-          strokeWidth="4"
-          strokeLinecap="round"
-        />
-      </svg>
+export function BrandLogo({ className = "", size = "md", href = "/" }: BrandLogoProps) {
+  const iconDimensions = {
+    sm: "w-8 h-8",
+    md: "w-10 h-10 sm:w-11 sm:h-11",
+    lg: "w-12 h-12 sm:w-14 sm:h-14",
+  }[size];
 
-      {showWordmark && (
-        <div className="flex flex-col">
-          <span className="font-display text-2xl font-normal tracking-tight text-[#F5EBD6] group-hover:text-[#F2C86A] transition-colors leading-none">
-            EchoSoul
-          </span>
-          <span className="text-[9px] uppercase tracking-[0.26em] text-[#9AA8B0] font-medium mt-1">
-            Your story matters
-          </span>
-        </div>
-      )}
-    </div>
+  const titleSize = {
+    sm: "text-xl",
+    md: "text-2xl sm:text-[26px]",
+    lg: "text-3xl sm:text-4xl",
+  }[size];
+
+  return (
+    <Link
+      href={href}
+      className={`inline-flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2D78A] rounded-lg ${className}`}
+      aria-label="EchoSoul Home"
+    >
+      {/* Crescent Moon + Star Crest inside concentric circles */}
+      <div className={`relative ${iconDimensions} flex items-center justify-center shrink-0`}>
+        <svg viewBox="0 0 48 48" fill="none" className="w-full h-full drop-shadow-[0_0_10px_rgba(242,215,138,0.35)]">
+          {/* Outer ring */}
+          <circle cx="24" cy="24" r="22" stroke="#F2D78A" strokeWidth="1.2" opacity="0.65" />
+          {/* Inner ring */}
+          <circle cx="24" cy="24" r="16" stroke="#F2D78A" strokeWidth="0.8" opacity="0.4" />
+          {/* Crescent moon shape */}
+          <path
+            d="M29 15a11 11 0 1 1-14 14 8 8 0 0 0 14-14z"
+            fill="#F2D78A"
+          />
+          {/* Four-point inner star inside crescent */}
+          <path
+            d="M21 21L22.5 24L21 27L19.5 24Z"
+            fill="#FFF8E1"
+            opacity="0.9"
+          />
+          <path
+            d="M18 24L21 22.5L24 24L21 25.5Z"
+            fill="#FFF8E1"
+            opacity="0.9"
+          />
+        </svg>
+      </div>
+
+      {/* Wordmark */}
+      <div className="flex flex-col leading-none">
+        <span className={`font-display font-medium text-[#FFF8E1] tracking-wide transition-colors group-hover:text-[#F2D78A] ${titleSize}`}>
+          EchoSoul
+        </span>
+        <span className="font-ui text-[8.5px] sm:text-[9.5px] tracking-[0.24em] uppercase text-[#F2D78A] font-medium mt-1">
+          YOUR STORY MATTERS
+        </span>
+      </div>
+    </Link>
   );
-
-  if (href) {
-    return (
-      <Link
-        href={href}
-        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8FAED9] rounded-md transition-opacity hover:opacity-95"
-      >
-        {content}
-      </Link>
-    );
-  }
-
-  return content;
 }
