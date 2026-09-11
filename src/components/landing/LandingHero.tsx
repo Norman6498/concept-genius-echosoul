@@ -18,7 +18,7 @@ export function Navbar() {
 
   const navLinks = [
     { label: "Home",        href: "/" },
-    { label: "About",       href: "#about" },
+    { label: "About",       href: "/about" },
     { label: "Features",    href: "#features" },
     { label: "Stories",     href: "#stories" },
     { label: "Pricing",     href: "#pricing" },
@@ -316,35 +316,6 @@ export function HeroPage() {
                     </span>
                   </Link>
                 ))}
-              </div>
-            </div>
-          </div>
-
-          {/* ── Next Section Preview ─────────────────────────────────── */}
-          <div className="relative z-10 w-full py-10 sm:py-14 bg-[#0B0F14]/95 border-t border-white/5">
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-10 flex flex-col sm:flex-row items-center justify-between gap-6">
-              <div className="text-center sm:text-left">
-                <p className="font-ui text-[11px] uppercase tracking-[0.24em] text-[#F2D78A] font-semibold mb-1.5">
-                  More than an AI.
-                </p>
-                <h2 className="font-display font-normal text-[#FFF8E1]" style={{ fontSize: "clamp(26px, 2.8vw, 42px)" }}>
-                  A place for what you feel.
-                </h2>
-                <div className="w-10 h-0.5 bg-[#F2D78A] mt-3 mx-auto sm:mx-0" />
-              </div>
-
-              {/* Scroll indicator */}
-              <div className="flex items-center gap-3 text-[#9AA8B0]">
-                <div className="flex flex-col items-center gap-1">
-                  {/* Mouse Icon */}
-                  <div className="w-5 h-8 rounded-full border border-[#9AA8B0]/50 flex items-start justify-center pt-1.5">
-                    <div className="w-1 h-2 rounded-full bg-[#F2D78A] animate-scroll-bounce" />
-                  </div>
-                  <svg className="w-3 h-3 mt-0.5 animate-scroll-bounce text-[#F2D78A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ animationDelay: "0.2s" }}>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-                <span className="font-ui text-[11px] uppercase tracking-[0.18em] text-[#CFC5B5]">Scroll to explore</span>
               </div>
             </div>
           </div>

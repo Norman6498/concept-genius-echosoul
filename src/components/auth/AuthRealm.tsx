@@ -53,18 +53,30 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
     setIsLoading(true);
     setMessage(null);
 
-    // Provide friendly simulated feedback and redirect or sign in
+    // Persist name for onboarding personalization
+    if (name.trim()) {
+      try {
+        const existing = localStorage.getItem("echosoul_user_personalization");
+        const parsed = existing ? JSON.parse(existing) : {};
+        parsed.name = name.trim();
+        localStorage.setItem("echosoul_user_personalization", JSON.stringify(parsed));
+      } catch {
+        // Ignore
+      }
+    }
+
+    // Provide friendly simulated feedback and redirect to Page 3 Onboarding
     setTimeout(() => {
       setIsLoading(false);
       setMessage({
         type: "success",
         text: mode === "signup"
-          ? "Welcome to your realm, " + (name || "friend") + ". Entering EchoSoul..."
-          : "Welcome back. Opening your quiet space...",
+          ? "Welcome to your realm, " + (name || "friend") + ". Entering Step 1..."
+          : "Welcome back. Opening your personalized space...",
       });
       setTimeout(() => {
-        window.location.href = "/";
-      }, 1200);
+        window.location.href = "/onboarding";
+      }, 1000);
     }, 800);
   };
 
@@ -259,7 +271,7 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
                   type="button"
                   onClick={() => {
                     setMessage({ type: "success", text: "Connecting to Google..." });
-                    setTimeout(() => { window.location.href = "/"; }, 1000);
+                    setTimeout(() => { window.location.href = "/onboarding"; }, 800);
                   }}
                   className="w-full h-11 px-4 rounded-xl border border-white/15 hover:border-[#F2D78A]/50 bg-[#08131B]/70 hover:bg-[#102531] flex items-center justify-center gap-3 transition-all duration-200 text-xs sm:text-sm font-medium text-[#FFF8E1] shadow-sm hover:shadow-[0_0_12px_rgba(242,215,138,0.12)] focus:outline-none"
                 >
@@ -272,7 +284,7 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
                   type="button"
                   onClick={() => {
                     setMessage({ type: "success", text: "Connecting to Apple..." });
-                    setTimeout(() => { window.location.href = "/"; }, 1000);
+                    setTimeout(() => { window.location.href = "/onboarding"; }, 800);
                   }}
                   className="w-full h-11 px-4 rounded-xl border border-white/15 hover:border-[#F2D78A]/50 bg-[#08131B]/70 hover:bg-[#102531] flex items-center justify-center gap-3 transition-all duration-200 text-xs sm:text-sm font-medium text-[#FFF8E1] shadow-sm hover:shadow-[0_0_12px_rgba(242,215,138,0.12)] focus:outline-none"
                 >

@@ -20,7 +20,20 @@ export type IconName =
   | "user"
   | "lock"
   | "eye"
-  | "eye-off";
+  | "eye-off"
+  | "brain"
+  | "sprout"
+  | "trend"
+  | "quill"
+  | "star"
+  | "mood-calm"
+  | "mood-happy"
+  | "mood-neutral"
+  | "mood-anxious"
+  | "mood-sad"
+  | "mood-stressed"
+  | "mood-motivated"
+  | "mood-tired";
 
 interface IconProps {
   name: IconName;
@@ -179,6 +192,121 @@ export function IconSet({ name, className = "w-6 h-6 text-[#F2D78A]", size }: Ic
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
           <line x1="1" y1="1" x2="23" y2="23" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+
+    case "brain":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 2A4.5 4.5 0 0 0 5 6.5c0 .4.06.79.16 1.15A4 4 0 0 0 3 11.5c0 1.63 1 3.03 2.42 3.63A4.5 4.5 0 0 0 9.5 19H10V5h-.5zM14.5 2A4.5 4.5 0 0 1 19 6.5c0 .4-.06.79-.16 1.15A4 4 0 0 1 21 11.5c0 1.63-1 3.03-2.42 3.63A4.5 4.5 0 0 1 14.5 19H14V5h.5zM10 9H6M10 13H7M14 9h4M14 13h3" />
+        </svg>
+      );
+
+    case "sprout":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 22V10M12 10C12 5 7 4 3 5c0 4 1 9 9 5zM12 13c0-3 3.5-4 7-3 0 3-.5 6-7 3z" />
+        </svg>
+      );
+
+    case "trend":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 17l6-6 4 4 8-8m0 0h-5m5 0v5" />
+        </svg>
+      );
+
+    case "quill":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 3.5c-4 0-10 4-13 10l-1 5 5-1c6-3 10-9 10-13l-1-1z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18.5l-3 2.5 2.5-3" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M14.5 8.5L9.5 13.5" />
+        </svg>
+      );
+
+    case "star":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <polygon strokeLinecap="round" strokeLinejoin="round" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+      );
+
+    case "mood-calm":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <circle cx="12" cy="12" r="9" />
+          <path strokeLinecap="round" d="M8.5 10a1.5 1.5 0 0 0 0-0.1M15.5 10a1.5 1.5 0 0 0 0-0.1" />
+          <circle cx="9" cy="10" r="0.8" fill="currentColor" />
+          <circle cx="15" cy="10" r="0.8" fill="currentColor" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 14.5c1 .8 2 1.2 3 1.2s2-.4 3-1.2" />
+        </svg>
+      );
+
+    case "mood-happy":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <circle cx="12" cy="12" r="9" />
+          <circle cx="9" cy="9.5" r="1" fill="currentColor" />
+          <circle cx="15" cy="9.5" r="1" fill="currentColor" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 13.5c1 1.8 2.3 2.5 4 2.5s3-.7 4-2.5" />
+        </svg>
+      );
+
+    case "mood-neutral":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <circle cx="12" cy="12" r="9" />
+          <circle cx="9" cy="10" r="1" fill="currentColor" />
+          <circle cx="15" cy="10" r="1" fill="currentColor" />
+          <line x1="9" y1="15" x2="15" y2="15" strokeLinecap="round" />
+        </svg>
+      );
+
+    case "mood-anxious":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <circle cx="12" cy="12" r="9" />
+          <circle cx="9" cy="10" r="1" fill="currentColor" />
+          <circle cx="15" cy="10" r="1" fill="currentColor" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.5 15.5c1-.8 1.8-.8 2.5 0s1.5.8 2.5 0 1.5-.8 2 .2" />
+        </svg>
+      );
+
+    case "mood-sad":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <circle cx="12" cy="12" r="9" />
+          <circle cx="9" cy="10" r="1" fill="currentColor" />
+          <circle cx="15" cy="10" r="1" fill="currentColor" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.5 16c1-1.2 2.2-1.8 3.5-1.8s2.5.6 3.5 1.8" />
+        </svg>
+      );
+
+    case "mood-stressed":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <circle cx="12" cy="12" r="9" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="m7.5 9 3 2-3 2m9-4-3 2 3 2" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 16c1-.6 2-.8 3-.8s2 .2 3 .8" />
+        </svg>
+      );
+
+    case "mood-motivated":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l1.5 5.5L19 9l-5.5 1.5L12 16l-1.5-5.5L5 9l5.5-1.5L12 2z" fill="currentColor" fillOpacity="0.2" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M18 16l.8 2.2L21 19l-2.2.8L18 22l-.8-2.2L15 19l2.2-.8L18 16z" fill="currentColor" />
+        </svg>
+      );
+
+    case "mood-tired":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} style={sizeStyle} aria-hidden={true}>
+          <circle cx="12" cy="12" r="9" />
+          <line x1="7.5" y1="10" x2="10.5" y2="10" strokeLinecap="round" />
+          <line x1="13.5" y1="10" x2="16.5" y2="10" strokeLinecap="round" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 15.5c.8-.5 1.6-.7 2.5-.7s1.7.2 2.5.7" />
         </svg>
       );
 
