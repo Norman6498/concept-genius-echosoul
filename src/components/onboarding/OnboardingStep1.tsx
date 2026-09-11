@@ -80,6 +80,7 @@ export function OnboardingStep1() {
   const [name, setName] = useState("");
   const [ageRange, setAgeRange] = useState<AgeRange>("16 – 18");
   const [role, setRole] = useState<RoleOption>("Student");
+  const [customRole, setCustomRole] = useState<string>("");
   const [selectedGoals, setSelectedGoals] = useState<string[]>(["talk", "words"]);
   const [selectedFocus, setSelectedFocus] = useState<string>("exploring");
   const [customFocus, setCustomFocus] = useState<string>("");
@@ -100,8 +101,10 @@ export function OnboardingStep1() {
         if (parsed.name) setName(parsed.name);
         if (parsed.ageRange) setAgeRange(parsed.ageRange);
         if (parsed.role) setRole(parsed.role);
+        if (parsed.customRole) setCustomRole(parsed.customRole);
         if (parsed.goals) setSelectedGoals(parsed.goals);
         if (parsed.currentFocus) setSelectedFocus(parsed.currentFocus);
+        if (parsed.customFocus) setCustomFocus(parsed.customFocus);
         if (parsed.currentMood) setSelectedMood(parsed.currentMood);
       }
     } catch {
@@ -152,6 +155,7 @@ export function OnboardingStep1() {
       name: name.trim() || "Friend",
       ageRange,
       role,
+      customRole: role === "Other" ? customRole.trim() : undefined,
       goals: selectedGoals,
       currentFocus: selectedFocus,
       customFocus: selectedFocus === "other" ? customFocus.trim() : undefined,
@@ -412,6 +416,18 @@ export function OnboardingStep1() {
                       );
                     })}
                   </div>
+
+                  {role === "Other" && (
+                    <div className="mt-2.5 animate-fadeIn">
+                      <input
+                        type="text"
+                        value={customRole}
+                        onChange={(e) => setCustomRole(e.target.value)}
+                        placeholder="Specify your role (e.g. Designer, Freelancer, Homemaker...)"
+                        className="w-full h-10 px-3.5 input-field-dark text-xs font-ui rounded-xl border border-[#F2D78A]/40 bg-[#08131B]/80 text-[#FFF8E1] focus:border-[#F2D78A] placeholder-[#9AA8B0]/60 shadow-inner"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Field 4: Goals (Multi-select) */}

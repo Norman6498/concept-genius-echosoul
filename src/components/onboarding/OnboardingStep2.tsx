@@ -113,6 +113,8 @@ export function OnboardingStep2() {
   ]);
   const [customInterest, setCustomInterest] = useState("");
   const [selectedVibe, setSelectedVibe] = useState("Creative");
+  const [categoryInputs, setCategoryInputs] = useState<Record<string, string>>({});
+  const [categoryCustomChips, setCategoryCustomChips] = useState<Record<string, string[]>>({});
 
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -127,6 +129,7 @@ export function OnboardingStep2() {
         if (Array.isArray(parsed.interests)) setSelectedInterests(parsed.interests);
         if (parsed.vibe) setSelectedVibe(parsed.vibe);
         if (parsed.custom) setCustomInterest(parsed.custom);
+        if (parsed.categoryCustomChips) setCategoryCustomChips(parsed.categoryCustomChips);
       }
     } catch {
       // Fallback to defaults
@@ -137,6 +140,24 @@ export function OnboardingStep2() {
     setSelectedInterests((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
+  };
+
+  const handleAddCategoryInterest = (catId: string) => {
+    const text = (categoryInputs[catId] || "").trim();
+    if (!text) return;
+    setCategoryCustomChips((prev) => {
+      const existing = prev[catId] || [];
+      if (existing.includes(text)) return prev;
+      return { ...prev, [catId]: [...existing, text] };
+    });
+    setCategoryInputs((prev) => ({ ...prev, [catId]: "" }));
+  };
+
+  const handleRemoveCategoryInterest = (catId: string, chip: string) => {
+    setCategoryCustomChips((prev) => ({
+      ...prev,
+      [catId]: (prev[catId] || []).filter((c) => c !== chip),
+    }));
   };
 
   const handleNext = async (e: React.FormEvent) => {
@@ -161,9 +182,17 @@ export function OnboardingStep2() {
       interestItems.push({ category: "custom", interest: customInterest.trim() });
     }
 
+    // Add per-category custom items
+    Object.entries(categoryCustomChips).forEach(([catId, chips]) => {
+      chips.forEach((c) => {
+        interestItems.push({ category: catId, interest: c });
+      });
+    });
+
     const payload = {
       interests: interestItems,
       customInterests: customInterest,
+      categoryCustomChips,
       overallVibe: selectedVibe,
       step: 2,
     };
@@ -176,6 +205,7 @@ export function OnboardingStep2() {
           interests: selectedInterests,
           vibe: selectedVibe,
           custom: customInterest,
+          categoryCustomChips,
         })
       );
     } catch {
@@ -258,19 +288,43 @@ export function OnboardingStep2() {
       <main className="relative z-20 w-full max-w-[1536px] mx-auto px-6 sm:px-10 py-2 flex-1 flex flex-col justify-between">
         <form onSubmit={handleNext} className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* ── Left Column: Scenic Night Window Panel ──────────────────── */}
-            <div className="lg:col-span-4 xl:col-span-3 relative rounded-3xl overflow-hidden border border-[#F2D78A]/20 shadow-2xl min-h-[580px] lg:min-h-[720px] bg-[#050B10]">
+            {/* ── Left Column: Atmospheric Window Artwork ───────────────────── */}
+            <div className="lg:col-span-4 xl:col-span-3 relative rounded-3xl overflow-hidden border border-[#F2D78A]/20 shadow-2xl min-h-[580px] lg:min-h-[720px] bg-[#050B10] flex flex-col justify-between p-6 sm:p-8">
               <Image
-                src="/page4_left_panel.jpg"
-                alt="Different interests. A deeper you. Tell us what you love, and we'll bring a more meaningful world to you."
+                src="/environments/cozy_room.jpg"
+                alt="Cozy library sanctuary with fireplace and rain"
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 360px"
-                className="object-cover object-top"
+                className="object-cover object-center opacity-45"
               />
-              <span className="sr-only">
-                Different interests. A deeper you. Tell us what you love, and we will bring a more meaningful world to you. Real People, Real Stories, A Brighter You.
-              </span>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050B10] via-transparent to-[#050B10]/80 pointer-events-none" />
+
+              <div className="relative z-10 space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#08131B]/80 border border-[#F2D78A]/30 backdrop-blur-md">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#F2D78A] animate-pulse" />
+                  <span className="font-ui text-[11px] uppercase tracking-[0.2em] text-[#F2D78A] font-medium">
+                    Curate Your Space
+                  </span>
+                </div>
+
+                <h1 className="font-editorial text-3xl sm:text-4xl text-[#FFF8E1] font-normal leading-tight">
+                  Different<br />
+                  interests.<br />
+                  <span className="italic text-[#F2D78A]">A deeper you.</span>
+                </h1>
+
+                <p className="font-ui text-xs sm:text-sm text-[#CFC5B5] leading-relaxed">
+                  Tell us what you love, and we&apos;ll bring a more meaningful world to you.
+                </p>
+              </div>
+
+              <div className="relative z-10 p-4 rounded-2xl bg-[#08131B]/80 border border-white/10 backdrop-blur-md">
+                <p className="font-display italic text-xs sm:text-sm text-[#F2D78A] leading-relaxed">
+                  &ldquo;The things you love today, shape the person you become tomorrow.&rdquo;
+                </p>
+                <p className="font-ui text-[11px] text-[#CFC5B5] mt-1 text-right">— Unknown</p>
+              </div>
             </div>
 
             {/* ── Right Column: 4 Interest Grids & Preferences ────────────── */}
@@ -311,6 +365,7 @@ export function OnboardingStep2() {
                     <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5 sm:gap-2">
                       {category.items.map((item) => {
                         const isSelected = selectedInterests.includes(item.id);
+                        const isOther = item.label === "Other" || item.id.startsWith("other");
                         return (
                           <button
                             key={item.id}
@@ -333,13 +388,23 @@ export function OnboardingStep2() {
 
                             {/* Thumbnail Icon Artwork */}
                             <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden mb-1 bg-[#08131B] flex items-center justify-center">
-                              <Image
-                                src={item.iconImage}
-                                alt={item.label}
-                                fill
-                                sizes="40px"
-                                className="object-cover transition-transform group-hover:scale-105 duration-200"
-                              />
+                              {isOther ? (
+                                <div className="w-full h-full flex items-center justify-center text-[#F2D78A]">
+                                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="5" cy="12" r="2.2" />
+                                    <circle cx="12" cy="12" r="2.2" />
+                                    <circle cx="19" cy="12" r="2.2" />
+                                  </svg>
+                                </div>
+                              ) : (
+                                <Image
+                                  src={item.iconImage}
+                                  alt={item.label}
+                                  fill
+                                  sizes="40px"
+                                  className="object-cover transition-transform group-hover:scale-105 duration-200"
+                                />
+                              )}
                             </div>
 
                             {/* Label */}
@@ -354,6 +419,58 @@ export function OnboardingStep2() {
                         );
                       })}
                     </div>
+
+                    {/* Inline Custom Input when "Other" is selected in this category */}
+                    {selectedInterests.includes(category.items.find(i => i.label === "Other")?.id || "") && (
+                      <div className="mt-2 p-2.5 rounded-xl bg-[#08131B]/90 border border-[#F2D78A]/40 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 animate-fadeIn">
+                        <div className="flex-1 flex items-center gap-2">
+                          <span className="text-[11px] text-[#F2D78A] font-medium font-ui shrink-0">
+                            Custom {category.title}:
+                          </span>
+                          <input
+                            type="text"
+                            value={categoryInputs[category.id] || ""}
+                            onChange={(e) => setCategoryInputs(prev => ({ ...prev, [category.id]: e.target.value }))}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleAddCategoryInterest(category.id);
+                              }
+                            }}
+                            placeholder={`Type custom interest for ${category.title}...`}
+                            className="flex-1 h-8 px-3 input-field-dark text-xs font-ui rounded-lg border border-white/15 bg-[#050B10] text-[#FFF8E1] placeholder-[#9AA8B0]/60 focus:border-[#F2D78A]"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleAddCategoryInterest(category.id)}
+                          className="h-8 px-3.5 rounded-lg bg-[#F2D78A] text-[#0B0F14] text-xs font-semibold font-ui hover:bg-[#ffe39c] transition-colors shrink-0 flex items-center justify-center"
+                        >
+                          + Add
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Render added custom chips for this category */}
+                    {(categoryCustomChips[category.id] || []).length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {categoryCustomChips[category.id].map((chip) => (
+                          <span
+                            key={chip}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-ui bg-[#F2D78A]/15 text-[#F2D78A] border border-[#F2D78A]/40"
+                          >
+                            <span>{chip}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveCategoryInterest(category.id, chip)}
+                              className="text-xs text-[#9AA8B0] hover:text-[#FFF8E1]"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Playfair_Display, Inter, Noto_Serif_Devanagari } from "next/font/google";
 import { AuthProvider } from "@/lib/auth/context";
+import { OnboardingPreviewProvider } from "@/lib/onboarding/preview-context";
 import "./globals.css";
 
 // Headline font — Cormorant Garamond
@@ -60,7 +61,9 @@ export default function RootLayout({
       className={`${cormorant.variable} ${playfair.variable} ${inter.variable} ${devanagari.variable} dark overflow-x-clip max-w-full`}
     >
       <body className="bg-[#0B0F14] text-[#FFF8E1] font-ui antialiased selection:bg-[#F2D78A]/30 selection:text-[#F2D78A] overflow-x-clip max-w-full min-h-screen">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <OnboardingPreviewProvider>{children}</OnboardingPreviewProvider>
+        </AuthProvider>
       </body>
     </html>
   );

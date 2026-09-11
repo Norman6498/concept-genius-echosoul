@@ -211,21 +211,42 @@ export function OnboardingStep3() {
       <main className="relative z-10 w-full max-w-[1536px] mx-auto px-4 sm:px-8 py-4 sm:py-6 flex-1 flex flex-col justify-center">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
 
-          {/* ── LEFT COLUMN: Illustrated Panel ───────────────────────────── */}
-          <div className="lg:col-span-3 hidden lg:flex flex-col justify-between rounded-[24px] overflow-hidden border border-[#F2D78A]/25 shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative min-h-[640px] bg-[#0C1B25]">
+          {/* ── LEFT COLUMN: Illustrated Living Space Panel ───────────────── */}
+          <div className="lg:col-span-3 hidden lg:flex flex-col justify-between rounded-[24px] overflow-hidden border border-[#F2D78A]/25 shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative min-h-[640px] bg-[#0C1B25] p-6 sm:p-7">
             <Image
-              src="/page3_left_panel.jpg"
-              alt="Cozy window overlooking scenic mountains"
+              src={VISUAL_WORLDS.find((w) => w.id === visualWorld)?.image || "/visual-worlds/mountain_calm.jpg"}
+              alt="Your living space visual world"
               fill
-              unoptimized
-              sizes="380px"
-              className="object-cover object-center pointer-events-none"
               priority
+              sizes="380px"
+              className="object-cover object-center opacity-45 transition-all duration-500"
             />
-            <div className="sr-only">
-              <h3>Your world shapes your story.</h3>
-              <p>Where you are. What you see. How you live. It all helps EchoSoul understand you better.</p>
-              <blockquote>&ldquo;The world you live in influences the stories you carry within.&rdquo;</blockquote>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#050B10] via-transparent to-[#050B10]/80 pointer-events-none" />
+
+            <div className="relative z-10 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#08131B]/80 border border-[#F2D78A]/30 backdrop-blur-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F2D78A] animate-pulse" />
+                <span className="font-ui text-[11px] uppercase tracking-[0.2em] text-[#F2D78A] font-medium">
+                  Living Atmosphere
+                </span>
+              </div>
+
+              <h1 className="font-editorial text-3xl sm:text-4xl text-[#FFF8E1] font-normal leading-tight">
+                Your world<br />
+                shapes<br />
+                <span className="italic text-[#F2D78A]">your story.</span>
+              </h1>
+
+              <p className="font-ui text-xs sm:text-sm text-[#CFC5B5] leading-relaxed">
+                Where you are. What you see. How you live. It all helps EchoSoul understand you better.
+              </p>
+            </div>
+
+            <div className="relative z-10 p-4 rounded-2xl bg-[#08131B]/80 border border-white/10 backdrop-blur-md">
+              <p className="font-display italic text-xs sm:text-sm text-[#F2D78A] leading-relaxed">
+                &ldquo;The world you live in influences the stories you carry within.&rdquo;
+              </p>
+              <p className="font-ui text-[11px] text-[#CFC5B5] mt-1 text-right">— EchoSoul</p>
             </div>
           </div>
 
