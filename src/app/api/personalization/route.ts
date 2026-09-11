@@ -35,10 +35,30 @@ export async function POST(req: Request) {
       role,
       goals,
       currentFocus,
+      customFocus,
       currentMood,
       interests, // Array of { category, interest }
       customInterests,
       overallVibe,
+      whereYouLive,
+      environmentTone,
+      peopleAround,
+      worldNotes,
+      visualWorld,
+      dailySchedule,
+      supportStyle,
+      overwhelmedHelper,
+      responseDepth,
+      memoryPreference,
+      theme,
+      accentColor,
+      backgroundEnvironment,
+      layoutMode,
+      fontStyle,
+      ambientAnimations,
+      enableMusic,
+      timeBasedEnv,
+      reducedMotion,
       step = 1,
       onboardingCompleted = false,
     } = body;
@@ -72,7 +92,6 @@ export async function POST(req: Request) {
 
         // 2. Persist Interests in user_interests if provided
         if (Array.isArray(interests) && interests.length > 0) {
-          // Clean existing and bulk insert
           try {
             await service.from("user_interests").delete().eq("user_id", userId);
             const interestRows = interests.map((item: { category: string; interest: string }) => ({
@@ -100,74 +119,68 @@ export async function POST(req: Request) {
           }
         }
 
-        // 4. Persist Current State (mood + vibe)
-        if (currentMood || overallVibe) {
-          try {
-            await service.from("current_user_state").upsert({
-              user_id: userId,
-              current_mood: currentMood || "calm",
-              overall_vibe: overallVibe || "Creative",
-              updated_at: new Date().toISOString(),
-            });
-          } catch (stateErr) {
-            console.warn("current_user_state write note:", stateErr);
-          }
+        // 4. Persist Current User State
+        try {
+          await service.from("current_user_state").upsert({
+            user_id: userId,
+            current_mood: currentMood || undefined,
+            overall_vibe: overallVibe || undefined,
+            updated_at: new Date().toISOString(),
+          });
+        } catch (stateErr) {
+          console.warn("current_user_state table write note:", stateErr);
         }
 
-        // 5. Persist Context / World Profile
-        if (currentFocus || customInterests || role) {
-          try {
-            await service.from("user_context").upsert({
-              user_id: userId,
-              current_focus: currentFocus,
-              custom_interests: customInterests,
-              life_stage: role,
-              updated_at: new Date().toISOString(),
-            });
-          } catch (ctxErr) {
-            console.warn("user_context write note:", ctxErr);
-          }
+        // 5. Persist User Context (Step 3: Your World)
+        try {
+          await service.from("user_context").upsert({
+            user_id: userId,
+            current_focus: currentFocus || undefined,
+            custom_focus: customFocus || undefined,
+            where_you_live: whereYouLive || undefined,
+            environment_tone: environmentTone || undefined,
+            people_around: peopleAround || undefined,
+            world_notes: worldNotes || undefined,
+            visual_world: visualWorld || undefined,
+            daily_schedule: dailySchedule || undefined,
+            custom_interests: customInterests || undefined,
+            updated_at: new Date().toISOString(),
+          });
+        } catch (contextErr) {
+          console.warn("user_context table write note:", contextErr);
         }
 
-        // 6. Resilient Fallback: Sync complete personalization snapshot to user_settings
-        await service.from("user_settings").upsert({
-          user_id: userId,
-          personalization: {
-            name,
-            age_range: ageRange,
-            role,
-            goals,
-            current_focus: currentFocus,
-            current_mood: currentMood,
-            interests,
-            custom_interests: customInterests,
-            overall_vibe: overallVibe,
-            onboarding_step: step,
-            onboarding_completed: onboardingCompleted || step >= 6,
-          },
-          updated_at: new Date().toISOString(),
-        });
+        // 6. Persist User Settings (Step 4 & Step 5)
+        try {
+          await service.from("user_settings").upsert({
+            user_id: userId,
+            support_style: supportStyle || undefined,
+            overwhelmed_helper: overwhelmedHelper || undefined,
+            response_depth: responseDepth || undefined,
+            memory_preference: memoryPreference || undefined,
+            theme: theme || undefined,
+            accent_color: accentColor || undefined,
+            background_environment: backgroundEnvironment || undefined,
+            layout_mode: layoutMode || undefined,
+            font_style: fontStyle || undefined,
+            ambient_animations: ambientAnimations !== undefined ? ambientAnimations : undefined,
+            enable_music: enableMusic !== undefined ? enableMusic : undefined,
+            time_based_env: timeBasedEnv !== undefined ? timeBasedEnv : undefined,
+            reduced_motion: reducedMotion !== undefined ? reducedMotion : undefined,
+          });
+        } catch (settingsErr) {
+          console.warn("user_settings table write note:", settingsErr);
+        }
       } catch (dbErr) {
-        console.warn("Supabase personalization persistence note:", dbErr);
+        console.warn("Supabase persistence note:", dbErr);
       }
     }
 
     return NextResponse.json({
       success: true,
-      authenticated: !!userId,
-      saved: {
-        name,
-        ageRange,
-        role,
-        goals,
-        currentFocus,
-        currentMood,
-        interests,
-        customInterests,
-        overallVibe,
-        step,
-        onboardingCompleted,
-      },
+      step,
+      userId,
+      savedLocally: !userId,
     });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });

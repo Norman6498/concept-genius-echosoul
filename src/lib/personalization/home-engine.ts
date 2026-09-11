@@ -19,5 +19,12 @@ export async function getHomePersonalization(userId: string): Promise<HomePerson
     currentFocus: context.currentFocus,
     overallVibe: context.overallVibe,
     interests: context.interests.map((i) => i.interest),
+    visualWorld: context.visualWorld,
+    theme: context.theme,
+    backgroundEnvironment: context.backgroundEnvironment as any,
+    accentColor: context.accentColor,
+    layoutMode: context.layoutMode,
+    fontStyle: context.fontStyle,
+    dailySchedule: context.dailySchedule,
   });
 }

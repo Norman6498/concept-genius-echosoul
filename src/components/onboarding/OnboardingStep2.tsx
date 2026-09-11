@@ -98,10 +98,10 @@ const VIBES = [
 const ONBOARDING_STEPS = [
   { number: 1, label: "About You",   href: "/onboarding" },
   { number: 2, label: "Interests",   href: "/onboarding/interests" },
-  { number: 3, label: "Your World",  href: "/onboarding" },
-  { number: 4, label: "Preferences", href: "/onboarding" },
-  { number: 5, label: "Appearance",  href: "/onboarding" },
-  { number: 6, label: "Complete",    href: "/onboarding" },
+  { number: 3, label: "Your World",  href: "/onboarding/world" },
+  { number: 4, label: "Preferences", href: "/onboarding/preferences" },
+  { number: 5, label: "Appearance",  href: "/onboarding/appearance" },
+  { number: 6, label: "Complete",    href: "/onboarding/complete" },
 ];
 
 export function OnboardingStep2() {
@@ -197,10 +197,10 @@ export function OnboardingStep2() {
     setSaveSuccess(true);
     setFeedbackMessage("Your interests have been saved to your EchoSoul profile.");
 
-    // Advance to authenticated home or next stage
+    // Advance to Step 3 (Your World)
     setTimeout(() => {
-      window.location.href = "/app";
-    }, 800);
+      window.location.href = "/onboarding/world";
+    }, 600);
   };
 
   return (

@@ -82,6 +82,7 @@ export function OnboardingStep1() {
   const [role, setRole] = useState<RoleOption>("Student");
   const [selectedGoals, setSelectedGoals] = useState<string[]>(["talk", "words"]);
   const [selectedFocus, setSelectedFocus] = useState<string>("exploring");
+  const [customFocus, setCustomFocus] = useState<string>("");
   const [selectedMood, setSelectedMood] = useState<string>("motivated");
 
   // Status & submission state
@@ -153,6 +154,7 @@ export function OnboardingStep1() {
       role,
       goals: selectedGoals,
       currentFocus: selectedFocus,
+      customFocus: selectedFocus === "other" ? customFocus.trim() : undefined,
       currentMood: selectedMood,
       step: 1,
     };
@@ -504,6 +506,20 @@ export function OnboardingStep1() {
                       );
                     })}
                   </div>
+                  {selectedFocus === "other" && (
+                    <div className="mt-2.5 p-3 rounded-xl bg-[#0C1B25]/90 border border-[#F2D78A]/40 es-fade-up">
+                      <label className="block font-ui text-[11px] text-[#F2D78A] mb-1 font-medium">
+                        Please describe what best describes you:
+                      </label>
+                      <input
+                        type="text"
+                        value={customFocus}
+                        onChange={(e) => setCustomFocus(e.target.value)}
+                        placeholder="e.g. Taking a gap year, healing after a loss..."
+                        className="w-full h-9 px-3 text-xs input-field-dark rounded-lg font-ui"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Field 6: Current Mood (8 face tiles) */}

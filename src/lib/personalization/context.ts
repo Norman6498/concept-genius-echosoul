@@ -63,10 +63,33 @@ export async function getPersonalizationContext(userId: string): Promise<Persona
     (jsonbPersonalization.current_focus as string) ||
     "exploring";
 
+  const customFocus = userCtx?.custom_focus || undefined;
+
+  const whereYouLive = userCtx?.where_you_live || "unspecified";
+  const environmentTone = userCtx?.environment_tone || "supportive";
+  const peopleAround = userCtx?.people_around || "family";
+  const worldNotes = userCtx?.world_notes || undefined;
+  const visualWorld = userCtx?.visual_world || "mountain_calm";
+  const dailySchedule = userCtx?.daily_schedule || "balanced";
+
   const supportStyle =
     settings?.support_style ||
     profile?.preferred_support_style ||
-    "gentle";
+    "balanced";
+
+  const overwhelmedHelper = settings?.overwhelmed_helper || "words";
+  const responseDepth = settings?.response_depth || "thoughtful";
+  const memoryPreference = settings?.memory_preference || "remember";
+
+  const theme = (settings?.theme as "midnight_soul" | "sunrise_calm" | "forest_green" | "minimal_light") || "midnight_soul";
+  const accentColor = settings?.accent_color || "#F2D78A";
+  const backgroundEnvironment = settings?.background_environment || "cozy_room";
+  const layoutMode = (settings?.layout_mode as "focused" | "explorative") || "focused";
+  const fontStyle = (settings?.font_style as "serif" | "sans" | "rounded") || "serif";
+  const ambientAnimations = settings?.ambient_animations !== undefined ? settings.ambient_animations : true;
+  const enableMusic = settings?.enable_music !== undefined ? settings.enable_music : false;
+  const timeBasedEnv = settings?.time_based_env !== undefined ? settings.time_based_env : true;
+  const reducedMotion = settings?.reduced_motion !== undefined ? settings.reduced_motion : false;
 
   const literaturePreferences =
     settings?.literature_preferences ||
@@ -102,10 +125,10 @@ export async function getPersonalizationContext(userId: string): Promise<Persona
     profile: {
       id: userId,
       name: displayName,
-      age_range: profile?.age_range || (jsonbPersonalization.age_range as string),
-      role: profile?.role || (jsonbPersonalization.role as string),
-      avatar_url: profile?.avatar_url,
-      onboarding_step: profile?.onboarding_step || (jsonbPersonalization.onboarding_step as number) || 1,
+      age_range: profile?.age_range || undefined,
+      role: profile?.role || undefined,
+      avatar_url: profile?.avatar_url || undefined,
+      onboarding_step: profile?.onboarding_step || 1,
       onboarding_completed: onboardingCompleted,
       created_at: profile?.created_at,
       updated_at: profile?.updated_at,
@@ -115,11 +138,29 @@ export async function getPersonalizationContext(userId: string): Promise<Persona
     currentMood,
     overallVibe,
     currentFocus,
+    customFocus,
+    whereYouLive,
+    environmentTone,
+    peopleAround,
+    worldNotes,
+    visualWorld,
+    dailySchedule,
     supportStyle,
+    overwhelmedHelper,
+    responseDepth,
+    memoryPreference,
     literaturePreferences,
     musicPreferences,
     visualPreferences,
-    environment,
+    theme,
+    accentColor,
+    backgroundEnvironment,
+    layoutMode,
+    fontStyle,
+    ambientAnimations,
+    enableMusic,
+    timeBasedEnv,
+    reducedMotion,
     onboardingCompleted,
   };
 }

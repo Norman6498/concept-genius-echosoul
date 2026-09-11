@@ -22,20 +22,35 @@ export interface UserInterestRecord {
 
 export interface UserSettingsData {
   user_id: string;
-  support_style?: "gentle" | "balanced" | "direct" | "tough_when_needed" | "reflective" | "practical" | "curious" | "motivational";
-  response_style?: "listen_first" | "concise" | "detailed" | "ask_questions" | "give_practical_steps" | "show_multiple_perspectives";
+  support_style?: "gentle" | "balanced" | "direct" | "practical";
+  overwhelmed_helper?: "words" | "music" | "talk" | "breathing";
+  response_depth?: "concise" | "thoughtful" | "poetic";
+  memory_preference?: "remember" | "session_only";
   literature_preferences?: string[];
   music_preferences?: string[];
   visual_preferences?: string[];
-  theme?: string;
-  environment?: string;
+  theme?: "midnight_soul" | "sunrise_calm" | "forest_green" | "minimal_light";
+  accent_color?: string;
+  background_environment?: "cozy_room" | "mountain_view" | "forest_cabin" | "ocean_view" | "city_nights" | "starry_sky";
+  layout_mode?: "focused" | "explorative";
+  font_style?: "serif" | "sans" | "rounded";
+  ambient_animations?: boolean;
+  enable_music?: boolean;
+  time_based_env?: boolean;
   reduced_motion?: boolean;
 }
 
 export interface UserContextData {
   user_id: string;
   life_stage?: string;
+  where_you_live?: "city" | "town" | "rural" | "unspecified";
   current_focus?: string;
+  custom_focus?: string;
+  environment_tone?: "supportive" | "neutral" | "challenging" | "unspecified";
+  people_around?: "family" | "friends" | "both" | "mostly_alone" | "unspecified";
+  world_notes?: string;
+  visual_world?: string; // 12 worlds e.g. "mountain_calm", "forest_retreat", etc.
+  daily_schedule?: "early_riser" | "balanced" | "night_owl" | "varies";
   aspirations?: string;
   context?: string;
   custom_interests?: string;
@@ -55,11 +70,29 @@ export interface PersonalizationContext {
   currentMood: string;
   overallVibe: string;
   currentFocus: string;
+  customFocus?: string;
+  whereYouLive: string;
+  environmentTone: string;
+  peopleAround: string;
+  worldNotes?: string;
+  visualWorld: string;
+  dailySchedule: string;
   supportStyle: string;
+  overwhelmedHelper: string;
+  responseDepth: string;
+  memoryPreference: string;
   literaturePreferences: string[];
   musicPreferences: string[];
   visualPreferences: string[];
-  environment: string;
+  theme: "midnight_soul" | "sunrise_calm" | "forest_green" | "minimal_light";
+  accentColor: string;
+  backgroundEnvironment: string;
+  layoutMode: "focused" | "explorative";
+  fontStyle: "serif" | "sans" | "rounded";
+  ambientAnimations: boolean;
+  enableMusic: boolean;
+  timeBasedEnv: boolean;
+  reducedMotion: boolean;
   onboardingCompleted: boolean;
 }
 
@@ -72,6 +105,22 @@ export interface ActionItem {
   accent?: string;
 }
 
+export interface HomeThemeConfig {
+  environment: string; // e.g. "mountain_calm", "forest_retreat", etc.
+  environmentTitle: string;
+  theme: "midnight_soul" | "sunrise_calm" | "forest_green" | "minimal_light";
+  background: string;
+  accent: string;
+  lighting: "deep_calm" | "warm_sunlight" | "forest_mist" | "clean_bright";
+  timeOfDay: "morning" | "evening" | "night";
+  featureImages: string[];
+  ambience: string;
+  typographyMode: "serif" | "sans" | "rounded";
+  quoteStyle: string;
+  welcomeTitle: string;
+  welcomeSubtitle: string;
+}
+
 export interface HomePersonalizationViewModel {
   userName: string;
   timeOfDayGreeting: string;
@@ -82,6 +131,7 @@ export interface HomePersonalizationViewModel {
   currentFocus: string;
   primaryAction: ActionItem;
   secondaryActions: ActionItem[];
+  homeTheme: HomeThemeConfig;
   recommendedFeatures: {
     id: string;
     title: string;

@@ -39,6 +39,9 @@ export function AuthenticatedHome() {
         try {
           const localProfile = localStorage.getItem("echosoul_user_personalization");
           const localInterests = localStorage.getItem("echosoul_user_interests");
+          const localWorld = localStorage.getItem("echosoul_user_world");
+          const localAppearance = localStorage.getItem("echosoul_user_appearance");
+
           let name = "Friend";
           let mood = "calm";
           let focus = "exploring";
@@ -51,16 +54,43 @@ export function AuthenticatedHome() {
           }
 
           let vibe = "Creative";
-          if (localInterests) {
-            const i = JSON.parse(localInterests);
-            if (i.vibe) vibe = i.vibe;
-          }
-
           let parsedInterests: string[] = [];
           if (localInterests) {
             try {
               const i = JSON.parse(localInterests);
+              if (i.vibe) vibe = i.vibe;
               if (Array.isArray(i.interests)) parsedInterests = i.interests;
+            } catch {
+              // Ignore
+            }
+          }
+
+          let visualWorld = "mountain_calm";
+          let dailySchedule = "balanced";
+          if (localWorld) {
+            try {
+              const w = JSON.parse(localWorld);
+              if (w.visualWorld) visualWorld = w.visualWorld;
+              if (w.dailySchedule) dailySchedule = w.dailySchedule;
+            } catch {
+              // Ignore
+            }
+          }
+
+          let theme: "midnight_soul" | "sunrise_calm" | "forest_green" | "minimal_light" = "midnight_soul";
+          let accentColor = "#F2D78A";
+          let backgroundEnvironment: any = "cozy_room";
+          let layoutMode: "focused" | "explorative" = "focused";
+          let fontStyle: "serif" | "sans" | "rounded" = "serif";
+
+          if (localAppearance) {
+            try {
+              const a = JSON.parse(localAppearance);
+              if (a.theme) theme = a.theme;
+              if (a.accentColor) accentColor = a.accentColor;
+              if (a.backgroundEnvironment) backgroundEnvironment = a.backgroundEnvironment;
+              if (a.layoutMode) layoutMode = a.layoutMode;
+              if (a.fontStyle) fontStyle = a.fontStyle;
             } catch {
               // Ignore
             }
@@ -72,6 +102,13 @@ export function AuthenticatedHome() {
             currentFocus: focus,
             overallVibe: vibe,
             interests: parsedInterests,
+            visualWorld,
+            theme,
+            accentColor,
+            backgroundEnvironment,
+            layoutMode,
+            fontStyle,
+            dailySchedule,
           });
 
           setHomeData(vm);
@@ -102,6 +139,11 @@ export function AuthenticatedHome() {
         currentMood: mood,
         currentFocus: homeData.currentFocus,
         overallVibe: homeData.overallVibe,
+        visualWorld: homeData.homeTheme.environment,
+        theme: homeData.homeTheme.theme,
+        accentColor: homeData.homeTheme.accent,
+        layoutMode: "focused",
+        fontStyle: homeData.homeTheme.typographyMode,
       });
       setHomeData(updated);
     }
@@ -151,16 +193,40 @@ export function AuthenticatedHome() {
     );
   }
 
+  const isLight = homeData.homeTheme.theme === "minimal_light";
+  const isSunrise = homeData.homeTheme.theme === "sunrise_calm";
+  const isForest = homeData.homeTheme.theme === "forest_green";
+
   return (
-    <div className="relative min-h-screen w-full bg-[#0B0F14] text-[#FFF8E1] flex flex-col justify-between overflow-x-hidden select-none">
-      {/* ── Background Atmosphere ────────────────────────────────────── */}
+    <div
+      className={`relative min-h-screen w-full flex flex-col justify-between overflow-x-hidden select-none transition-colors duration-700 ${
+        isLight
+          ? "bg-[#F7F5F0] text-[#1C1714]"
+          : isSunrise
+          ? "bg-[#181315] text-[#FFF8E1]"
+          : isForest
+          ? "bg-[#091410] text-[#FFF8E1]"
+          : "bg-[#0B0F14] text-[#FFF8E1]"
+      }`}
+    >
+      {/* ── Background Atmosphere (Selected 12 Visual World) ───────────── */}
       <div
-        className="fixed inset-0 z-0 bg-cover bg-center pointer-events-none transition-all duration-700 opacity-35"
+        className="fixed inset-0 z-0 bg-cover bg-center pointer-events-none transition-all duration-700 opacity-30"
         style={{
-          backgroundImage: `url('${homeData.visualAtmosphere.backgroundImage}')`,
+          backgroundImage: `url('${homeData.homeTheme.background}')`,
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F14]/90 via-[#0B0F14]/80 to-[#0B0F14]" />
+        <div
+          className={`absolute inset-0 ${
+            isLight
+              ? "bg-gradient-to-b from-[#F7F5F0]/90 via-[#F7F5F0]/80 to-[#F7F5F0]"
+              : isSunrise
+              ? "bg-gradient-to-b from-[#181315]/90 via-[#181315]/80 to-[#181315]"
+              : isForest
+              ? "bg-gradient-to-b from-[#091410]/90 via-[#091410]/80 to-[#091410]"
+              : "bg-gradient-to-b from-[#0B0F14]/90 via-[#0B0F14]/80 to-[#0B0F14]"
+          }`}
+        />
       </div>
 
       {/* ── Authenticated Header ──────────────────────────────────────── */}
@@ -185,9 +251,6 @@ export function AuthenticatedHome() {
             <Link href="/app/journey" className="hover:text-[#F2D78A] transition-colors">
               Journey
             </Link>
-            <Link href="/app/journal" className="hover:text-[#F2D78A] transition-colors">
-              Journal
-            </Link>
             <Link href="/app/guidance" className="hover:text-[#F2D78A] transition-colors">
               Guidance
             </Link>
@@ -197,10 +260,13 @@ export function AuthenticatedHome() {
         {/* User Identity & Logout */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-white/10 bg-[#0C1B25]/80 shadow-sm">
-            <div className="w-6 h-6 rounded-full bg-[#F2D78A] text-[#0B0F14] font-bold text-xs flex items-center justify-center shadow-[0_0_8px_rgba(242,215,138,0.4)]">
+            <div
+              className="w-6 h-6 rounded-full text-[#0B0F14] font-bold text-xs flex items-center justify-center shadow-sm"
+              style={{ backgroundColor: homeData.homeTheme.accent }}
+            >
               {homeData.userName.charAt(0).toUpperCase()}
             </div>
-            <span className="font-ui text-xs font-medium text-[#FFF8E1]">
+            <span className={`font-ui text-xs font-medium ${isLight ? "text-[#1C1714]" : "text-[#FFF8E1]"}`}>
               {homeData.userName}
             </span>
           </div>
@@ -217,20 +283,27 @@ export function AuthenticatedHome() {
 
       {/* ── Main Personalized Sanctuary Content ───────────────────────── */}
       <main className="relative z-20 w-full max-w-[1536px] mx-auto px-6 sm:px-10 py-6 flex-1 space-y-10">
+        
         {/* 1. Hero Dynamic Greeting Section */}
         <section className="space-y-4 max-w-[820px]">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#F2D78A] shadow-[0_0_8px_#F2D78A]" />
-            <span className="font-ui text-[11px] font-semibold tracking-widest text-[#F2D78A] uppercase">
-              {homeData.visualAtmosphere.environmentTitle}
+            <span
+              className="w-2 h-2 rounded-full shadow-sm"
+              style={{ backgroundColor: homeData.homeTheme.accent }}
+            />
+            <span
+              className="font-ui text-[11px] font-semibold tracking-widest uppercase"
+              style={{ color: homeData.homeTheme.accent }}
+            >
+              {homeData.homeTheme.environmentTitle} &bull; {homeData.homeTheme.ambience}
             </span>
           </div>
 
-          <h1 className="font-editorial text-4xl sm:text-5xl lg:text-6xl text-[#FFF8E1] leading-tight font-normal">
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl leading-tight font-normal">
             {homeData.heroGreeting}
           </h1>
 
-          <p className="font-ui text-base sm:text-lg text-[#CFC5B5] leading-relaxed">
+          <p className="font-ui text-base sm:text-lg opacity-85 leading-relaxed">
             {homeData.heroMessage}
           </p>
 
@@ -238,7 +311,8 @@ export function AuthenticatedHome() {
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <Link
               href={homeData.primaryAction.href}
-              className="h-12 px-8 rounded-full font-ui text-sm font-semibold bg-[#F2D78A] hover:bg-[#FFB86B] text-[#0B0F14] transition-all flex items-center gap-2 shadow-[0_0_22px_rgba(242,215,138,0.35)]"
+              className="h-12 px-8 rounded-full font-ui text-sm font-semibold transition-all flex items-center gap-2 shadow-lg"
+              style={{ backgroundColor: homeData.homeTheme.accent, color: "#0B0F14" }}
             >
               <span>{homeData.primaryAction.title}</span>
               <span>→</span>
@@ -248,7 +322,7 @@ export function AuthenticatedHome() {
               <Link
                 key={sec.id}
                 href={sec.href}
-                className="h-12 px-6 rounded-full font-ui text-xs font-medium border border-white/20 hover:border-white/40 bg-[#08131B]/60 text-[#CFC5B5] hover:text-[#FFF8E1] transition-colors flex items-center gap-2"
+                className="h-12 px-6 rounded-full font-ui text-xs font-medium border border-white/20 hover:border-white/40 bg-black/20 transition-colors flex items-center gap-2"
               >
                 <span>{sec.title}</span>
               </Link>
@@ -257,13 +331,13 @@ export function AuthenticatedHome() {
         </section>
 
         {/* 2. Daily Check-in Widget */}
-        <section className="rounded-2xl border border-white/10 bg-[#0C1B25]/60 backdrop-blur-md p-5 max-w-[900px]">
+        <section className="rounded-2xl border border-white/10 bg-black/30 backdrop-blur-md p-5 max-w-[900px]">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
             <div>
-              <h2 className="font-ui text-xs font-bold text-[#FFF8E1] tracking-wide">
+              <h2 className="font-ui text-xs font-bold tracking-wide">
                 Daily Check-in
               </h2>
-              <p className="font-ui text-[11px] text-[#9AA8B0]">
+              <p className="font-ui text-[11px] opacity-75">
                 {homeData.checkInSuggestion}
               </p>
             </div>
@@ -289,9 +363,14 @@ export function AuthenticatedHome() {
                 onClick={() => handleCheckIn(m.id)}
                 className={`h-8 px-4 rounded-full font-ui text-xs transition-all duration-200 ${
                   activeMood === m.id
-                    ? "bg-[#F2D78A] text-[#0B0F14] font-semibold shadow-[0_0_12px_rgba(242,215,138,0.4)]"
-                    : "border border-white/10 hover:border-white/25 bg-[#08131B]/60 text-[#CFC5B5]"
+                    ? "font-semibold shadow-md"
+                    : "border border-white/10 hover:border-white/25 bg-black/20 opacity-80"
                 }`}
+                style={
+                  activeMood === m.id
+                    ? { backgroundColor: homeData.homeTheme.accent, color: "#0B0F14" }
+                    : {}
+                }
               >
                 {m.label}
               </button>
@@ -299,26 +378,29 @@ export function AuthenticatedHome() {
           </div>
         </section>
 
-        {/* 3. Personalized Content Grid: Words, Music, Journey */}
+        {/* 3. Personalized Content Grid: Words, Music, Sanctuary */}
         <section className="grid grid-cols-1 md:grid-cols-12 gap-5">
           {/* Authentic Words Recommendation */}
-          <div className="md:col-span-6 lg:col-span-5 rounded-3xl border border-white/10 bg-[#0C1B25]/65 backdrop-blur-md p-6 space-y-4 shadow-xl flex flex-col justify-between">
+          <div className="md:col-span-6 lg:col-span-5 rounded-3xl border border-white/10 bg-black/30 backdrop-blur-md p-6 space-y-4 shadow-xl flex flex-col justify-between">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="font-ui text-[10px] font-semibold tracking-wider text-[#F2D78A] uppercase">
+                <span
+                  className="font-ui text-[10px] font-semibold tracking-wider uppercase"
+                  style={{ color: homeData.homeTheme.accent }}
+                >
                   {homeData.recommendedWords.category}
                 </span>
-                <span className="font-ui text-[10px] text-[#9AA8B0]">
+                <span className="font-ui text-[10px] opacity-65">
                   Authentic Literary Source
                 </span>
               </div>
-              <h3 className="font-editorial text-2xl text-[#FFF8E1]">
+              <h3 className="font-display text-2xl">
                 {homeData.recommendedWords.title}
               </h3>
-              <span className="block font-ui text-xs text-[#9AA8B0]">
+              <span className="block font-ui text-xs opacity-75">
                 by {homeData.recommendedWords.author}
               </span>
-              <p className="font-editorial italic text-sm text-[#CFC5B5] leading-relaxed pt-2">
+              <p className="font-display italic text-sm opacity-85 leading-relaxed pt-2">
                 &ldquo;{homeData.recommendedWords.excerpt}&rdquo;
               </p>
             </div>
@@ -326,7 +408,8 @@ export function AuthenticatedHome() {
             <div className="pt-4 border-t border-white/10 flex items-center justify-between">
               <Link
                 href="/app/words"
-                className="font-ui text-xs font-medium text-[#F2D78A] hover:underline flex items-center gap-1"
+                className="font-ui text-xs font-medium hover:underline flex items-center gap-1"
+                style={{ color: homeData.homeTheme.accent }}
               >
                 <span>Read full text & reflection</span>
                 <span>→</span>
@@ -335,22 +418,22 @@ export function AuthenticatedHome() {
           </div>
 
           {/* Mindful Music Soundscape */}
-          <div className="md:col-span-6 lg:col-span-4 rounded-3xl border border-white/10 bg-[#0C1B25]/65 backdrop-blur-md p-6 space-y-4 shadow-xl flex flex-col justify-between">
+          <div className="md:col-span-6 lg:col-span-4 rounded-3xl border border-white/10 bg-black/30 backdrop-blur-md p-6 space-y-4 shadow-xl flex flex-col justify-between">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="font-ui text-[10px] font-semibold tracking-wider text-[#8DBA8F] uppercase">
                   {homeData.recommendedMusic.category}
                 </span>
-                <span className="font-ui text-[10px] text-[#9AA8B0]">
+                <span className="font-ui text-[10px] opacity-65">
                   {homeData.recommendedMusic.duration}
                 </span>
               </div>
-              <h3 className="font-editorial text-2xl text-[#FFF8E1]">
+              <h3 className="font-display text-2xl">
                 {homeData.recommendedMusic.title}
               </h3>
-              <p className="font-ui text-xs text-[#CFC5B5] leading-relaxed">
+              <p className="font-ui text-xs opacity-85 leading-relaxed">
                 Atmosphere composed for your current state:{" "}
-                <span className="text-[#FFF8E1] font-medium">
+                <span className="font-medium">
                   {homeData.recommendedMusic.vibe}
                 </span>
               </p>
@@ -359,7 +442,7 @@ export function AuthenticatedHome() {
             <div className="pt-4 border-t border-white/10 flex items-center justify-between">
               <Link
                 href="/app/music"
-                className="h-9 px-5 rounded-full font-ui text-xs font-semibold bg-white/10 hover:bg-white/20 text-[#FFF8E1] transition-all flex items-center gap-2"
+                className="h-9 px-5 rounded-full font-ui text-xs font-semibold bg-white/10 hover:bg-white/20 transition-all flex items-center gap-2"
               >
                 <span>Listen Now</span>
                 <span>▶</span>
@@ -367,33 +450,38 @@ export function AuthenticatedHome() {
             </div>
           </div>
 
-          {/* Community Coming Soon Banner */}
-          <div className="md:col-span-12 lg:col-span-3 rounded-3xl border border-white/10 bg-[#08131B]/80 backdrop-blur-md p-6 space-y-3 shadow-xl flex flex-col justify-between">
+          {/* Environmental Quote Banner */}
+          <div className="md:col-span-12 lg:col-span-3 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-md p-6 space-y-3 shadow-xl flex flex-col justify-between">
             <div className="space-y-2">
-              <div className="inline-block px-2.5 py-0.5 rounded-full border border-[#F2D78A]/40 bg-[#F2D78A]/10 text-[#F2D78A] font-ui text-[10px] font-semibold tracking-wider uppercase">
-                Community Coming Soon
+              <div
+                className="inline-block px-2.5 py-0.5 rounded-full border text-[10px] font-ui font-semibold tracking-wider uppercase"
+                style={{
+                  borderColor: `${homeData.homeTheme.accent}60`,
+                  backgroundColor: `${homeData.homeTheme.accent}15`,
+                  color: homeData.homeTheme.accent,
+                }}
+              >
+                World Reflection
               </div>
-              <h4 className="font-ui text-sm font-bold text-[#FFF8E1]">
-                Grow together. Talk. Share. Learn.
+              <h4 className="font-display italic text-sm leading-relaxed pt-1">
+                &ldquo;{homeData.homeTheme.quoteStyle}&rdquo;
               </h4>
-              <p className="font-ui text-xs text-[#9AA8B0] leading-relaxed">
-                A private sanctuary for moderated circles and growth challenges. Your personal memories remain private.
-              </p>
             </div>
 
-            <div className="pt-3 border-t border-white/10">
-              <span className="font-ui text-[11px] text-[#9AA8B0]">
-                Available in next release
-              </span>
+            <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] opacity-75">
+              <span>Selected World: {homeData.homeTheme.environmentTitle}</span>
+              <Link href="/onboarding/appearance" className="hover:underline text-[10px]">
+                Change Theme ⚙
+              </Link>
             </div>
           </div>
         </section>
       </main>
 
       {/* ── Global Footer ──────────────────────────────────────────────── */}
-      <footer className="relative z-30 w-full border-t border-white/10 bg-[#08131B]/90 backdrop-blur-md py-4 mt-10">
-        <div className="max-w-[1536px] mx-auto px-6 sm:px-10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-ui text-[#9AA8B0]">
-          <span>EchoSoul Sanctuary · Personalized for {homeData.userName}</span>
+      <footer className="relative z-30 w-full border-t border-white/10 bg-black/40 backdrop-blur-md py-4 mt-10">
+        <div className="max-w-[1536px] mx-auto px-6 sm:px-10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-ui opacity-75">
+          <span>EchoSoul Sanctuary &bull; Personalized for {homeData.userName}</span>
           <span>© 2026 EchoSoul. All rights reserved.</span>
         </div>
       </footer>

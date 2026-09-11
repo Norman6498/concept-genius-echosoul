@@ -7,9 +7,10 @@ interface BrandLogoProps {
   className?: string;
   size?: "sm" | "md" | "lg";
   href?: string;
+  showText?: boolean;
 }
 
-export function BrandLogo({ className = "", size = "md", href = "/" }: BrandLogoProps) {
+export function BrandLogo({ className = "", size = "md", href = "/", showText = true }: BrandLogoProps) {
   const iconDimensions = {
     sm: "w-8 h-8",
     md: "w-10 h-10 sm:w-11 sm:h-11",
@@ -55,14 +56,16 @@ export function BrandLogo({ className = "", size = "md", href = "/" }: BrandLogo
       </div>
 
       {/* Wordmark */}
-      <div className="flex flex-col leading-none">
-        <span className={`font-display font-medium text-[#FFF8E1] tracking-wide transition-colors group-hover:text-[#F2D78A] ${titleSize}`}>
-          EchoSoul
-        </span>
-        <span className="font-ui text-[8.5px] sm:text-[9.5px] tracking-[0.24em] uppercase text-[#F2D78A] font-medium mt-1">
-          YOUR STORY MATTERS
-        </span>
-      </div>
+      {showText && (
+        <div className="flex flex-col leading-none">
+          <span className={`font-display font-medium text-[#FFF8E1] tracking-wide transition-colors group-hover:text-[#F2D78A] ${titleSize}`}>
+            EchoSoul
+          </span>
+          <span className="font-ui text-[8.5px] sm:text-[9.5px] tracking-[0.24em] uppercase text-[#F2D78A] font-medium mt-1">
+            YOUR STORY MATTERS
+          </span>
+        </div>
+      )}
     </Link>
   );
 }
