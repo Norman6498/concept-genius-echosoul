@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { createClient } from "@/lib/supabase/client";
+import { getInterestIcon } from "./InterestIcons";
 
 interface InterestItem {
   id: string;
@@ -387,24 +388,14 @@ export function OnboardingStep2() {
                             )}
 
                             {/* Thumbnail Icon Artwork */}
-                            <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden mb-1 bg-[#08131B] flex items-center justify-center">
-                              {isOther ? (
-                                <div className="w-full h-full flex items-center justify-center text-[#F2D78A]">
-                                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <circle cx="5" cy="12" r="2.2" />
-                                    <circle cx="12" cy="12" r="2.2" />
-                                    <circle cx="19" cy="12" r="2.2" />
-                                  </svg>
-                                </div>
-                              ) : (
-                                <Image
-                                  src={item.iconImage}
-                                  alt={item.label}
-                                  fill
-                                  sizes="40px"
-                                  className="object-cover transition-transform group-hover:scale-105 duration-200"
-                                />
-                              )}
+                            <div
+                              className={`relative w-9 h-9 sm:w-10 sm:h-10 rounded-lg mb-1 flex items-center justify-center transition-all ${
+                                isSelected
+                                  ? "bg-[#F2D78A] shadow-[0_0_12px_rgba(242,215,138,0.5)]"
+                                  : "bg-[#08131B] border border-white/10 group-hover:border-[#F2D78A]/40"
+                              }`}
+                            >
+                              {getInterestIcon(item.id, isSelected)}
                             </div>
 
                             {/* Label */}

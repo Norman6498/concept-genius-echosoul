@@ -19,7 +19,7 @@ export default function Page() {
             <nav className="hidden sm:flex items-center gap-5 text-[#9AA8B0]" aria-label="Footer navigation">
               <Link href="/" className="hover:text-[#F2D78A] transition-colors">Home</Link>
               <Link href="/about" className="hover:text-[#F2D78A] transition-colors">About</Link>
-              <Link href="/#features" className="hover:text-[#F2D78A] transition-colors">Features</Link>
+              <Link href="/features" className="hover:text-[#F2D78A] transition-colors">Features</Link>
               <Link href="/#stories" className="hover:text-[#F2D78A] transition-colors">Stories</Link>
               <Link href="/#pricing" className="hover:text-[#F2D78A] transition-colors">Pricing</Link>
             </nav>

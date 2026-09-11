@@ -120,8 +120,8 @@ export function LiveEchoSoulPreview() {
     return { greeting, core, followUp };
   }, [preferences, userName]);
 
-  const handleSendInteractive = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSendInteractive = (e?: React.FormEvent | React.KeyboardEvent | React.MouseEvent) => {
+    if (e && "preventDefault" in e) e.preventDefault();
     if (!interactiveInput.trim()) return;
     setUserMessages((prev) => [...prev, interactiveInput.trim()]);
     setInteractiveInput("");
@@ -152,13 +152,13 @@ export function LiveEchoSoulPreview() {
       {/* ── Miniature EchoSoul Device Card ───────────────────────────────── */}
       <div
         className={`relative rounded-2xl overflow-hidden border shadow-2xl transition-all duration-300 ${fontClass} ${
-          isLight ? "bg-[#FAF8F5] text-[#18181B] border-[#E2DED6]" : "bg-[#08131B] text-[#FFF8E1] border-white/15"
+          isLight ? "bg-[#FAF8F5] text-[#18181B] border-[#E2DED6]" : "bg-[#08131B] text-[#FFF8E1] border-white/20"
         }`}
         style={{
           boxShadow: appearance.ambientAnimations && !appearance.reducedMotion ? accent.glow : "none",
         }}
       >
-        {/* Background Environment Scenery with Soft Vignette */}
+        {/* Background Environment Scenery with Crisp Contrast */}
         <div className="absolute inset-0 z-0">
           <Image
             src={bgImage}
@@ -167,14 +167,14 @@ export function LiveEchoSoulPreview() {
             unoptimized
             sizes="360px"
             className={`object-cover transition-opacity duration-500 ${
-              isLight ? "opacity-15" : "opacity-35"
+              isLight ? "opacity-25" : "opacity-60"
             }`}
           />
           <div
             className={`absolute inset-0 ${
               isLight
-                ? "bg-gradient-to-b from-[#FAF8F5]/90 via-[#FAF8F5]/85 to-[#FAF8F5]/95"
-                : "bg-gradient-to-b from-[#08131B]/92 via-[#08131B]/80 to-[#08131B]/95"
+                ? "bg-gradient-to-b from-[#FAF8F5]/85 via-[#FAF8F5]/70 to-[#FAF8F5]/90"
+                : "bg-gradient-to-b from-[#08131B]/80 via-[#08131B]/60 to-[#08131B]/90"
             }`}
           />
         </div>
@@ -346,12 +346,18 @@ export function LiveEchoSoulPreview() {
           )}
 
           {/* Interactive Chat Input Test */}
-          <form onSubmit={handleSendInteractive} className="pt-2">
+          <div className="pt-2">
             <div className="relative flex items-center">
               <input
                 type="text"
                 value={interactiveInput}
                 onChange={(e) => setInteractiveInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSendInteractive(e);
+                  }
+                }}
                 placeholder="Test conversation here..."
                 className={`w-full h-8 pl-3 pr-8 rounded-xl text-[11px] font-ui border transition-colors focus:outline-none ${
                   isLight
@@ -363,8 +369,10 @@ export function LiveEchoSoulPreview() {
                 }}
               />
               <button
-                type="submit"
-                className="absolute right-1.5 w-5 h-5 rounded-lg flex items-center justify-center transition-colors"
+                type="button"
+                onClick={handleSendInteractive}
+                aria-label="Send test message"
+                className="absolute right-1.5 w-5 h-5 rounded-lg flex items-center justify-center transition-colors cursor-pointer"
                 style={{
                   backgroundColor: accent.hex,
                   color: "#0B0F14",
@@ -375,7 +383,7 @@ export function LiveEchoSoulPreview() {
                 </svg>
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>

@@ -125,9 +125,9 @@ export function OnboardingStep5() {
 
       {/* ── Top Header Bar ────────────────────────────────────────────── */}
       <header className="relative z-20 w-full max-w-[1536px] mx-auto px-6 sm:px-10 py-5 flex items-center justify-between border-b border-white/10">
-        <Link href="/" className="flex items-center gap-3">
+        <div className="flex items-center gap-3">
           <BrandLogo size="md" />
-        </Link>
+        </div>
 
         {/* 6-Step Stepper */}
         <div className="hidden md:flex items-center gap-2">
