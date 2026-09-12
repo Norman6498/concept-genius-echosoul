@@ -52,20 +52,6 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
     setCurrentSlide((prev) => (prev - 1 + CAROUSEL_SLIDES.length) % CAROUSEL_SLIDES.length);
   };
 
-  // Helper to persist name locally for immediate onboarding personalization
-  const saveNameLocally = () => {
-    if (name.trim()) {
-      try {
-        const existing = localStorage.getItem("echosoul_user_personalization");
-        const parsed = existing ? JSON.parse(existing) : {};
-        parsed.name = name.trim();
-        localStorage.setItem("echosoul_user_personalization", JSON.stringify(parsed));
-      } catch {
-        // Ignore
-      }
-    }
-  };
-
   // 1. Send OTP Code
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +59,6 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
 
     setIsLoading(true);
     setMessage(null);
-    saveNameLocally();
 
     try {
       const supabase = createClient();
@@ -89,10 +74,10 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
 
       if (error) {
         // Provide friendly message if SMTP is rate limited or unconfigured on project
-        if (error.message.includes("rate limit") || error.message.includes("SMTP")) {
+        if (error.message.toLowerCase().includes("rate limit") || error.message.includes("SMTP")) {
           setMessage({
             type: "info",
-            text: "Notice: Supabase default email limits reached on this project. You may also use password login, or continue directly.",
+            text: "Notice: Supabase default email verification rate limit reached for this hour on free tier. Please use Password Login mode above, or continue directly.",
           });
         } else {
           setMessage({ type: "error", text: error.message });
@@ -161,7 +146,6 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
     e.preventDefault();
     setIsLoading(true);
     setMessage(null);
-    saveNameLocally();
 
     try {
       const supabase = createClient();
@@ -178,9 +162,19 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
         });
 
         if (error) {
-          setMessage({ type: "error", text: error.message });
+          const isRateLimit = error.message.toLowerCase().includes("rate limit") ||
+                              error.message.toLowerCase().includes("email") ||
+                              error.message.includes("SMTP");
+          if (isRateLimit) {
+            setMessage({
+              type: "info",
+              text: "Supabase email rate limits are currently reached on free tier. If your account already exists, please switch to Sign In above, or continue directly as a Guest Explorer.",
+            });
+          } else {
+            setMessage({ type: "error", text: error.message });
+          }
         } else if (data.session) {
-          // Email confirmation is disabled in Supabase project, session created directly
+          // Direct session created
           setMessage({
             type: "success",
             text: `Welcome to EchoSoul, ${name || "friend"}! Entering Step 1...`,
@@ -189,10 +183,10 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
             window.location.href = "/onboarding";
           }, 1000);
         } else if (data.user && !data.session) {
-          // Email confirmation is enabled in Supabase project
+          // Email confirmation is required by provider
           setMessage({
             type: "info",
-            text: `Verification email sent to ${email}. Please check your inbox to confirm your email, or use OTP code mode below.`,
+            text: `Verification email sent to ${email}. If not received immediately due to hourly email quotas, you can sign in directly or continue as Guest Explorer.`,
           });
         }
       } else if (mode === "login") {
@@ -600,7 +594,6 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
               <div className="mt-5 text-center">
                 <Link
                   href="/onboarding"
-                  onClick={saveNameLocally}
                   className="font-ui text-xs text-[#9AA8B0] hover:text-[#F2D78A] transition-colors"
                 >
                   Continue directly as Guest Explorer →

@@ -1,0 +1,122 @@
+{
+  "timestamp": "2026-09-12T04:50:43.169Z",
+  "testsPassed": 23,
+  "testsFailed": 0,
+  "assertions": [
+    {
+      "name": "User B reads 0 of User A's chat messages",
+      "passed": true,
+      "details": "Read: []"
+    },
+    {
+      "name": "User B reads 0 of User A's journal entries",
+      "passed": true,
+      "details": "Read: []"
+    },
+    {
+      "name": "User B cannot see User A's personalization or name",
+      "passed": true,
+      "details": "Found: undefined"
+    },
+    {
+      "name": "User A personalization preserved independently",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "User B personalization isolated independently",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "Storage has active keys before purge",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "All echosoul_* keys completely purged on logout",
+      "passed": true,
+      "details": "Remaining: 0"
+    },
+    {
+      "name": "User A messages empty after purge",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "User B messages empty after purge",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "Unauthenticated visitor starts with empty personalization",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "Default name is never hardcoded to 'Pratik' or 'Pratik Singh'",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "Guest key uses safe echosoul_guest_ namespace",
+      "passed": true,
+      "details": "Got: echosoul_guest_talk_messages"
+    },
+    {
+      "name": "User key uses isolated echosoul_usr_<id> namespace",
+      "passed": true,
+      "details": "Got: echosoul_usr_test-uuid-123_talk_messages"
+    },
+    {
+      "name": "Unauthenticated request cannot spoof user_id (forced to guest)",
+      "passed": true,
+      "details": "Got: guest_sanctuary_user"
+    },
+    {
+      "name": "Authenticated profile identity overrides stale client cache",
+      "passed": true,
+      "details": "Got: Beta"
+    },
+    {
+      "name": "User A creates private session",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "User A creates private moment",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "User B SELECT User A session returns 0 rows (RLS filtered)",
+      "passed": true,
+      "details": "Returned: []"
+    },
+    {
+      "name": "User B SELECT User A moment returns 0 rows (RLS filtered)",
+      "passed": true,
+      "details": "Returned: []"
+    },
+    {
+      "name": "User B UPDATE User A moment modifies 0 rows",
+      "passed": true,
+      "details": "Updated: []"
+    },
+    {
+      "name": "User B DELETE User A moment affects 0 rows",
+      "passed": true,
+      "details": "Deleted: []"
+    },
+    {
+      "name": "Anonymous visitor SELECT User A moment returns 0 rows",
+      "passed": true,
+      "details": "Returned: []"
+    },
+    {
+      "name": "User A can read their own moment (authorized)",
+      "passed": true,
+      "details": ""
+    }
+  ]
+}

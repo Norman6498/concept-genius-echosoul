@@ -1,28 +1,32 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { EchoSoulShell } from "@/components/shell/EchoSoulShell";
 import Image from "next/image";
-import { User, Mail, Sparkles, BookOpen, Heart, Target, Edit3, X, Check } from "lucide-react";
+import { User, Mail, Sparkles, BookOpen, Heart, Target, Edit3, X, Check, LogOut } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem, performSecureLogout } from "@/lib/auth/sessionBoundary";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const userIdRef = useRef<string | null>(null);
 
   const [profile, setProfile] = useState({
-    name: "Pratik",
-    email: "pratik@example.com",
-    role: "Student",
+    name: "Friend",
+    email: "",
+    role: "Explorer",
     ageRange: "19 - 22",
-    interests: ["Literature", "Music", "Nature", "Technology", "Philosophy"],
-    goals: ["Personal Growth", "Mental Health", "Consistent Studies"],
+    interests: ["Literature", "Music", "Nature", "Philosophy"],
+    goals: ["Personal Growth", "Mental Health"],
     tone: "Gentle & Poetic",
   });
 
   const [editForm, setEditForm] = useState({
-    name: "Pratik",
-    role: "Student",
+    name: "",
+    role: "Explorer",
     ageRange: "19 - 22",
   });
 
@@ -39,30 +43,76 @@ export default function ProfilePage() {
   ];
 
   useEffect(() => {
-    try {
-      const p = localStorage.getItem("echosoul_user_personalization");
-      if (p) {
-        const parsed = JSON.parse(p);
-        if (parsed.name) {
-          setProfile((prev) => ({ ...prev, name: parsed.name }));
-          setEditForm((prev) => ({ ...prev, name: parsed.name }));
+    let isMounted = true;
+
+    async function loadUserProfile() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+
+        userIdRef.current = user?.id || null;
+
+        let name = "Friend";
+        let email = "";
+        let role = "Explorer";
+        let ageRange = "19 - 22";
+
+        if (user) {
+          email = user.email || "";
+          if (user.user_metadata?.display_name || user.user_metadata?.full_name) {
+            name = user.user_metadata.display_name || user.user_metadata.full_name;
+          }
+
+          // Fetch database profile
+          const { data: dbProfile } = await supabase
+            .from("profiles")
+            .select("display_name, full_name, role, age_range, interests, goals")
+            .eq("id", user.id)
+            .single();
+
+          if (isMounted && dbProfile) {
+            if (dbProfile.display_name || dbProfile.full_name) {
+              name = dbProfile.display_name || dbProfile.full_name;
+            }
+            if (dbProfile.role) role = dbProfile.role;
+            if (dbProfile.age_range) ageRange = dbProfile.age_range;
+          }
         }
-        if (parsed.role) {
-          setProfile((prev) => ({ ...prev, role: parsed.role }));
-          setEditForm((prev) => ({ ...prev, role: parsed.role }));
+
+        // Check user-scoped local storage
+        const userScoped = getScopedStorageItem<any>(user?.id, "personalization", null);
+        if (userScoped?.name && userScoped.name !== "Pratik") name = userScoped.name;
+        if (userScoped?.role) role = userScoped.role;
+        if (userScoped?.ageRange) ageRange = userScoped.ageRange;
+
+        let userInterests = ["Literature", "Music", "Nature", "Philosophy"];
+        const interestsStored = getScopedStorageItem<any>(user?.id, "interests", null);
+        if (interestsStored && Array.isArray(interestsStored.interests) && interestsStored.interests.length > 0) {
+          userInterests = interestsStored.interests;
         }
+
+        if (isMounted) {
+          setProfile((prev) => ({
+            ...prev,
+            name,
+            email,
+            role,
+            ageRange,
+            interests: userInterests,
+          }));
+          setEditForm({ name, role, ageRange });
+        }
+      } catch (err) {
+        console.warn("Profile load notice:", err);
       }
-      const interestsStored = localStorage.getItem("echosoul_user_interests");
-      if (interestsStored) {
-        const parsed = JSON.parse(interestsStored);
-        if (Array.isArray(parsed.interests)) {
-          setProfile((prev) => ({ ...prev, interests: parsed.interests }));
-        }
-      }
-    } catch {}
+    }
+
+    loadUserProfile();
+    return () => { isMounted = false; };
   }, []);
 
-  const handleSaveProfile = (e: React.FormEvent) => {
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     const updated = {
       ...profile,
@@ -73,11 +123,28 @@ export default function ProfilePage() {
     setProfile(updated);
 
     try {
-      const existing = JSON.parse(localStorage.getItem("echosoul_user_personalization") || "{}");
-      localStorage.setItem(
-        "echosoul_user_personalization",
-        JSON.stringify({ ...existing, name: updated.name, role: updated.role })
-      );
+      const existing = getScopedStorageItem<any>(userIdRef.current, "personalization", {});
+      setScopedStorageItem(userIdRef.current, "personalization", {
+        ...existing,
+        name: updated.name,
+        role: updated.role,
+        ageRange: updated.ageRange,
+      });
+
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.auth.updateUser({
+          data: { display_name: updated.name },
+        });
+        await supabase.from("profiles").upsert({
+          id: user.id,
+          display_name: updated.name,
+          role: updated.role,
+          age_range: updated.ageRange,
+          updated_at: new Date().toISOString(),
+        });
+      }
     } catch {}
 
     setIsEditOpen(false);
@@ -85,15 +152,32 @@ export default function ProfilePage() {
     setTimeout(() => setSavedSuccess(false), 2500);
   };
 
-  const toggleInterest = (item: string) => {
+  const toggleInterest = async (item: string) => {
     const updated = profile.interests.includes(item)
       ? profile.interests.filter((i) => i !== item)
       : [...profile.interests, item];
 
     setProfile((prev) => ({ ...prev, interests: updated }));
+    setScopedStorageItem(userIdRef.current, "interests", { interests: updated });
+
     try {
-      localStorage.setItem("echosoul_user_interests", JSON.stringify({ interests: updated }));
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("profiles").update({
+          interests: updated,
+          updated_at: new Date().toISOString(),
+        }).eq("id", user.id);
+      }
     } catch {}
+  };
+
+  const handleLogout = async () => {
+    if (confirm("Are you sure you want to sign out of EchoSoul? All local caches will be cleanly cleared.")) {
+      setIsLoggingOut(true);
+      const supabase = createClient();
+      await performSecureLogout(supabase, "/login");
+    }
   };
 
   return (
@@ -171,6 +255,16 @@ export default function ProfilePage() {
               >
                 <Edit3 className="w-3.5 h-3.5" />
                 <span>Edit Profile</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="w-full py-2 rounded-xl bg-[#D97777]/10 hover:bg-[#D97777]/20 text-xs font-ui text-[#D97777] border border-[#D97777]/30 flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>{isLoggingOut ? "Signing out..." : "Sign Out"}</span>
               </button>
             </div>
 

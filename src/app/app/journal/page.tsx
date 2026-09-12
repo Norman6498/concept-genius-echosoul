@@ -1,51 +1,41 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { EchoSoulShell } from "@/components/shell/EchoSoulShell";
 import Image from "next/image";
-import { Save, Lock, Tag, Calendar, Sparkles } from "lucide-react";
+import { Save, Lock, Tag, Calendar, Sparkles, BookOpen } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 export default function JournalPage() {
   const [activeTab, setActiveTab] = useState("All Entries");
-  const [entryText, setEntryText] = useState(
-    "Today I felt overwhelmed, but I also realised that I'm stronger than I think. I took a break, listened to some calm music, and felt a little lighter. Tomorrow, I'll focus on what I can control."
-  );
-  const [tags, setTags] = useState(["Reflective", "Evening"]);
+  const [entryText, setEntryText] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [pastEntries, setPastEntries] = useState<Array<{ date: string; title: string; preview: string }>>([]);
+  const userIdRef = useRef<string | null>(null);
 
-  const [pastEntries, setPastEntries] = useState<Array<{ date: string; title: string; preview: string }>>([
-    {
-      date: "9 Sep 2026",
-      title: "A peaceful evening",
-      preview: "Walked by the lake and listened to the gentle wind...",
-    },
-    {
-      date: "8 Sep 2026",
-      title: "Small wins",
-      preview: "Completed my task list and allowed myself to rest without guilt...",
-    },
-    {
-      date: "6 Sep 2026",
-      title: "On overthinking",
-      preview: "Noticed how my mind spirals at night, chose to breathe instead...",
-    },
-    {
-      date: "3 Sep 2026",
-      title: "Grateful",
-      preview: "A warm cup of tea and a heartfelt conversation with a friend...",
-    },
-  ]);
+  useEffect(() => {
+    let isMounted = true;
+    async function loadJournal() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+        userIdRef.current = user?.id || null;
 
-  React.useEffect(() => {
-    try {
-      const stored = localStorage.getItem("echosoul_journal_entries");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setPastEntries(parsed);
+        const stored = getScopedStorageItem<Array<{ date: string; title: string; preview: string }>>(
+          user?.id,
+          "journal_entries",
+          []
+        );
+        if (Array.isArray(stored)) {
+          setPastEntries(stored);
         }
-      }
-    } catch {}
+      } catch {}
+    }
+    loadJournal();
+    return () => { isMounted = false; };
   }, []);
 
   const handleSave = () => {
@@ -57,9 +47,7 @@ export default function JournalPage() {
     };
     const updated = [newEntry, ...pastEntries];
     setPastEntries(updated);
-    try {
-      localStorage.setItem("echosoul_journal_entries", JSON.stringify(updated));
-    } catch {}
+    setScopedStorageItem(userIdRef.current, "journal_entries", updated);
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 2500);
   };
@@ -172,27 +160,37 @@ export default function JournalPage() {
               </div>
 
               <div className="space-y-2.5">
-                {pastEntries.map((entry, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => {
-                      setEntryText(entry.preview);
-                    }}
-                    className="p-3.5 rounded-2xl bg-[#0C1B25]/80 hover:bg-[#0C1B25] border border-white/5 hover:border-[#F2D78A]/30 transition-all cursor-pointer group"
-                  >
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-editorial text-sm font-semibold text-[#FFF8E1] group-hover:text-[#F2D78A] transition-colors">
-                        {entry.title}
-                      </h4>
-                      <span className="text-[10px] font-ui text-[#9AA8B0]">
-                        {entry.date}
-                      </span>
-                    </div>
-                    <p className="text-xs font-ui text-[#CFC5B5] line-clamp-2 mt-1">
-                      {entry.preview}
+                {pastEntries.length === 0 ? (
+                  <div className="p-6 rounded-2xl bg-[#0C1B25]/40 border border-white/5 text-center flex flex-col items-center justify-center space-y-2">
+                    <BookOpen className="w-8 h-8 text-[#F2D78A]/40 mb-1" />
+                    <p className="font-editorial text-sm text-[#FFF8E1]">No journal reflections yet</p>
+                    <p className="text-[11px] font-ui text-[#9AA8B0] leading-relaxed">
+                      Inscribe your thoughts, feelings, or gratitude on the canvas to start your private record.
                     </p>
                   </div>
-                ))}
+                ) : (
+                  pastEntries.map((entry, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => {
+                        setEntryText(entry.preview);
+                      }}
+                      className="p-3.5 rounded-2xl bg-[#0C1B25]/80 hover:bg-[#0C1B25] border border-white/5 hover:border-[#F2D78A]/30 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-editorial text-sm font-semibold text-[#FFF8E1] group-hover:text-[#F2D78A] transition-colors">
+                          {entry.title}
+                        </h4>
+                        <span className="text-[10px] font-ui text-[#9AA8B0]">
+                          {entry.date}
+                        </span>
+                      </div>
+                      <p className="text-xs font-ui text-[#CFC5B5] line-clamp-2 mt-1">
+                        {entry.preview}
+                      </p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 

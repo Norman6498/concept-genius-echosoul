@@ -8,6 +8,7 @@ import { BrandLogo } from "@/components/ui/BrandLogo";
 import { useOnboardingPreview, CommunicationStyle, ResponseLength } from "@/lib/onboarding/preview-context";
 import { LiveEchoSoulPreview } from "@/components/onboarding/LiveEchoSoulPreview";
 import { createClient } from "@/lib/supabase/client";
+import { setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 const ONBOARDING_STEPS = [
   { number: 1, label: "About You",   href: "/onboarding" },
@@ -127,12 +128,13 @@ export function OnboardingStep4() {
     updatePreferences(payload);
 
     try {
-      // Save locally
-      localStorage.setItem("echosoul_user_preferences", JSON.stringify(payload));
-
       // Save to Supabase user_settings / user_context
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
+
+      // Save scoped locally
+      setScopedStorageItem(user?.id, "preferences", payload);
+
       if (user) {
         await supabase.from("user_settings").upsert({
           user_id: user.id,

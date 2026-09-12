@@ -1,12 +1,20 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { EchoSoulShell } from "@/components/shell/EchoSoulShell";
-import { Shield, Sliders, Moon, Lock, Check, Download, Trash2, Palette, Bell, Key } from "lucide-react";
+import { Shield, Sliders, Moon, Lock, Check, Download, Trash2, Palette, Bell, Key, LogOut } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import {
+  getScopedStorageItem,
+  setScopedStorageItem,
+  removeScopedStorageItem,
+  performSecureLogout,
+} from "@/lib/auth/sessionBoundary";
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("Privacy");
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const userIdRef = useRef<string | null>(null);
 
   const [settings, setSettings] = useState({
     hidePersonalData: false,
@@ -22,40 +30,46 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("echosoul_user_settings");
-      if (stored) {
-        setSettings((prev) => ({ ...prev, ...JSON.parse(stored) }));
-      }
-    } catch {}
+    let isMounted = true;
+    async function loadSettings() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+        userIdRef.current = user?.id || null;
+
+        const stored = getScopedStorageItem<typeof settings>(user?.id, "user_settings", settings);
+        if (stored && isMounted) {
+          setSettings((prev) => ({ ...prev, ...stored }));
+        }
+      } catch {}
+    }
+    loadSettings();
+    return () => { isMounted = false; };
   }, []);
 
   const toggle = (key: keyof typeof settings) => {
     setSettings((prev) => {
       const next = { ...prev, [key]: !prev[key] };
-      try {
-        localStorage.setItem("echosoul_user_settings", JSON.stringify(next));
-      } catch {}
+      setScopedStorageItem(userIdRef.current, "user_settings", next);
       return next;
     });
   };
 
   const handleSave = () => {
-    try {
-      localStorage.setItem("echosoul_user_settings", JSON.stringify(settings));
-      setSavedSuccess(true);
-      setTimeout(() => setSavedSuccess(false), 2500);
-    } catch {}
+    setScopedStorageItem(userIdRef.current, "user_settings", settings);
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 2500);
   };
 
   const handleExportData = () => {
     try {
       const archive = {
-        personalization: JSON.parse(localStorage.getItem("echosoul_user_personalization") || "{}"),
-        conversations: JSON.parse(localStorage.getItem("echosoul_recent_conversations") || "[]"),
-        journal: JSON.parse(localStorage.getItem("echosoul_journal_entries") || "[]"),
-        moments: JSON.parse(localStorage.getItem("echosoul_moments") || "[]"),
-        goals: JSON.parse(localStorage.getItem("echosoul_goals") || "[]"),
+        personalization: getScopedStorageItem(userIdRef.current, "user_personalization", {}),
+        conversations: getScopedStorageItem(userIdRef.current, "recent_conversations", []),
+        journal: getScopedStorageItem(userIdRef.current, "journal_entries", []),
+        moments: getScopedStorageItem(userIdRef.current, "moments", []),
+        goals: getScopedStorageItem(userIdRef.current, "goals_v2", []),
         settings,
         exportedAt: new Date().toISOString(),
       };
@@ -74,8 +88,10 @@ export default function SettingsPage() {
 
   const handleClearHistory = () => {
     if (confirm("Are you sure you want to clear your local conversation and reflection history?")) {
-      localStorage.removeItem("echosoul_recent_conversations");
-      localStorage.removeItem("echosoul_journal_entries");
+      removeScopedStorageItem(userIdRef.current, "recent_conversations");
+      removeScopedStorageItem(userIdRef.current, "journal_entries");
+      removeScopedStorageItem(userIdRef.current, "talk_messages");
+      removeScopedStorageItem(userIdRef.current, "active_session_id");
       alert("History cleared successfully.");
       window.location.reload();
     }
@@ -275,9 +291,7 @@ export default function SettingsPage() {
                       key={thm.key}
                       onClick={() => {
                         setSettings((s) => ({ ...s, theme: thm.key }));
-                        try {
-                          localStorage.setItem("echosoul_user_appearance", JSON.stringify({ theme: thm.key }));
-                        } catch {}
+                        setScopedStorageItem(userIdRef.current, "user_appearance", { theme: thm.key });
                       }}
                       className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                         settings.theme === thm.key
@@ -378,10 +392,28 @@ export default function SettingsPage() {
                     </div>
                     <button
                       onClick={handleClearHistory}
-                      className="px-4 py-2 rounded-xl bg-[#EF4444] text-white text-xs font-semibold hover:bg-[#DC2626] flex items-center gap-1.5 transition-colors shadow-md"
+                      className="px-4 py-2 rounded-xl bg-[#EF4444] text-white text-xs font-semibold hover:bg-[#DC2626] flex items-center gap-1.5 transition-colors shadow-md cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>Clear</span>
+                    </button>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs font-ui font-semibold text-[#FFF8E1]">
+                        Secure Sign Out
+                      </h4>
+                      <p className="text-[11px] text-[#9AA8B0] font-ui">
+                        Terminates your cloud session and securely purges device caches.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => performSecureLogout()}
+                      className="px-4 py-2 rounded-xl bg-white/10 hover:bg-red-500/20 text-[#FFF8E1] hover:text-red-300 text-xs font-semibold flex items-center gap-1.5 transition-colors border border-white/10 cursor-pointer"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Sign Out</span>
                     </button>
                   </div>
                 </div>

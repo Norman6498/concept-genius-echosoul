@@ -6,6 +6,7 @@ import Image from "next/image";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { IconSet, type IconName } from "@/components/ui/IconSet";
 import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 export type AgeRange = "Below 16" | "16 – 18" | "19 – 22" | "23 – 26" | "26+";
@@ -91,53 +92,66 @@ export function OnboardingStep1() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
 
-  // Load existing profile or personalization if present
+  // Load existing profile or personalization strictly scoped to current user
   useEffect(() => {
-    // 1. Try local storage first
-    try {
-      const saved = localStorage.getItem("echosoul_user_personalization");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.name) setName(parsed.name);
-        if (parsed.ageRange) setAgeRange(parsed.ageRange);
-        if (parsed.role) setRole(parsed.role);
-        if (parsed.customRole) setCustomRole(parsed.customRole);
-        if (parsed.goals) setSelectedGoals(parsed.goals);
-        if (parsed.currentFocus) setSelectedFocus(parsed.currentFocus);
-        if (parsed.customFocus) setCustomFocus(parsed.customFocus);
-        if (parsed.currentMood) setSelectedMood(parsed.currentMood);
-      }
-    } catch {
-      // Ignore parse errors
-    }
+    let isMounted = true;
 
-    // 2. Fetch authenticated Supabase user profile
-    try {
-      const supabase = createClient();
-      supabase.auth.getUser().then(({ data: { user } }) => {
+    async function loadUserData() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!isMounted) return;
+
         if (user) {
-          if (user.user_metadata?.display_name && !name) {
-            setName(user.user_metadata.display_name);
-          }
-          // Fetch profile row
-          supabase
+          // Check scoped local storage for this specific user
+          const userScoped = getScopedStorageItem<any>(user.id, "personalization", null);
+          let loadedName = user.user_metadata?.display_name ||
+                           user.user_metadata?.full_name ||
+                           userScoped?.name ||
+                           "";
+
+          // Fetch database profile row
+          const { data: profile } = await supabase
             .from("profiles")
             .select("*")
             .eq("id", user.id)
-            .single()
-            .then(({ data: profile }) => {
-              if (profile?.display_name && !name) setName(profile.display_name);
-              if (profile?.age_range) setAgeRange(profile.age_range as AgeRange);
-              if (profile?.role) setRole(profile.role as RoleOption);
-              if (profile?.goals?.length) setSelectedGoals(profile.goals);
-              if (profile?.current_focus) setSelectedFocus(profile.current_focus);
-              if (profile?.current_mood) setSelectedMood(profile.current_mood);
-            });
+            .single();
+
+          if (!isMounted) return;
+
+          if (profile?.display_name) loadedName = profile.display_name;
+          if (loadedName) setName(loadedName);
+
+          const source = profile || userScoped;
+          if (source?.age_range || source?.ageRange) setAgeRange((source.age_range || source.ageRange) as AgeRange);
+          if (source?.role) setRole(source.role as RoleOption);
+          if (source?.custom_role || source?.customRole) setCustomRole(source.custom_role || source.customRole);
+          if (source?.goals?.length) setSelectedGoals(source.goals);
+          if (source?.current_focus || source?.currentFocus) setSelectedFocus(source.current_focus || source.currentFocus);
+          if (source?.custom_focus || source?.customFocus) setCustomFocus(source.custom_focus || source.customFocus);
+          if (source?.current_mood || source?.currentMood) setSelectedMood(source.current_mood || source.currentMood);
+        } else {
+          // Unauthenticated / Guest: read only guest-scoped storage
+          const guestScoped = getScopedStorageItem<any>(null, "personalization", null);
+          if (guestScoped) {
+            if (guestScoped.name) setName(guestScoped.name);
+            if (guestScoped.ageRange) setAgeRange(guestScoped.ageRange);
+            if (guestScoped.role) setRole(guestScoped.role);
+            if (guestScoped.customRole) setCustomRole(guestScoped.customRole);
+            if (guestScoped.goals) setSelectedGoals(guestScoped.goals);
+            if (guestScoped.currentFocus) setSelectedFocus(guestScoped.currentFocus);
+            if (guestScoped.customFocus) setCustomFocus(guestScoped.customFocus);
+            if (guestScoped.currentMood) setSelectedMood(guestScoped.currentMood);
+          }
         }
-      });
-    } catch {
-      // Local dev fallback
+      } catch (err) {
+        console.warn("Error loading user profile in OnboardingStep1:", err);
+      }
     }
+
+    loadUserData();
+    return () => { isMounted = false; };
   }, []);
 
   const toggleGoal = (id: string) => {
@@ -163,18 +177,12 @@ export function OnboardingStep1() {
       step: 1,
     };
 
-    // 1. Save locally for instant reactivity
-    try {
-      localStorage.setItem("echosoul_user_personalization", JSON.stringify(payload));
-    } catch {
-      // Ignore
-    }
-
-    // 2. Save directly via Supabase client if logged in
+    let activeUserId: string | null = null;
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        activeUserId = user.id;
         await supabase.auth.updateUser({
           data: {
             display_name: payload.name,
@@ -191,7 +199,10 @@ export function OnboardingStep1() {
       console.warn("Client Supabase sync notice:", err);
     }
 
-    // 3. Save via API route for server-side persistence
+    // 1. Save strictly scoped to this authenticated user
+    setScopedStorageItem(activeUserId, "personalization", payload);
+
+    // 2. Save via API route for server-side persistence
     try {
       await fetch("/api/personalization", {
         method: "POST",

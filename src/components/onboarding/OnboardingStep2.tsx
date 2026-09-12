@@ -6,6 +6,7 @@ import Link from "next/link";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { createClient } from "@/lib/supabase/client";
 import { getInterestIcon } from "./InterestIcons";
+import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 interface InterestItem {
   id: string;
@@ -121,20 +122,28 @@ export function OnboardingStep2() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
 
-  // Restore existing saved interests from localStorage or Supabase session
+  // Restore existing saved interests strictly scoped to current user
   useEffect(() => {
-    try {
-      const savedLocal = localStorage.getItem("echosoul_user_interests");
-      if (savedLocal) {
-        const parsed = JSON.parse(savedLocal);
-        if (Array.isArray(parsed.interests)) setSelectedInterests(parsed.interests);
-        if (parsed.vibe) setSelectedVibe(parsed.vibe);
-        if (parsed.custom) setCustomInterest(parsed.custom);
-        if (parsed.categoryCustomChips) setCategoryCustomChips(parsed.categoryCustomChips);
+    let isMounted = true;
+    async function loadInterests() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+
+        const savedLocal = getScopedStorageItem<any>(user?.id, "interests", null);
+        if (savedLocal) {
+          if (Array.isArray(savedLocal.interests)) setSelectedInterests(savedLocal.interests);
+          if (savedLocal.vibe) setSelectedVibe(savedLocal.vibe);
+          if (savedLocal.custom) setCustomInterest(savedLocal.custom);
+          if (savedLocal.categoryCustomChips) setCategoryCustomChips(savedLocal.categoryCustomChips);
+        }
+      } catch {
+        // Fallback to defaults
       }
-    } catch {
-      // Fallback to defaults
     }
+    loadInterests();
+    return () => { isMounted = false; };
   }, []);
 
   const toggleInterest = (id: string) => {
@@ -198,17 +207,16 @@ export function OnboardingStep2() {
       step: 2,
     };
 
-    // Save locally
+    // Save scoped locally
     try {
-      localStorage.setItem(
-        "echosoul_user_interests",
-        JSON.stringify({
-          interests: selectedInterests,
-          vibe: selectedVibe,
-          custom: customInterest,
-          categoryCustomChips,
-        })
-      );
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setScopedStorageItem(user?.id, "interests", {
+        interests: selectedInterests,
+        vibe: selectedVibe,
+        custom: customInterest,
+        categoryCustomChips,
+      });
     } catch {
       // LocalStorage access
     }

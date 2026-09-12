@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { EchoSoulShell } from "@/components/shell/EchoSoulShell";
 import Image from "next/image";
 import { Bookmark, Sparkles, BookOpen, Compass, Heart, CheckCircle2, ChevronRight, X } from "lucide-react";
 import { getLiteratureTypography } from "@/lib/typography";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 interface LineAnalysis {
   line: string;
@@ -578,6 +580,20 @@ export default function WordsPage() {
   const [selectedPassage, setSelectedPassage] = useState<PassageItem>(MASTER_WORDS_DATABASE[0]);
   const [modalOpen, setModalOpen] = useState(false);
   const [addedSuccess, setAddedSuccess] = useState(false);
+  const userIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function initUser() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (isMounted) userIdRef.current = user?.id || null;
+      } catch {}
+    }
+    initUser();
+    return () => { isMounted = false; };
+  }, []);
 
   // Filter list based on active tab
   const filteredList =
@@ -604,8 +620,7 @@ export default function WordsPage() {
 
   const handleAddToJournal = () => {
     try {
-      const existing = localStorage.getItem("echosoul_journal_entries");
-      const list = existing ? JSON.parse(existing) : [];
+      const list = getScopedStorageItem<any[]>(userIdRef.current, "journal_entries", []) || [];
       const newEntry = {
         id: Date.now(),
         date: new Date().toLocaleDateString("en-GB", {
@@ -617,7 +632,7 @@ export default function WordsPage() {
         text: `"${selectedPassage.text}"\n\nReflection: ${selectedPassage.meaning}\n\nWhy this matters for me: ${selectedPassage.whyForMe}`,
         tags: ["Words", selectedPassage.category],
       };
-      localStorage.setItem("echosoul_journal_entries", JSON.stringify([newEntry, ...list]));
+      setScopedStorageItem(userIdRef.current, "journal_entries", [newEntry, ...list]);
       setAddedSuccess(true);
       setTimeout(() => setAddedSuccess(false), 2500);
     } catch {}

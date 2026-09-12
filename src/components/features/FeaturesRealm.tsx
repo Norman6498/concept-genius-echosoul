@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 interface FeatureCard {
   id: string;
@@ -142,15 +144,34 @@ export function FeaturesRealm() {
   const [userName, setUserName] = useState("Friend");
 
   useEffect(() => {
-    try {
-      const p = localStorage.getItem("echosoul_user_personalization");
-      if (p) {
-        const parsed = JSON.parse(p);
-        if (parsed.name) setUserName(parsed.name);
+    let isMounted = true;
+    async function loadUser() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+
+        if (user?.user_metadata?.display_name) {
+          setUserName(user.user_metadata.display_name);
+        } else if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("display_name")
+            .eq("id", user.id)
+            .single();
+          if (profile?.display_name && isMounted) {
+            setUserName(profile.display_name);
+          }
+        } else {
+          const p = getScopedStorageItem<any>(null, "user_personalization", {});
+          if (p?.name && isMounted) setUserName(p.name);
+        }
+      } catch {
+        // Ignore
       }
-    } catch {
-      // Ignore
     }
+    loadUser();
+    return () => { isMounted = false; };
   }, []);
 
   return (

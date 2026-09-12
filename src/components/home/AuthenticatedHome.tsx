@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 import {
   MessageCircle,
   FileText,
@@ -79,7 +80,7 @@ const QUICK_PROMPTS = [
 
 export function AuthenticatedHome() {
   const [profile, setProfile] = useState<UserPersonalization>({
-    userName: "Pratik",
+    userName: "Friend",
     role: "Explorer",
     currentMood: "calm",
     currentFocus: "studies",
@@ -101,84 +102,120 @@ export function AuthenticatedHome() {
   const [paperOutput, setPaperOutput] = useState<string | null>(null);
   const [displayedText, setDisplayedText] = useState("");
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const userIdRef = useRef<string | null>(null);
 
-  // Load Saved Personalization from Supabase & LocalStorage
+  // Load Saved Personalization from Supabase & User-Scoped Storage
   useEffect(() => {
-    try {
-      const p1 = localStorage.getItem("echosoul_user_personalization");
-      const p2 = localStorage.getItem("echosoul_user_interests");
-      const p3 = localStorage.getItem("echosoul_user_world");
-      const p5 = localStorage.getItem("echosoul_user_appearance");
+    let isMounted = true;
 
-      let name = "Pratik";
-      let role = "Explorer";
-      let mood = "calm";
-      let focus = "studies";
+    async function initHomeProfile() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
 
-      if (p1) {
-        const parsed = JSON.parse(p1);
-        if (parsed.name) name = parsed.name;
-        if (parsed.role) role = parsed.role;
-        if (parsed.currentMood) mood = parsed.currentMood;
-        if (parsed.currentFocus) focus = parsed.currentFocus;
-      }
+        userIdRef.current = user?.id || null;
 
-      let vibe = "Creative";
-      let interests = ["Literature", "Philosophy", "Music"];
-      if (p2) {
-        try {
-          const parsed = JSON.parse(p2);
-          if (parsed.vibe) vibe = parsed.vibe;
-          if (Array.isArray(parsed.interests) && parsed.interests.length > 0) {
-            interests = parsed.interests;
+        const p1 = getScopedStorageItem<any>(user?.id, "personalization", null);
+        const p2 = getScopedStorageItem<any>(user?.id, "interests", null);
+        const p3 = getScopedStorageItem<any>(user?.id, "world", null);
+        const p5 = getScopedStorageItem<any>(user?.id, "appearance", null);
+
+        let name = "Friend";
+        let role = "Explorer";
+        let mood = "calm";
+        let focus = "studies";
+
+        if (user?.user_metadata?.display_name) {
+          name = user.user_metadata.display_name;
+        } else if (p1?.name && p1.name !== "Pratik") {
+          name = p1.name;
+        }
+
+        if (user) {
+          const { data: dbProfile } = await supabase
+            .from("profiles")
+            .select("display_name, full_name, role, current_mood, current_focus")
+            .eq("id", user.id)
+            .single();
+
+          if (isMounted && dbProfile) {
+            if (dbProfile.display_name || dbProfile.full_name) {
+              name = dbProfile.display_name || dbProfile.full_name;
+            }
+            if (dbProfile.role) role = dbProfile.role;
+            if (dbProfile.current_mood) mood = dbProfile.current_mood;
+            if (dbProfile.current_focus) focus = dbProfile.current_focus;
           }
-        } catch {
-          // Ignore
         }
-      }
 
-      let visualWorld = "mountain_calm";
-      if (p3) {
-        try {
-          const parsed = JSON.parse(p3);
-          if (parsed.visualWorld) visualWorld = parsed.visualWorld;
-        } catch {
-          // Ignore
+        if (p1) {
+          if (p1.role) role = p1.role;
+          if (p1.currentMood) mood = p1.currentMood;
+          if (p1.currentFocus) focus = p1.currentFocus;
         }
-      }
 
-      let theme = "midnight_soul";
-      let accentColor = "#F2D78A";
-      if (p5) {
-        try {
-          const parsed = JSON.parse(p5);
-          if (parsed.theme) theme = parsed.theme;
-          if (parsed.accentColor) accentColor = parsed.accentColor;
-        } catch {
-          // Ignore
+        let vibe = "Creative";
+        let interests = ["Literature", "Philosophy", "Music"];
+        if (p2) {
+          if (p2.vibe) vibe = p2.vibe;
+          if (Array.isArray(p2.interests) && p2.interests.length > 0) {
+            interests = p2.interests;
+          }
         }
+
+        let visualWorld = "mountain_calm";
+        if (p3?.visualWorld) visualWorld = p3.visualWorld;
+
+        let theme = "midnight_soul";
+        let accentColor = "#F2D78A";
+        if (p5?.theme) theme = p5.theme;
+        if (p5?.accentColor) accentColor = p5.accentColor;
+
+        if (isMounted) {
+          setProfile({
+            userName: name,
+            role,
+            currentMood: mood,
+            currentFocus: focus,
+            overallVibe: vibe,
+            visualWorld,
+            theme,
+            accentColor,
+            interests,
+          });
+
+          // Match thought index to focus if possible
+          if (focus === "creative") setThoughtIndex(1);
+          else if (focus === "career") setThoughtIndex(2);
+          else if (focus === "wellness") setThoughtIndex(3);
+          else if (focus === "studies") setThoughtIndex(0);
+
+          // Load user-scoped conversations, moments, goals, journal
+          const stored = getScopedStorageItem<any[]>(user?.id, "recent_conversations", []);
+          if (Array.isArray(stored)) {
+            setRecentConversations(stored);
+          }
+          const storedMoments = getScopedStorageItem<any[]>(user?.id, "moments", []);
+          if (Array.isArray(storedMoments)) {
+            setUserMoments(storedMoments.slice(0, 3));
+          }
+          const storedGoals = getScopedStorageItem<any[]>(user?.id, "goals", []);
+          if (Array.isArray(storedGoals)) {
+            setGoalsCount(storedGoals.filter((g: any) => !g.done).length || storedGoals.length);
+          }
+          const storedJournal = getScopedStorageItem<any[]>(user?.id, "journal_entries", []);
+          if (Array.isArray(storedJournal)) {
+            setJournalCount(storedJournal.length);
+          }
+        }
+      } catch {
+        // Fallback defaults
       }
-
-      setProfile({
-        userName: name,
-        role,
-        currentMood: mood,
-        currentFocus: focus,
-        overallVibe: vibe,
-        visualWorld,
-        theme,
-        accentColor,
-        interests,
-      });
-
-      // Match thought index to focus if possible
-      if (focus === "creative") setThoughtIndex(1);
-      else if (focus === "career") setThoughtIndex(2);
-      else if (focus === "wellness") setThoughtIndex(3);
-      else if (focus === "studies") setThoughtIndex(0);
-    } catch {
-      // Fallback defaults
     }
+
+    initHomeProfile();
+    return () => { isMounted = false; };
   }, []);
 
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -186,24 +223,16 @@ export function AuthenticatedHome() {
   const [isVoiceRecording, setIsVoiceRecording] = useState(false);
   const [recentConversations, setRecentConversations] = useState<
     Array<{ title: string; time: string; fullMessage?: string; reply?: string; timestamp?: number }>
-  >([
-    { title: "How to stay consistent?", time: "Today, 9:12 AM" },
-    { title: "Fear of the future", time: "Yesterday, 8:45 PM" },
-    { title: "Dealing with overthinking", time: "8 Sep, 10:30 AM" },
-  ]);
+  >([]);
   const [dynamicRec, setDynamicRec] = useState<{
     book?: { title: string; author: string; coverImage?: string; reason: string };
     music?: { title: string; genre: string; reason: string };
     guidance?: { title: string; desc: string };
   } | null>(null);
 
-  const [userMoments, setUserMoments] = useState<Array<{ title: string; date: string; image: string }>>([
-    { title: "That peaceful evening", date: "9 Sep 2026", image: "/home/moment_1.jpg" },
-    { title: "A step forward", date: "7 Sep 2026", image: "/home/moment_2.jpg" },
-    { title: "Clarity after a chat", date: "4 Sep 2026", image: "/home/moment_3.jpg" },
-  ]);
-  const [goalsCount, setGoalsCount] = useState(3);
-  const [journalCount, setJournalCount] = useState(12);
+  const [userMoments, setUserMoments] = useState<Array<{ title: string; date: string; image: string }>>([]);
+  const [goalsCount, setGoalsCount] = useState(0);
+  const [journalCount, setJournalCount] = useState(0);
 
   // Personalization Display Controls
   const [displayPersonalization, setDisplayPersonalization] = useState(true);
@@ -212,46 +241,17 @@ export function AuthenticatedHome() {
   const [showPersonalMoments, setShowPersonalMoments] = useState(true);
   const [showInsightDetails, setShowInsightDetails] = useState(false);
 
-  // Load actual recent conversations, moments, goals, journal, and personalization settings from localStorage
+  // Load personalization display preferences from scoped storage
   useEffect(() => {
     try {
-      const pDisp = localStorage.getItem("echosoul_display_personalization");
-      if (pDisp !== null) setDisplayPersonalization(pDisp === "true");
-      const pConv = localStorage.getItem("echosoul_show_conversations");
-      if (pConv !== null) setShowPersonalConversations(pConv === "true");
-      const pRec = localStorage.getItem("echosoul_show_recs");
-      if (pRec !== null) setShowPersonalRecs(pRec === "true");
-      const pMom = localStorage.getItem("echosoul_show_moments");
-      if (pMom !== null) setShowPersonalMoments(pMom === "true");
-
-      const stored = localStorage.getItem("echosoul_recent_conversations");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setRecentConversations(parsed);
-        }
-      }
-      const storedMoments = localStorage.getItem("echosoul_moments");
-      if (storedMoments) {
-        const parsed = JSON.parse(storedMoments);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setUserMoments(parsed.slice(0, 3));
-        }
-      }
-      const storedGoals = localStorage.getItem("echosoul_goals");
-      if (storedGoals) {
-        const parsed = JSON.parse(storedGoals);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setGoalsCount(parsed.filter((g: any) => !g.done).length || parsed.length);
-        }
-      }
-      const storedJournal = localStorage.getItem("echosoul_journal_entries");
-      if (storedJournal) {
-        const parsed = JSON.parse(storedJournal);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setJournalCount(parsed.length);
-        }
-      }
+      const pDisp = getScopedStorageItem<any>(userIdRef.current, "display_personalization", null);
+      if (pDisp !== null) setDisplayPersonalization(pDisp === true || pDisp === "true");
+      const pConv = getScopedStorageItem<any>(userIdRef.current, "show_conversations", null);
+      if (pConv !== null) setShowPersonalConversations(pConv === true || pConv === "true");
+      const pRec = getScopedStorageItem<any>(userIdRef.current, "show_recs", null);
+      if (pRec !== null) setShowPersonalRecs(pRec === true || pRec === "true");
+      const pMom = getScopedStorageItem<any>(userIdRef.current, "show_moments", null);
+      if (pMom !== null) setShowPersonalMoments(pMom === true || pMom === "true");
     } catch {}
   }, []);
 
@@ -285,8 +285,7 @@ export function AuthenticatedHome() {
 
     let personalization: any = {};
     try {
-      const p1 = localStorage.getItem("echosoul_user_personalization");
-      if (p1) personalization = JSON.parse(p1);
+      personalization = getScopedStorageItem<any>(userIdRef.current, "user_personalization", {}) || {};
     } catch {}
 
     try {
@@ -348,9 +347,7 @@ export function AuthenticatedHome() {
       };
       setRecentConversations((prev) => {
         const updated = [newEntry, ...prev.filter((p) => p.title !== newEntry.title)].slice(0, 6);
-        try {
-          localStorage.setItem("echosoul_recent_conversations", JSON.stringify(updated));
-        } catch {}
+        setScopedStorageItem(userIdRef.current, "recent_conversations", updated);
         return updated;
       });
     } catch {
@@ -435,12 +432,9 @@ export function AuthenticatedHome() {
     setTimeout(() => setMoodSaved(false), 2500);
 
     try {
-      const p = localStorage.getItem("echosoul_user_personalization");
-      if (p) {
-        const parsed = JSON.parse(p);
-        parsed.currentMood = mood.toLowerCase();
-        localStorage.setItem("echosoul_user_personalization", JSON.stringify(parsed));
-      }
+      const p = getScopedStorageItem<any>(userIdRef.current, "personalization", {});
+      p.currentMood = mood.toLowerCase();
+      setScopedStorageItem(userIdRef.current, "personalization", p);
       await fetch("/api/personalization", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -773,9 +767,7 @@ export function AuthenticatedHome() {
                 onClick={() => {
                   const next = !displayPersonalization;
                   setDisplayPersonalization(next);
-                  try {
-                    localStorage.setItem("echosoul_display_personalization", String(next));
-                  } catch {}
+                  setScopedStorageItem(userIdRef.current, "display_personalization", next);
                 }}
                 className={`w-7 h-4 rounded-full flex items-center px-0.5 transition-colors cursor-pointer ${
                   displayPersonalization ? "bg-[#F2D78A] justify-end" : "bg-white/20 justify-start"
@@ -795,9 +787,7 @@ export function AuthenticatedHome() {
                   checked={showPersonalConversations}
                   onChange={(e) => {
                     setShowPersonalConversations(e.target.checked);
-                    try {
-                      localStorage.setItem("echosoul_show_conversations", String(e.target.checked));
-                    } catch {}
+                    setScopedStorageItem(userIdRef.current, "show_conversations", e.target.checked);
                   }}
                   className="rounded accent-[#F2D78A] cursor-pointer"
                 />
@@ -809,9 +799,7 @@ export function AuthenticatedHome() {
                   checked={showPersonalRecs}
                   onChange={(e) => {
                     setShowPersonalRecs(e.target.checked);
-                    try {
-                      localStorage.setItem("echosoul_show_recs", String(e.target.checked));
-                    } catch {}
+                    setScopedStorageItem(userIdRef.current, "show_recs", e.target.checked);
                   }}
                   className="rounded accent-[#F2D78A] cursor-pointer"
                 />
@@ -823,9 +811,7 @@ export function AuthenticatedHome() {
                   checked={showPersonalMoments}
                   onChange={(e) => {
                     setShowPersonalMoments(e.target.checked);
-                    try {
-                      localStorage.setItem("echosoul_show_moments", String(e.target.checked));
-                    } catch {}
+                    setScopedStorageItem(userIdRef.current, "show_moments", e.target.checked);
                   }}
                   className="rounded accent-[#F2D78A] cursor-pointer"
                 />
@@ -1241,21 +1227,28 @@ export function AuthenticatedHome() {
               </div>
 
               <div className="space-y-2">
-                {recentConversations.map((item, i) => (
-                  <div
-                    key={i}
-                    onClick={() => handleSendTalk(item.fullMessage || item.title)}
-                    className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[#F2D78A]/30 transition-all cursor-pointer flex items-center justify-between text-xs"
-                  >
-                    <div className="space-y-0.5">
-                      <p className="text-[#FFF8E1] font-medium leading-tight line-clamp-1">{item.title}</p>
-                      <span className="text-[10px] text-[#9AA8B0]">{item.time}</span>
+                {recentConversations.length > 0 ? (
+                  recentConversations.map((item, i) => (
+                    <div
+                      key={i}
+                      onClick={() => handleSendTalk(item.fullMessage || item.title)}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[#F2D78A]/30 transition-all cursor-pointer flex items-center justify-between text-xs"
+                    >
+                      <div className="space-y-0.5">
+                        <p className="text-[#FFF8E1] font-medium leading-tight line-clamp-1">{item.title}</p>
+                        <span className="text-[10px] text-[#9AA8B0]">{item.time}</span>
+                      </div>
+                      <div className="w-6 h-6 rounded-lg bg-[#112431] flex items-center justify-center text-xs text-[#F2D78A] shrink-0 ml-2">
+                        💬
+                      </div>
                     </div>
-                    <div className="w-6 h-6 rounded-lg bg-[#112431] flex items-center justify-center text-xs text-[#F2D78A] shrink-0 ml-2">
-                      💬
-                    </div>
+                  ))
+                ) : (
+                  <div className="py-6 text-center text-xs font-ui text-[#9AA8B0] space-y-1">
+                    <p className="text-[#CFC5B5]">No recent conversations.</p>
+                    <p className="text-[11px] text-[#9AA8B0]/70">Talk to EchoSoul above to begin.</p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
 
@@ -1274,23 +1267,30 @@ export function AuthenticatedHome() {
               </div>
 
               <div className="grid grid-cols-3 gap-2">
-                {userMoments.map((moment, idx) => (
-                  <Link href="/app/moments" key={idx} className="space-y-1 group cursor-pointer block">
-                    <div className="relative h-20 rounded-lg overflow-hidden bg-[#08131B] border border-white/10">
-                      <Image
-                        src={moment.image}
-                        alt={moment.title}
-                        fill
-                        sizes="110px"
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                    <p className="text-[10px] text-[#FFF8E1] font-medium leading-tight truncate">
-                      {moment.title}
-                    </p>
-                    <span className="text-[9px] text-[#9AA8B0] block">{moment.date}</span>
-                  </Link>
-                ))}
+                {userMoments.length > 0 ? (
+                  userMoments.map((moment, idx) => (
+                    <Link href="/app/moments" key={idx} className="space-y-1 group cursor-pointer block">
+                      <div className="relative h-20 rounded-lg overflow-hidden bg-[#08131B] border border-white/10">
+                        <Image
+                          src={moment.image}
+                          alt={moment.title}
+                          fill
+                          sizes="110px"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[10px] text-[#FFF8E1] font-medium leading-tight truncate">
+                        {moment.title}
+                      </p>
+                      <span className="text-[9px] text-[#9AA8B0] block">{moment.date}</span>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="col-span-3 py-6 text-center text-xs font-ui text-[#9AA8B0] space-y-1">
+                    <p className="text-[#CFC5B5]">No moments recorded yet.</p>
+                    <p className="text-[11px] text-[#9AA8B0]/70">Key milestones will appear here.</p>
+                  </div>
+                )}
               </div>
             </div>
 

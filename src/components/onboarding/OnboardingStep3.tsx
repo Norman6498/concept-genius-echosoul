@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 const ONBOARDING_STEPS = [
   { number: 1, label: "About You",   href: "/onboarding" },
@@ -81,24 +83,32 @@ export function OnboardingStep3() {
   const [isSaving, setIsSaving] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
 
-  // Restore saved state
+  // Restore saved state strictly scoped to current user
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("echosoul_user_world");
-      if (saved) {
-        const p = JSON.parse(saved);
-        if (p.whereYouLive) setWhereYouLive(p.whereYouLive);
-        if (p.currentFocus) setCurrentFocus(p.currentFocus);
-        if (p.customFocus) setCustomFocus(p.customFocus);
-        if (p.environmentTone) setEnvironmentTone(p.environmentTone);
-        if (p.peopleAround) setPeopleAround(p.peopleAround);
-        if (p.worldNotes) setWorldNotes(p.worldNotes);
-        if (p.visualWorld) setVisualWorld(p.visualWorld);
-        if (p.dailySchedule) setDailySchedule(p.dailySchedule);
+    let isMounted = true;
+    async function loadWorldData() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+
+        const p = getScopedStorageItem<any>(user?.id, "world", null);
+        if (p) {
+          if (p.whereYouLive) setWhereYouLive(p.whereYouLive);
+          if (p.currentFocus) setCurrentFocus(p.currentFocus);
+          if (p.customFocus) setCustomFocus(p.customFocus);
+          if (p.environmentTone) setEnvironmentTone(p.environmentTone);
+          if (p.peopleAround) setPeopleAround(p.peopleAround);
+          if (p.worldNotes) setWorldNotes(p.worldNotes);
+          if (p.visualWorld) setVisualWorld(p.visualWorld);
+          if (p.dailySchedule) setDailySchedule(p.dailySchedule);
+        }
+      } catch {
+        // Ignore
       }
-    } catch {
-      // Ignore
     }
+    loadWorldData();
+    return () => { isMounted = false; };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,9 +128,11 @@ export function OnboardingStep3() {
       step: 3,
     };
 
-    // Save locally
+    // Save scoped locally
     try {
-      localStorage.setItem("echosoul_user_world", JSON.stringify(payload));
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setScopedStorageItem(user?.id, "world", payload);
     } catch {
       // Ignore
     }

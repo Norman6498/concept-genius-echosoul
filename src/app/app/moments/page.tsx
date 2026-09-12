@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { EchoSoulShell } from "@/components/shell/EchoSoulShell";
 import Image from "next/image";
 import { Sparkles, Plus, Calendar, X, Check } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 export default function MomentsPage() {
   const [activeTab, setActiveTab] = useState("All Moments");
@@ -15,62 +17,39 @@ export default function MomentsPage() {
   const [newTag, setNewTag] = useState("Milestone");
   const [newImage, setNewImage] = useState("/visual-worlds/mountain_calm.jpg");
 
-  const [momentsList, setMomentsList] = useState([
-    {
-      title: "A breakthrough",
-      desc: "I realised I'm more capable than my worries led me to believe.",
-      date: "10 Sep 2026",
-      tag: "Milestone",
-      image: "/visual-worlds/mountain_calm.jpg",
-    },
-    {
-      title: "A calmer day",
-      desc: "Felt more in control during a hectic afternoon of study.",
-      date: "8 Sep 2026",
-      tag: "Reflection",
-      image: "/tabs/guidance_bg.jpg",
-    },
-    {
-      title: "A meaningful conversation",
-      desc: "Talked about my fears regarding career direction and felt heard.",
-      date: "6 Sep 2026",
-      tag: "Breakthrough",
-      image: "/tabs/journey_bg.jpg",
-    },
-    {
-      title: "A new perspective",
-      desc: "Things feel a little clearer when viewed from a gentle lens.",
-      date: "4 Sep 2026",
-      tag: "Reflection",
-      image: "/visual-worlds/forest_retreat.jpg",
-    },
-    {
-      title: "A small win",
-      desc: "Completed a difficult chapter without procrastination.",
-      date: "2 Sep 2026",
-      tag: "Milestone",
-      image: "/tabs/music_bg.jpg",
-    },
-    {
-      title: "A moment of gratitude",
-      desc: "Appreciated the warm sunrise and the quiet stillness of morning.",
-      date: "31 Aug 2026",
-      tag: "Reflection",
-      image: "/visual-worlds/ocean_breeze.jpg",
-    },
-  ]);
+  const [momentsList, setMomentsList] = useState<Array<{
+    title: string;
+    desc: string;
+    date: string;
+    tag: string;
+    image: string;
+  }>>([]);
+  const userIdRef = useRef<string | null>(null);
 
-  // Load from localStorage
+  // Load from scoped storage
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("echosoul_moments");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setMomentsList(parsed);
+    let isMounted = true;
+    async function loadMoments() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+        userIdRef.current = user?.id || null;
+
+        const stored = getScopedStorageItem<Array<{
+          title: string;
+          desc: string;
+          date: string;
+          tag: string;
+          image: string;
+        }>>(user?.id, "moments", []);
+        if (Array.isArray(stored)) {
+          setMomentsList(stored);
         }
-      }
-    } catch {}
+      } catch {}
+    }
+    loadMoments();
+    return () => { isMounted = false; };
   }, []);
 
   const handleCreateMoment = (e: React.FormEvent) => {
@@ -87,9 +66,7 @@ export default function MomentsPage() {
 
     const updated = [newMoment, ...momentsList];
     setMomentsList(updated);
-    try {
-      localStorage.setItem("echosoul_moments", JSON.stringify(updated));
-    } catch {}
+    setScopedStorageItem(userIdRef.current, "moments", updated);
 
     setNewTitle("");
     setNewDesc("");
@@ -142,45 +119,64 @@ export default function MomentsPage() {
           ))}
         </div>
 
-        {/* Photographic Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredMoments.map((moment, idx) => (
-            <div
-              key={idx}
-              className="relative rounded-3xl overflow-hidden border border-white/10 bg-[#09141D] min-h-[220px] p-5 flex flex-col justify-between shadow-xl group hover:border-[#F2D78A]/40 transition-all cursor-pointer"
+        {/* Photographic Grid or Serene Cold-Start Empty State */}
+        {filteredMoments.length === 0 ? (
+          <div className="rounded-3xl border border-white/10 bg-[#09141D] p-12 text-center flex flex-col items-center justify-center space-y-3">
+            <div className="w-12 h-12 rounded-full bg-[#F2D78A]/10 border border-[#F2D78A]/20 flex items-center justify-center">
+              <Sparkles className="w-6 h-6 text-[#F2D78A]" />
+            </div>
+            <h3 className="font-editorial text-lg text-[#FFF8E1]">No moments preserved yet</h3>
+            <p className="text-xs font-ui text-[#CFC5B5] max-w-sm leading-relaxed">
+              Capture milestones, breakthroughs, or quiet turning points as you converse and reflect.
+            </p>
+            <button
+              onClick={() => setModalOpen(true)}
+              className="mt-2 px-5 py-2 rounded-full bg-[#F2D78A] text-[#0B0F14] text-xs font-semibold hover:bg-[#E5C77A] transition-all flex items-center gap-1.5 shadow-md"
             >
-              <Image
-                src={moment.image}
-                alt={moment.title}
-                fill
-                className="object-cover opacity-35 group-hover:scale-105 transition-transform duration-700 pointer-events-none"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#070D12] via-[#070D12]/60 to-transparent pointer-events-none" />
+              <Plus className="w-3.5 h-3.5" />
+              <span>Capture First Moment</span>
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filteredMoments.map((moment, idx) => (
+              <div
+                key={idx}
+                className="relative rounded-3xl overflow-hidden border border-white/10 bg-[#09141D] min-h-[220px] p-5 flex flex-col justify-between shadow-xl group hover:border-[#F2D78A]/40 transition-all cursor-pointer"
+              >
+                <Image
+                  src={moment.image}
+                  alt={moment.title}
+                  fill
+                  className="object-cover opacity-35 group-hover:scale-105 transition-transform duration-700 pointer-events-none"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#070D12] via-[#070D12]/60 to-transparent pointer-events-none" />
 
-              {/* Tag and Sparkle */}
-              <div className="relative z-10 flex items-center justify-between">
-                <span className="px-2.5 py-0.5 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-[#F2D78A] text-[10px] font-ui">
-                  {moment.tag}
-                </span>
-                <Sparkles className="w-3.5 h-3.5 text-[#F2D78A]/70" />
-              </div>
+                {/* Tag and Sparkle */}
+                <div className="relative z-10 flex items-center justify-between">
+                  <span className="px-2.5 py-0.5 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-[#F2D78A] text-[10px] font-ui">
+                    {moment.tag}
+                  </span>
+                  <Sparkles className="w-3.5 h-3.5 text-[#F2D78A]/70" />
+                </div>
 
-              {/* Moment Info */}
-              <div className="relative z-10 space-y-1.5">
-                <h3 className="font-editorial text-lg text-[#FFF8E1] group-hover:text-[#F2D78A] transition-colors">
-                  {moment.title}
-                </h3>
-                <p className="text-xs font-ui text-[#CFC5B5] line-clamp-2 leading-relaxed">
-                  &ldquo;{moment.desc}&rdquo;
-                </p>
-                <div className="flex items-center gap-1.5 pt-1 text-[10px] font-ui text-[#9AA8B0]">
-                  <Calendar className="w-3 h-3" />
-                  <span>{moment.date}</span>
+                {/* Moment Info */}
+                <div className="relative z-10 space-y-1.5">
+                  <h3 className="font-editorial text-lg text-[#FFF8E1] group-hover:text-[#F2D78A] transition-colors">
+                    {moment.title}
+                  </h3>
+                  <p className="text-xs font-ui text-[#CFC5B5] line-clamp-2 leading-relaxed">
+                    &ldquo;{moment.desc}&rdquo;
+                  </p>
+                  <div className="flex items-center gap-1.5 pt-1 text-[10px] font-ui text-[#9AA8B0]">
+                    <Calendar className="w-3 h-3" />
+                    <span>{moment.date}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Capture Moment Modal */}

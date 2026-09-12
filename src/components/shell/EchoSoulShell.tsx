@@ -22,7 +22,10 @@ import {
   Search,
   X,
   ArrowRight,
+  LogOut,
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem, performSecureLogout } from "@/lib/auth/sessionBoundary";
 
 interface EchoSoulShellProps {
   children: React.ReactNode;
@@ -73,6 +76,7 @@ export function EchoSoulShell({ children, activePath }: EchoSoulShellProps) {
   const router = useRouter();
   const [userName, setUserName] = useState("Friend");
   const [displayPersonalization, setDisplayPersonalization] = useState(true);
+  const userIdRef = useRef<string | null>(null);
 
   // Search State
   const [searchQuery, setSearchQuery] = useState("");
@@ -80,19 +84,48 @@ export function EchoSoulShell({ children, activePath }: EchoSoulShellProps) {
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    try {
-      const pDisp = localStorage.getItem("echosoul_display_personalization");
-      if (pDisp !== null) setDisplayPersonalization(pDisp === "true");
+    let isMounted = true;
+    async function loadShellUser() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+        userIdRef.current = user?.id || null;
 
-      const p1 = localStorage.getItem("echosoul_user_personalization");
-      if (p1) {
-        const parsed = JSON.parse(p1);
-        if (parsed.name) setUserName(parsed.name);
+        const pDisp = getScopedStorageItem<any>(user?.id, "display_personalization", null);
+        if (pDisp !== null) setDisplayPersonalization(pDisp === true || pDisp === "true");
+
+        if (user?.user_metadata?.display_name) {
+          setUserName(user.user_metadata.display_name);
+        } else {
+          const p1 = getScopedStorageItem<any>(user?.id, "personalization", null);
+          if (p1?.name && p1.name !== "Pratik") {
+            setUserName(p1.name);
+          } else if (user) {
+            const { data: profile } = await supabase
+              .from("profiles")
+              .select("display_name, full_name")
+              .eq("id", user.id)
+              .single();
+            if (isMounted && (profile?.display_name || profile?.full_name)) {
+              setUserName(profile.display_name || profile.full_name);
+            }
+          }
+        }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
     }
+    loadShellUser();
+    return () => { isMounted = false; };
   }, []);
+
+  const handleLogout = async () => {
+    if (confirm("Are you sure you want to sign out of EchoSoul? All local caches will be cleanly cleared.")) {
+      const supabase = createClient();
+      await performSecureLogout(supabase, "/login");
+    }
+  };
 
   // Close search when clicking outside
   useEffect(() => {
@@ -219,14 +252,23 @@ export function EchoSoulShell({ children, activePath }: EchoSoulShellProps) {
             </button>
 
             <div className="flex items-center gap-2 pl-2 border-l border-white/10">
-              <div className="relative w-8 h-8 rounded-full overflow-hidden bg-[#F2D78A] text-[#0B0F14] font-bold text-xs flex items-center justify-center shadow-md">
-                <Image src="/home/user_avatar.jpg" alt={userName} fill sizes="32px" className="object-cover" onError={(e) => { (e.target as HTMLElement).style.display = "none"; }} />
-                <span>{userName.charAt(0).toUpperCase()}</span>
-              </div>
-              <div className="hidden sm:flex flex-col leading-none">
-                <span className="font-ui text-xs font-semibold text-[#FFF8E1]">{userName}</span>
-                <span className="text-[10px] text-[#F2D78A] mt-0.5">Keep going</span>
-              </div>
+              <Link href="/app/profile" className="flex items-center gap-2 hover:opacity-85 transition-opacity" title="View Profile">
+                <div className="relative w-8 h-8 rounded-full overflow-hidden bg-[#F2D78A] text-[#0B0F14] font-bold text-xs flex items-center justify-center shadow-md">
+                  <span>{userName.charAt(0).toUpperCase()}</span>
+                </div>
+                <div className="hidden sm:flex flex-col leading-none">
+                  <span className="font-ui text-xs font-semibold text-[#FFF8E1]">{userName}</span>
+                  <span className="text-[10px] text-[#F2D78A] mt-0.5">Keep going</span>
+                </div>
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                title="Sign Out of EchoSoul"
+                className="p-1.5 rounded-lg text-[#9AA8B0] hover:text-[#D97777] hover:bg-white/5 transition-colors ml-1 cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
@@ -310,9 +352,7 @@ export function EchoSoulShell({ children, activePath }: EchoSoulShellProps) {
                 onClick={() => {
                   const next = !displayPersonalization;
                   setDisplayPersonalization(next);
-                  try {
-                    localStorage.setItem("echosoul_display_personalization", String(next));
-                  } catch {}
+                  setScopedStorageItem(userIdRef.current, "display_personalization", next);
                 }}
                 className={`w-7 h-4 rounded-full flex items-center px-0.5 transition-colors cursor-pointer ${
                   displayPersonalization ? "bg-[#F2D78A] justify-end" : "bg-white/20 justify-start"

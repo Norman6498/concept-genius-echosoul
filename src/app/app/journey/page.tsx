@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { EchoSoulShell } from "@/components/shell/EchoSoulShell";
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 import {
   CheckCircle2,
   Circle,
@@ -40,53 +42,6 @@ interface JourneyMoment {
   image: string;
 }
 
-const DEFAULT_GOALS: GoalItem[] = [
-  { id: 1, title: "Be more consistent with morning stillness", category: "Consistency", done: true, dateAdded: "Sep 8, 2026" },
-  { id: 2, title: "Complete Physics & Calculus revision", category: "Academics & Career", done: false, dateAdded: "Sep 9, 2026" },
-  { id: 3, title: "Build a healthier wind-down routine without screen overthinking", category: "Mind & Health", done: false, dateAdded: "Sep 10, 2026" },
-  { id: 4, title: "Write in evening reflection journal 4x weekly", category: "Habits", done: true, dateAdded: "Sep 7, 2026" },
-  { id: 5, title: "Practice 4-7-8 breathing when anxiety rises", category: "Mind & Health", done: false, dateAdded: "Sep 11, 2026" },
-];
-
-const DEFAULT_MOMENTS: JourneyMoment[] = [
-  {
-    id: "m_01",
-    title: "The Shift in Reaction",
-    date: "10 Sep 2026",
-    type: "Breakthrough",
-    description: "Instead of letting academic pressure turn into spiraling self-doubt, I paused and listened to 432 Hz tones.",
-    insight: "The space between the trigger and your response is where freedom begins.",
-    image: "/tabs/journey_bg.jpg",
-  },
-  {
-    id: "m_02",
-    title: "A Calmer Evening",
-    date: "9 Sep 2026",
-    type: "Reflection",
-    description: "Realized that overthinking at 11 PM solves nothing. Allowed the night to just be night.",
-    insight: "Rest is not a reward you earn after perfection; it is a necessity.",
-    image: "/tabs/guidance_bg.jpg",
-  },
-  {
-    id: "m_03",
-    title: "7-Day Honest Journaling",
-    date: "8 Sep 2026",
-    type: "Milestone",
-    description: "Maintained a complete unbroken week of writing down raw thoughts without judging them.",
-    insight: "Truth on paper becomes light in the mind.",
-    image: "/tabs/words_bg.jpg",
-  },
-  {
-    id: "m_04",
-    title: "Finding Solace in Poetry",
-    date: "6 Sep 2026",
-    type: "Reflection",
-    description: "Read Mirza Ghalib and Robert Frost. Felt deeply connected across centuries to people who navigated uncertainty.",
-    insight: "You are never alone in what you feel.",
-    image: "/tabs/music_bg.jpg",
-  },
-];
-
 const LIFE_NOVEL_CHAPTERS = [
   {
     id: "ch_01",
@@ -114,69 +69,76 @@ const LIFE_NOVEL_CHAPTERS = [
 export default function JourneyPage() {
   const [activeTab, setActiveTab] = useState<"Overview" | "Goals" | "Moments" | "Life Novel" | "Progress">("Overview");
   const [userName, setUserName] = useState("Friend");
-  const [goals, setGoals] = useState<GoalItem[]>(DEFAULT_GOALS);
+  const [goals, setGoals] = useState<GoalItem[]>([]);
   const [goalCategoryFilter, setGoalCategoryFilter] = useState<string>("All");
   const [newGoalInput, setNewGoalInput] = useState("");
   const [newGoalCategory, setNewGoalCategory] = useState<GoalItem["category"]>("Consistency");
   const [isAddingGoal, setIsAddingGoal] = useState(false);
 
   // Moments state
-  const [moments, setMoments] = useState<JourneyMoment[]>(DEFAULT_MOMENTS);
+  const [moments, setMoments] = useState<JourneyMoment[]>([]);
   const [momentFilter, setMomentFilter] = useState<string>("All");
 
   // Life Novel chapter viewer
-  const [selectedChapterIndex, setSelectedChapterIndex] = useState(2);
+  const [selectedChapterIndex, setSelectedChapterIndex] = useState(0);
   const [lifeNovelOpen, setLifeNovelOpen] = useState(false);
 
   // Dynamic counts
-  const [convCount, setConvCount] = useState(24);
-  const [journalCount, setJournalCount] = useState(19);
-  const [momentsCount, setMomentsCount] = useState(12);
+  const [convCount, setConvCount] = useState(0);
+  const [journalCount, setJournalCount] = useState(0);
+  const [momentsCount, setMomentsCount] = useState(0);
+  const userIdRef = useRef<string | null>(null);
 
-  // Load user data from localStorage
+  // Load user data strictly scoped to authenticated user
   useEffect(() => {
-    try {
-      const p = localStorage.getItem("echosoul_user_personalization");
-      if (p) {
-        const parsed = JSON.parse(p);
-        if (parsed.name) setUserName(parsed.name);
-      }
+    let isMounted = true;
+    async function loadJourneyData() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+        userIdRef.current = user?.id || null;
 
-      const storedGoals = localStorage.getItem("echosoul_goals_v2");
-      if (storedGoals) {
-        const parsed = JSON.parse(storedGoals);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setGoals(parsed);
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("display_name")
+            .eq("id", user.id)
+            .single();
+          if (profile?.display_name && isMounted) {
+            setUserName(profile.display_name);
+          }
         }
-      }
 
-      const storedConvs = localStorage.getItem("echosoul_recent_conversations");
-      if (storedConvs) {
-        const parsed = JSON.parse(storedConvs);
-        if (Array.isArray(parsed)) setConvCount(21 + parsed.length);
-      }
-
-      const storedJournal = localStorage.getItem("echosoul_journal_entries");
-      if (storedJournal) {
-        const parsed = JSON.parse(storedJournal);
-        if (Array.isArray(parsed)) setJournalCount(15 + parsed.length);
-      }
-
-      const storedMoments = localStorage.getItem("echosoul_moments_v2");
-      if (storedMoments) {
-        const parsed = JSON.parse(storedMoments);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setMoments(parsed);
+        const storedGoals = getScopedStorageItem<GoalItem[]>(user?.id, "goals_v2", []);
+        if (Array.isArray(storedGoals) && isMounted) {
+          setGoals(storedGoals);
         }
-      }
-    } catch {}
+
+        const storedConvs = getScopedStorageItem<any[]>(user?.id, "recent_conversations", []);
+        if (Array.isArray(storedConvs) && isMounted) {
+          setConvCount(storedConvs.length);
+        }
+
+        const storedJournal = getScopedStorageItem<any[]>(user?.id, "journal_entries", []);
+        if (Array.isArray(storedJournal) && isMounted) {
+          setJournalCount(storedJournal.length);
+        }
+
+        const storedMoments = getScopedStorageItem<JourneyMoment[]>(user?.id, "moments_v2", []);
+        if (Array.isArray(storedMoments) && isMounted) {
+          setMoments(storedMoments);
+          setMomentsCount(storedMoments.length);
+        }
+      } catch {}
+    }
+    loadJourneyData();
+    return () => { isMounted = false; };
   }, []);
 
   const saveGoals = (updated: GoalItem[]) => {
     setGoals(updated);
-    try {
-      localStorage.setItem("echosoul_goals_v2", JSON.stringify(updated));
-    } catch {}
+    setScopedStorageItem(userIdRef.current, "goals_v2", updated);
   };
 
   const toggleGoal = (id: number) => {
@@ -291,7 +253,9 @@ export default function JourneyPage() {
 
               <div className="relative z-10 pt-4 border-t border-white/10 flex items-center justify-between flex-wrap gap-3">
                 <span className="text-xs font-ui text-[#9AA8B0]">
-                  Life Novel Chapter III synthesized from 24 conversations
+                  {convCount > 0
+                    ? `Life Novel synthesized from ${convCount} conversation${convCount === 1 ? "" : "s"}`
+                    : "Life Novel synthesizes from your reflections as you converse"}
                 </span>
                 <button
                   onClick={() => {
@@ -323,28 +287,40 @@ export default function JourneyPage() {
                 </div>
 
                 <div className="space-y-2">
-                  {goals.slice(0, 3).map((goal) => (
-                    <div
-                      key={goal.id}
-                      onClick={() => toggleGoal(goal.id)}
-                      className="p-3 rounded-2xl bg-[#0C1B25]/80 hover:bg-[#0C1B25] border border-white/5 hover:border-[#F2D78A]/30 flex items-center justify-between cursor-pointer transition-all"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        {goal.done ? (
-                          <CheckCircle2 className="w-4 h-4 text-[#F2D78A] shrink-0" />
-                        ) : (
-                          <Circle className="w-4 h-4 text-[#9AA8B0] shrink-0" />
-                        )}
-                        <span
-                          className={`text-xs font-ui line-clamp-1 ${
-                            goal.done ? "line-through text-[#9AA8B0]" : "text-[#FFF8E1]"
-                          }`}
-                        >
-                          {goal.title}
-                        </span>
-                      </div>
+                  {goals.length === 0 ? (
+                    <div className="p-4 rounded-2xl bg-[#0C1B25]/50 border border-white/5 text-center">
+                      <p className="text-xs font-ui text-[#9AA8B0]">No active goals yet.</p>
+                      <button
+                        onClick={() => setActiveTab("Goals")}
+                        className="mt-1 text-xs font-ui text-[#F2D78A] hover:underline cursor-pointer inline-block"
+                      >
+                        + Add your first goal
+                      </button>
                     </div>
-                  ))}
+                  ) : (
+                    goals.slice(0, 3).map((goal) => (
+                      <div
+                        key={goal.id}
+                        onClick={() => toggleGoal(goal.id)}
+                        className="p-3 rounded-2xl bg-[#0C1B25]/80 hover:bg-[#0C1B25] border border-white/5 hover:border-[#F2D78A]/30 flex items-center justify-between cursor-pointer transition-all"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          {goal.done ? (
+                            <CheckCircle2 className="w-4 h-4 text-[#F2D78A] shrink-0" />
+                          ) : (
+                            <Circle className="w-4 h-4 text-[#9AA8B0] shrink-0" />
+                          )}
+                          <span
+                            className={`text-xs font-ui line-clamp-1 ${
+                              goal.done ? "line-through text-[#9AA8B0]" : "text-[#FFF8E1]"
+                            }`}
+                          >
+                            {goal.title}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
 
@@ -552,67 +528,84 @@ export default function JourneyPage() {
 
             {/* Interactive Goals List */}
             <div className="space-y-3">
-              {filteredGoals.map((goal) => (
-                <div
-                  key={goal.id}
-                  onClick={() => toggleGoal(goal.id)}
-                  className={`p-4 rounded-3xl border transition-all cursor-pointer flex items-center justify-between group ${
-                    goal.done
-                      ? "bg-[#09141D]/60 border-white/5 text-[#9AA8B0]"
-                      : "bg-[#09141D] border-white/10 hover:border-[#F2D78A]/40 shadow-sm"
-                  }`}
-                >
-                  <div className="flex items-center gap-3.5">
-                    <div className="shrink-0">
-                      {goal.done ? (
-                        <div className="w-5 h-5 rounded-full bg-[#F2D78A] flex items-center justify-center text-[#0B0F14]">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" />
-                        </div>
-                      ) : (
-                        <div className="w-5 h-5 rounded-full border-2 border-[#9AA8B0] group-hover:border-[#F2D78A] transition-colors" />
-                      )}
-                    </div>
-                    <div>
-                      <h4
-                        className={`text-sm font-ui ${
-                          goal.done ? "line-through text-[#9AA8B0]" : "text-[#FFF8E1] font-medium"
-                        }`}
-                      >
-                        {goal.title}
-                      </h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[10px] font-ui px-2 py-0.5 rounded-full bg-white/5 text-[#9AA8B0]">
-                          {goal.category}
-                        </span>
-                        {goal.dateAdded && (
-                          <span className="text-[10px] font-ui text-[#9AA8B0]/60">
-                            Added {goal.dateAdded}
-                          </span>
+              {filteredGoals.length === 0 ? (
+                <div className="p-8 rounded-3xl border border-white/10 bg-[#09141D] text-center flex flex-col items-center justify-center space-y-3">
+                  <CheckCircle2 className="w-8 h-8 text-[#F2D78A]/40" />
+                  <h4 className="font-editorial text-base text-[#FFF8E1]">No goals tracked yet</h4>
+                  <p className="text-xs font-ui text-[#9AA8B0] max-w-sm">
+                    Set a small daily habit or academic milestone to steer your trajectory with intention.
+                  </p>
+                  <button
+                    onClick={() => setIsAddingGoal(true)}
+                    className="px-4 py-2 rounded-full bg-[#F2D78A] text-[#0B0F14] text-xs font-semibold hover:bg-[#E5C77A] transition-colors flex items-center gap-1.5 cursor-pointer shadow-md"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Create Your First Goal</span>
+                  </button>
+                </div>
+              ) : (
+                filteredGoals.map((goal) => (
+                  <div
+                    key={goal.id}
+                    onClick={() => toggleGoal(goal.id)}
+                    className={`p-4 rounded-3xl border transition-all cursor-pointer flex items-center justify-between group ${
+                      goal.done
+                        ? "bg-[#09141D]/60 border-white/5 text-[#9AA8B0]"
+                        : "bg-[#09141D] border-white/10 hover:border-[#F2D78A]/40 shadow-sm"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="shrink-0">
+                        {goal.done ? (
+                          <div className="w-5 h-5 rounded-full bg-[#F2D78A] flex items-center justify-center text-[#0B0F14]">
+                            <Check className="w-3.5 h-3.5 stroke-[3]" />
+                          </div>
+                        ) : (
+                          <div className="w-5 h-5 rounded-full border-2 border-[#9AA8B0] group-hover:border-[#F2D78A] transition-colors" />
                         )}
                       </div>
+                      <div>
+                        <h4
+                          className={`text-sm font-ui ${
+                            goal.done ? "line-through text-[#9AA8B0]" : "text-[#FFF8E1] font-medium"
+                          }`}
+                        >
+                          {goal.title}
+                        </h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-[10px] font-ui px-2 py-0.5 rounded-full bg-white/5 text-[#9AA8B0]">
+                            {goal.category}
+                          </span>
+                          {goal.dateAdded && (
+                            <span className="text-[10px] font-ui text-[#9AA8B0]/60">
+                              Added {goal.dateAdded}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-[11px] font-ui px-2.5 py-1 rounded-full ${
+                          goal.done
+                            ? "bg-[#F2D78A]/10 text-[#F2D78A]"
+                            : "bg-white/5 text-[#9AA8B0]"
+                        }`}
+                      >
+                        {goal.done ? "Accomplished" : "In Progress"}
+                      </span>
+                      <button
+                        onClick={(e) => deleteGoal(goal.id, e)}
+                        className="p-1.5 rounded-full text-[#9AA8B0] hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Delete goal"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`text-[11px] font-ui px-2.5 py-1 rounded-full ${
-                        goal.done
-                          ? "bg-[#F2D78A]/10 text-[#F2D78A]"
-                          : "bg-white/5 text-[#9AA8B0]"
-                      }`}
-                    >
-                      {goal.done ? "Accomplished" : "In Progress"}
-                    </span>
-                    <button
-                      onClick={(e) => deleteGoal(goal.id, e)}
-                      className="p-1.5 rounded-full text-[#9AA8B0] hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
-                      title="Delete goal"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         )}
@@ -643,50 +636,60 @@ export default function JourneyPage() {
               </span>
             </div>
 
-            {/* Grid of Moments */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {filteredMoments.map((moment) => (
-                <div
-                  key={moment.id}
-                  className="rounded-3xl border border-white/10 bg-[#09141D] overflow-hidden hover:border-[#F2D78A]/40 transition-all flex flex-col justify-between shadow-xl"
-                >
-                  <div className="relative h-44 w-full">
-                    <Image
-                      src={moment.image}
-                      alt={moment.title}
-                      fill
-                      className="object-cover opacity-45"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#09141D] via-transparent to-black/30" />
-                    <div className="absolute top-4 left-4 flex items-center gap-2">
-                      <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-ui text-[#F2D78A] font-semibold">
-                        {moment.type}
-                      </span>
+            {/* Grid of Moments or Empty State */}
+            {filteredMoments.length === 0 ? (
+              <div className="p-8 rounded-3xl border border-white/10 bg-[#09141D] text-center flex flex-col items-center justify-center space-y-3">
+                <Sparkles className="w-8 h-8 text-[#F2D78A]/40" />
+                <h4 className="font-editorial text-base text-[#FFF8E1]">No moments preserved yet</h4>
+                <p className="text-xs font-ui text-[#9AA8B0] max-w-sm">
+                  Turn conversations and reflections into permanent milestones from your Sanctuary.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {filteredMoments.map((moment) => (
+                  <div
+                    key={moment.id}
+                    className="rounded-3xl border border-white/10 bg-[#09141D] overflow-hidden hover:border-[#F2D78A]/40 transition-all flex flex-col justify-between shadow-xl"
+                  >
+                    <div className="relative h-44 w-full">
+                      <Image
+                        src={moment.image}
+                        alt={moment.title}
+                        fill
+                        className="object-cover opacity-45"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#09141D] via-transparent to-black/30" />
+                      <div className="absolute top-4 left-4 flex items-center gap-2">
+                        <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-ui text-[#F2D78A] font-semibold">
+                          {moment.type}
+                        </span>
+                      </div>
+                      <div className="absolute top-4 right-4 text-[11px] font-ui text-[#FFF8E1]/80">
+                        {moment.date}
+                      </div>
                     </div>
-                    <div className="absolute top-4 right-4 text-[11px] font-ui text-[#FFF8E1]/80">
-                      {moment.date}
+
+                    <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <h3 className="text-xl font-editorial text-[#FFF8E1]">
+                          {moment.title}
+                        </h3>
+                        <p className="text-xs font-ui text-[#CFC5B5] leading-relaxed">
+                          {moment.description}
+                        </p>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-[#0C1B25] border border-white/5 mt-4">
+                        <p className="text-[11px] font-display italic text-[#F2D78A]">
+                          &ldquo;{moment.insight}&rdquo;
+                        </p>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <h3 className="text-xl font-editorial text-[#FFF8E1]">
-                        {moment.title}
-                      </h3>
-                      <p className="text-xs font-ui text-[#CFC5B5] leading-relaxed">
-                        {moment.description}
-                      </p>
-                    </div>
-
-                    <div className="p-3.5 rounded-2xl bg-[#0C1B25] border border-white/5 mt-4">
-                      <p className="text-[11px] font-display italic text-[#F2D78A]">
-                        &ldquo;{moment.insight}&rdquo;
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

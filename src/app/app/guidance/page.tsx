@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { EchoSoulShell } from "@/components/shell/EchoSoulShell";
 import Image from "next/image";
 import {
@@ -17,36 +17,51 @@ import {
   getGuidanceForTab,
   GuidanceCategoryRecord,
 } from "@/lib/content/guidanceDatabase";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 export default function GuidancePage() {
   const [activeTab, setActiveTab] = useState("For You");
   const [userProfile, setUserProfile] = useState<{ currentFocus?: string; currentMood?: string }>({});
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [showDeepModal, setShowDeepModal] = useState(false);
+  const userIdRef = useRef<string | null>(null);
 
-  // Load user profile from localStorage
+  // Load user profile strictly scoped
   useEffect(() => {
-    try {
-      const p = localStorage.getItem("echosoul_user_personalization");
-      if (p) {
-        const parsed = JSON.parse(p);
-        setUserProfile({
-          currentFocus: parsed.currentFocus,
-          currentMood: parsed.currentMood,
-        });
-      }
-    } catch {}
+    let isMounted = true;
+    async function loadProfile() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+        userIdRef.current = user?.id || null;
+
+        const p = getScopedStorageItem<any>(user?.id, "user_personalization", {});
+        if (p && isMounted) {
+          setUserProfile({
+            currentFocus: p.currentFocus,
+            currentMood: p.currentMood,
+          });
+        }
+      } catch {}
+    }
+    loadProfile();
+    return () => { isMounted = false; };
   }, []);
 
   const currentGuidance: GuidanceCategoryRecord = getGuidanceForTab(activeTab, userProfile);
 
-  // Load completed steps for this specific category
+  // Load completed steps for this specific category strictly scoped
   useEffect(() => {
     try {
-      const key = `echosoul_guidance_steps_${currentGuidance.id}`;
-      const savedSteps = localStorage.getItem(key);
-      if (savedSteps) {
-        setCompletedSteps(JSON.parse(savedSteps));
+      const savedSteps = getScopedStorageItem<string[]>(
+        userIdRef.current,
+        `guidance_steps_${currentGuidance.id}`,
+        []
+      );
+      if (Array.isArray(savedSteps)) {
+        setCompletedSteps(savedSteps);
       } else {
         setCompletedSteps([]);
       }
@@ -56,9 +71,7 @@ export default function GuidancePage() {
   const toggleStep = (stepId: string) => {
     setCompletedSteps((prev) => {
       const next = prev.includes(stepId) ? prev.filter((id) => id !== stepId) : [...prev, stepId];
-      try {
-        localStorage.setItem(`echosoul_guidance_steps_${currentGuidance.id}`, JSON.stringify(next));
-      } catch {}
+      setScopedStorageItem(userIdRef.current, `guidance_steps_${currentGuidance.id}`, next);
       return next;
     });
   };

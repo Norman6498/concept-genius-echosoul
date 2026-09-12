@@ -2,12 +2,31 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { MOCK_USER, type MockUserProfile } from "@/lib/mocks/data";
+import { performSecureLogout } from "@/lib/auth/sessionBoundary";
 import type { User } from "@supabase/supabase-js";
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email?: string;
+  goals: string[];
+  coreMemories: string[];
+  recentMoods: string[];
+  privacyLevel: string;
+}
+
+const DEFAULT_EMPTY_PROFILE: UserProfile = {
+  id: "",
+  name: "Friend",
+  goals: [],
+  coreMemories: [],
+  recentMoods: [],
+  privacyLevel: "standard",
+};
 
 interface AuthContextType {
   user: User | null;
-  profile: MockUserProfile;
+  profile: UserProfile;
   isGuest: boolean;
   isLoading: boolean;
   isPrivateSession: boolean;
@@ -20,8 +39,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isGuest, setIsGuest] = useState<boolean>(true); // Default to guest demo for Stage 1 instant preview
-  const [profile, setProfile] = useState<MockUserProfile>(MOCK_USER);
+  const [isGuest, setIsGuest] = useState<boolean>(false);
+  const [profile, setProfile] = useState<UserProfile>(DEFAULT_EMPTY_PROFILE);
   const [isPrivateSession, setIsPrivateSession] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -36,19 +55,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (currentUser) {
           setUser(currentUser);
           setIsGuest(false);
-          setProfile((prev) => ({
-            ...prev,
+          const name = currentUser.user_metadata?.display_name ||
+                       currentUser.user_metadata?.full_name ||
+                       currentUser.email?.split("@")[0] ||
+                       "Friend";
+          setProfile({
             id: currentUser.id,
-            name: currentUser.user_metadata?.display_name || currentUser.email?.split("@")[0] || "Friend",
-          }));
+            name,
+            email: currentUser.email,
+            goals: [],
+            coreMemories: [],
+            recentMoods: [],
+            privacyLevel: "standard",
+          });
         } else {
-          // If no active session, check localStorage for guest preference
-          const savedGuest = localStorage.getItem("echosoul_guest_mode");
-          if (savedGuest === "false") {
-            setIsGuest(false);
-          } else {
-            setIsGuest(true);
-          }
+          setUser(null);
+          setIsGuest(true);
+          setProfile(DEFAULT_EMPTY_PROFILE);
         }
         setIsLoading(false);
       });
@@ -59,8 +82,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (session?.user) {
             setUser(session.user);
             setIsGuest(false);
+            const name = session.user.user_metadata?.display_name ||
+                         session.user.user_metadata?.full_name ||
+                         session.user.email?.split("@")[0] ||
+                         "Friend";
+            setProfile({
+              id: session.user.id,
+              name,
+              email: session.user.email,
+              goals: [],
+              coreMemories: [],
+              recentMoods: [],
+              privacyLevel: "standard",
+            });
           } else {
             setUser(null);
+            setIsGuest(true);
+            setProfile(DEFAULT_EMPTY_PROFILE);
           }
         }
       );
@@ -70,27 +108,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         authListener.subscription.unsubscribe();
       };
     } catch {
-      // In local dev without configured Supabase URL, fallback cleanly to Guest
       setIsGuest(true);
       setIsLoading(false);
+      setProfile(DEFAULT_EMPTY_PROFILE);
     }
   }, []);
 
   const signInAsGuest = () => {
     setIsGuest(true);
-    localStorage.setItem("echosoul_guest_mode", "true");
+    setUser(null);
   };
 
   const signOut = async () => {
     try {
       const supabase = createClient();
-      await supabase.auth.signOut();
+      await performSecureLogout(supabase, "/login");
     } catch {
-      // Ignore
+      // Fallback
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
     }
-    setUser(null);
-    setIsGuest(true);
-    localStorage.removeItem("echosoul_guest_mode");
   };
 
   const setPrivateSession = (val: boolean) => {

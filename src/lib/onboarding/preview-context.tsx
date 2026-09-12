@@ -1,6 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 export type CommunicationStyle = "warm" | "calm" | "direct" | "deep" | "light";
 export type ResponseLength = "short" | "balanced" | "detailed" | "varies";
@@ -88,51 +90,56 @@ export function OnboardingPreviewProvider({ children }: { children: React.ReactN
   const [preferences, setPreferences] = useState<OnboardingPreferences>(DEFAULT_PREFERENCES);
   const [appearance, setAppearance] = useState<OnboardingAppearance>(DEFAULT_APPEARANCE);
   const [userName, setUserName] = useState<string>("Friend");
+  const userIdRef = useRef<string | null>(null);
 
-  // Load from localStorage on mount
+  // Load from user-scoped storage on mount
   useEffect(() => {
-    try {
-      // 1. User name
-      const p1 = localStorage.getItem("echosoul_user_personalization");
-      if (p1) {
-        const parsed1 = JSON.parse(p1);
-        if (parsed1.name && parsed1.name.trim()) {
-          setUserName(parsed1.name.trim());
+    let isMounted = true;
+    async function loadData() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+
+        userIdRef.current = user?.id || null;
+
+        // 1. User name
+        const p1 = getScopedStorageItem<any>(user?.id, "personalization", null);
+        if (user?.user_metadata?.display_name) {
+          setUserName(user.user_metadata.display_name);
+        } else if (p1?.name && p1.name.trim()) {
+          setUserName(p1.name.trim());
         }
-      }
 
-      // 2. Preferences
-      const p4 = localStorage.getItem("echosoul_user_preferences");
-      if (p4) {
-        const parsed4 = JSON.parse(p4);
-        setPreferences((prev) => ({
-          ...prev,
-          ...parsed4,
-        }));
-      }
+        // 2. Preferences
+        const p4 = getScopedStorageItem<any>(user?.id, "preferences", null);
+        if (p4) {
+          setPreferences((prev) => ({
+            ...prev,
+            ...p4,
+          }));
+        }
 
-      // 3. Appearance
-      const p5 = localStorage.getItem("echosoul_user_appearance");
-      if (p5) {
-        const parsed5 = JSON.parse(p5);
-        setAppearance((prev) => ({
-          ...prev,
-          ...parsed5,
-        }));
+        // 3. Appearance
+        const p5 = getScopedStorageItem<any>(user?.id, "appearance", null);
+        if (p5) {
+          setAppearance((prev) => ({
+            ...prev,
+            ...p5,
+          }));
+        }
+      } catch {
+        // Fallback to defaults
       }
-    } catch {
-      // Fallback to defaults
     }
+    loadData();
+    return () => { isMounted = false; };
   }, []);
 
   const updatePreferences = useCallback((partial: Partial<OnboardingPreferences>) => {
     setPreferences((prev) => {
       const updated = { ...prev, ...partial };
-      try {
-        localStorage.setItem("echosoul_user_preferences", JSON.stringify(updated));
-      } catch {
-        // Ignore
-      }
+      setScopedStorageItem(userIdRef.current, "preferences", updated);
       return updated;
     });
   }, []);
@@ -140,11 +147,7 @@ export function OnboardingPreviewProvider({ children }: { children: React.ReactN
   const updateAppearance = useCallback((partial: Partial<OnboardingAppearance>) => {
     setAppearance((prev) => {
       const updated = { ...prev, ...partial };
-      try {
-        localStorage.setItem("echosoul_user_appearance", JSON.stringify(updated));
-      } catch {
-        // Ignore
-      }
+      setScopedStorageItem(userIdRef.current, "appearance", updated);
       return updated;
     });
   }, []);
@@ -156,11 +159,7 @@ export function OnboardingPreviewProvider({ children }: { children: React.ReactN
         ? prev.selectedTopics.filter((t) => t !== topic)
         : [...prev.selectedTopics, topic];
       const updated = { ...prev, selectedTopics: nextTopics };
-      try {
-        localStorage.setItem("echosoul_user_preferences", JSON.stringify(updated));
-      } catch {
-        // Ignore
-      }
+      setScopedStorageItem(userIdRef.current, "preferences", updated);
       return updated;
     });
   }, []);
@@ -172,11 +171,7 @@ export function OnboardingPreviewProvider({ children }: { children: React.ReactN
         ? prev.avoidedTopics.filter((t) => t !== topic)
         : [...prev.avoidedTopics, topic];
       const updated = { ...prev, avoidedTopics: nextAvoided };
-      try {
-        localStorage.setItem("echosoul_user_preferences", JSON.stringify(updated));
-      } catch {
-        // Ignore
-      }
+      setScopedStorageItem(userIdRef.current, "preferences", updated);
       return updated;
     });
   }, []);

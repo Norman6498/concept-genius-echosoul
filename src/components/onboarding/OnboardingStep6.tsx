@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { VISUAL_WORLDS_CONFIG } from "@/lib/personalization/view-model";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 const ONBOARDING_STEPS = [
   { number: 1, label: "About You",   href: "/onboarding" },
@@ -32,26 +34,32 @@ export function OnboardingStep6() {
   const [isFinishing, setIsFinishing] = useState(false);
 
   useEffect(() => {
-    try {
-      const p1 = localStorage.getItem("echosoul_user_personalization");
-      if (p1) {
-        const parsed = JSON.parse(p1);
-        if (parsed.name) setUserName(parsed.name);
+    let isMounted = true;
+    async function loadSummary() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+
+        const p1 = getScopedStorageItem<any>(user?.id, "personalization", null);
+        const p3 = getScopedStorageItem<any>(user?.id, "world", null);
+        const p5 = getScopedStorageItem<any>(user?.id, "appearance", null);
+
+        if (user?.user_metadata?.display_name) {
+          setUserName(user.user_metadata.display_name);
+        } else if (p1?.name) {
+          setUserName(p1.name);
+        }
+
+        if (p3?.visualWorld) setVisualWorld(p3.visualWorld);
+        if (p5?.theme) setTheme(p5.theme);
+        if (p5?.accentColor) setAccentColor(p5.accentColor);
+      } catch {
+        // Fallback defaults
       }
-      const p3 = localStorage.getItem("echosoul_user_world");
-      if (p3) {
-        const parsed = JSON.parse(p3);
-        if (parsed.visualWorld) setVisualWorld(parsed.visualWorld);
-      }
-      const p5 = localStorage.getItem("echosoul_user_appearance");
-      if (p5) {
-        const parsed = JSON.parse(p5);
-        if (parsed.theme) setTheme(parsed.theme);
-        if (parsed.accentColor) setAccentColor(parsed.accentColor);
-      }
-    } catch {
-      // Fallback defaults
     }
+    loadSummary();
+    return () => { isMounted = false; };
   }, []);
 
   const worldConfig = VISUAL_WORLDS_CONFIG[visualWorld] || VISUAL_WORLDS_CONFIG.mountain_calm;

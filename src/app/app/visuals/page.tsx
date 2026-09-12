@@ -24,6 +24,8 @@ import {
   SanctuaryAudioSynthesizer,
   ScientificMelody,
 } from "@/lib/audio/scientificMelodies";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
 export interface VisualWorldItem {
   key: string;
@@ -221,6 +223,7 @@ export default function VisualsPage() {
 
   const synthRef = useRef<SanctuaryAudioSynthesizer | null>(null);
   const breathingTimerRef = useRef<any>(null);
+  const userIdRef = useRef<string | null>(null);
 
   const [activeWorld, setActiveWorld] = useState<VisualWorldItem>(ALL_VISUAL_WORLDS[0]);
   const activeMelody: ScientificMelody = getMelodyForWorld(activeWorld.key);
@@ -248,16 +251,25 @@ export default function VisualsPage() {
     };
   }, []);
 
-  // Load user's saved world from localStorage
+  // Load user's saved world strictly scoped to authenticated user
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("echosoul_user_world");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        const match = ALL_VISUAL_WORLDS.find((w) => w.key === parsed.visualWorld);
-        if (match) setActiveWorld(match);
-      }
-    } catch {}
+    let isMounted = true;
+    async function loadUserWorld() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
+        userIdRef.current = user?.id || null;
+
+        const stored = getScopedStorageItem<any>(user?.id, "user_world", null);
+        if (stored?.visualWorld && isMounted) {
+          const match = ALL_VISUAL_WORLDS.find((w) => w.key === stored.visualWorld);
+          if (match) setActiveWorld(match);
+        }
+      } catch {}
+    }
+    loadUserWorld();
+    return () => { isMounted = false; };
   }, []);
 
   // Scientific Breathing Cycle with clinically adapted durations
@@ -354,13 +366,10 @@ export default function VisualsPage() {
 
   const handleSetWorld = () => {
     try {
-      localStorage.setItem("echosoul_user_world", JSON.stringify({ visualWorld: activeWorld.key }));
-      const p = localStorage.getItem("echosoul_user_personalization");
-      if (p) {
-        const parsed = JSON.parse(p);
-        parsed.visualWorld = activeWorld.key;
-        localStorage.setItem("echosoul_user_personalization", JSON.stringify(parsed));
-      }
+      setScopedStorageItem(userIdRef.current, "user_world", { visualWorld: activeWorld.key });
+      const p = getScopedStorageItem<any>(userIdRef.current, "user_personalization", {}) || {};
+      p.visualWorld = activeWorld.key;
+      setScopedStorageItem(userIdRef.current, "user_personalization", p);
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 2500);
     } catch {}

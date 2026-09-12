@@ -82,7 +82,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     message = body.message?.trim() ?? "";
     conversationId = body.conversation_id ?? crypto.randomUUID();
-    userId = user?.id ?? body.user_id ?? "guest_sanctuary_user";
+    // Server auth is the single authority; never trust client-supplied body.user_id
+    userId = user?.id ?? "guest_sanctuary_user";
 
     if (!message || message.length === 0) {
       return NextResponse.json({ error: "message is required" }, { status: 400 });
@@ -97,7 +98,7 @@ export async function POST(req: NextRequest) {
     if (user) {
       const { data: prof } = await supabase
         .from("profiles")
-        .select("full_name, role, interests, current_focus, current_mood")
+        .select("full_name, display_name, role, interests, current_focus, current_mood")
         .eq("id", user.id)
         .single();
       profile = prof;
@@ -121,9 +122,14 @@ export async function POST(req: NextRequest) {
 
     const clientPers = body.personalization ?? {};
 
+    // For authenticated users, cloud profile identity takes absolute precedence over client cache
+    const resolvedName = user
+      ? (profile?.display_name || profile?.full_name || user.user_metadata?.display_name || clientPers.userName || "Friend")
+      : (clientPers.userName || "Friend");
+
     const personalization: PersonalizationContext = {
       profile: {
-        name: clientPers.userName ?? profile?.full_name ?? "Friend",
+        name: resolvedName,
         role: clientPers.role ?? profile?.role ?? "Explorer",
       },
       preferences: {

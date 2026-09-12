@@ -102,7 +102,8 @@ export async function POST(req: NextRequest) {
       // ignore
     }
 
-    userId = user?.id ?? body.user_id ?? "guest_sanctuary_user";
+    // Server auth is the single authority; never trust client-supplied body.user_id
+    userId = user?.id ?? "guest_sanctuary_user";
 
     // Fetch user profile for personalization context if authenticated
     let profile = null;
@@ -113,7 +114,7 @@ export async function POST(req: NextRequest) {
     if (user) {
       const { data: prof } = await supabase
         .from("profiles")
-        .select("full_name, role, interests, current_focus, current_mood")
+        .select("full_name, display_name, role, interests, current_focus, current_mood")
         .eq("id", user.id)
         .single();
       profile = prof;
@@ -134,13 +135,18 @@ export async function POST(req: NextRequest) {
       recentMessages = rec ?? [];
     }
 
-    // Merge with body.personalization if provided by client (from localStorage)
+    // Merge with body.personalization if provided by client
     const clientPers = body.personalization ?? {};
+
+    // For authenticated users, cloud profile identity takes absolute precedence over client cache
+    const resolvedName = user
+      ? (profile?.display_name || profile?.full_name || user.user_metadata?.display_name || clientPers.userName || "Friend")
+      : (clientPers.userName || "Friend");
 
     // Build minimal personalization context
     personalization = {
       profile: {
-        name: clientPers.userName ?? profile?.full_name ?? "Friend",
+        name: resolvedName,
         role: clientPers.role ?? profile?.role ?? "Explorer",
       },
       preferences: {

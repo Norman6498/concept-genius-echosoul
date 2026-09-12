@@ -21,6 +21,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import { getLiteratureTypography } from "@/lib/typography";
+import { createClient } from "@/lib/supabase/client";
+import { getScopedStorageItem, setScopedStorageItem, removeScopedStorageItem } from "@/lib/auth/sessionBoundary";
 import {
   setConversationAnchor,
   parseVoiceExperienceCommand,
@@ -51,6 +53,7 @@ export default function TalkPage() {
     reason: string;
   } | null>(null);
 
+  const userIdRef = useRef<string | null>(null);
   const recognitionRef = useRef<any>(null);
   const accumulatedTranscriptRef = useRef<string>("");
   const silenceTimerRef = useRef<any>(null);
@@ -67,66 +70,50 @@ export default function TalkPage() {
         .replace(/https?:\/\/\S+/g, "")
         .trim();
 
-      // Split into clean sentence chunks for immediate progressive delivery (Architecture B)
-      const rawSentences = cleanSpoken.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [cleanSpoken];
-      const sentences = rawSentences.map((s) => s.trim()).filter((s) => s.length > 0);
+      if (!cleanSpoken) return;
+      const utterance = new SpeechSynthesisUtterance(cleanSpoken);
 
       const voices = window.speechSynthesis.getVoices();
       const preferredVoice =
         voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Female"))) ||
         voices.find((v) => v.lang.startsWith("en"));
-
-      // Queue each sentence so the first sentence speaks immediately (<180ms)
-      for (const sentence of sentences) {
-        const utterance = new SpeechSynthesisUtterance(sentence);
-        utterance.rate = 0.94;
-        utterance.pitch = 1.0;
-        if (preferredVoice) {
-          utterance.voice = preferredVoice;
-        }
-        window.speechSynthesis.speak(utterance);
-      }
+      const naturalVoice = voices.find(
+        (v) => (v.lang.startsWith("en") || v.lang.startsWith("hi")) && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha"))
+      );
+      if (naturalVoice) utterance.voice = naturalVoice;
+      else if (preferredVoice) utterance.voice = preferredVoice;
+      window.speechSynthesis.speak(utterance);
     } catch (e) {
       console.warn("Speech synthesis error:", e);
     }
   };
 
-  // Restore chat messages from localStorage on mount
+  // Restore chat messages strictly scoped to current user
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("echosoul_talk_messages");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setMessages(parsed);
-          return;
-        }
-      }
+    let isMounted = true;
+    async function loadTalkHistory() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!isMounted) return;
 
-      // Reconstruct from recent conversations if talk messages are empty
-      const recent = localStorage.getItem("echosoul_recent_conversations");
-      if (recent) {
-        const parsed = JSON.parse(recent);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          const reconstructed: ChatMessage[] = [];
-          parsed.slice(0, 4).reverse().forEach((r: any) => {
-            if (r.fullMessage) reconstructed.push({ role: "user", text: r.fullMessage });
-            if (r.reply) reconstructed.push({ role: "assistant", text: r.reply });
-          });
-          if (reconstructed.length > 0) {
-            setMessages(reconstructed);
-            localStorage.setItem("echosoul_talk_messages", JSON.stringify(reconstructed));
-          }
+        userIdRef.current = user?.id || null;
+
+        const saved = getScopedStorageItem<ChatMessage[]>(user?.id, "talk_messages", []);
+        if (Array.isArray(saved) && saved.length > 0) {
+          setMessages(saved);
+        } else {
+          setMessages([]);
         }
-      }
-    } catch {}
+      } catch {}
+    }
+    loadTalkHistory();
+    return () => { isMounted = false; };
   }, []);
 
   // Persist messages whenever messages array updates
   const saveMessagesToStorage = (updated: ChatMessage[]) => {
-    try {
-      localStorage.setItem("echosoul_talk_messages", JSON.stringify(updated));
-    } catch {}
+    setScopedStorageItem(userIdRef.current, "talk_messages", updated);
   };
 
   // Letter-by-letter ink inscription effect
@@ -178,13 +165,13 @@ export default function TalkPage() {
     saveMessagesToStorage(updatedUserMessages);
     setIsLoading(true);
 
-    // Retrieve or generate valid UUID session ID
+    // Retrieve or generate valid UUID session ID strictly scoped to user
     let currentSessionId = "";
     try {
-      currentSessionId = localStorage.getItem("echosoul_active_session_id") || "";
+      currentSessionId = getScopedStorageItem<string>(userIdRef.current, "active_session_id", "") || "";
       if (!currentSessionId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(currentSessionId)) {
         currentSessionId = crypto.randomUUID();
-        localStorage.setItem("echosoul_active_session_id", currentSessionId);
+        setScopedStorageItem(userIdRef.current, "active_session_id", currentSessionId);
       }
     } catch {
       currentSessionId = crypto.randomUUID();
@@ -211,8 +198,7 @@ export default function TalkPage() {
 
     let personalization: any = {};
     try {
-      const p1 = localStorage.getItem("echosoul_user_personalization");
-      if (p1) personalization = JSON.parse(p1);
+      personalization = getScopedStorageItem<any>(userIdRef.current, "user_personalization", {}) || {};
     } catch {}
 
     try {
@@ -273,9 +259,9 @@ export default function TalkPage() {
         });
       }
 
-      // Save to recent conversations for Home Sanctuary and Journey
+      // Save to recent conversations for Home Sanctuary and Journey strictly scoped to user
       try {
-        const existing = JSON.parse(localStorage.getItem("echosoul_recent_conversations") || "[]");
+        const existing = getScopedStorageItem<any[]>(userIdRef.current, "recent_conversations", []) || [];
         const newEntry = {
           title: text.length > 38 ? text.slice(0, 38) + "..." : text,
           time: "Just now",
@@ -283,9 +269,10 @@ export default function TalkPage() {
           reply,
           timestamp: Date.now(),
         };
-        localStorage.setItem(
-          "echosoul_recent_conversations",
-          JSON.stringify([newEntry, ...existing.filter((e: any) => e.title !== newEntry.title)].slice(0, 10))
+        setScopedStorageItem(
+          userIdRef.current,
+          "recent_conversations",
+          [newEntry, ...existing.filter((e: any) => e.title !== newEntry.title)].slice(0, 10)
         );
       } catch {}
     } catch {
@@ -437,8 +424,8 @@ export default function TalkPage() {
         } catch {}
       }
       setMessages([]);
-      localStorage.removeItem("echosoul_talk_messages");
-      localStorage.removeItem("echosoul_active_session_id");
+      removeScopedStorageItem(userIdRef.current, "talk_messages");
+      removeScopedStorageItem(userIdRef.current, "active_session_id");
     }
   };
 
