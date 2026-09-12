@@ -9,11 +9,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 1835,
-    "modelUsed": "nex-agi/nex-n2.5-mini:free",
+    "totalLatencyMs": 5737,
+    "modelUsed": "poolside/laguna-s-2.1:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "A quiet place to breathe.\n\nHere, you can bring your thoughts without having to make them “productive” or impressive. I c",
+    "snippet": "Hello, dear one. This is a space of gentle understanding—a sanctuary where words are held with care and every heart find",
     "error": null
   },
   {
@@ -26,11 +26,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 2508,
+    "totalLatencyMs": 3205,
     "modelUsed": "nex-agi/nex-n2.5-mini:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "I’m really sorry you’re carrying that today. When expectations pile up and you’re already depleted, even small tasks can",
+    "snippet": "I’m really sorry today is weighing on you like that. When expectations pile up, even ordinary tasks can start to feel im",
     "error": null
   },
   {
@@ -43,11 +43,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 5817,
+    "totalLatencyMs": 4365,
     "modelUsed": "nex-agi/nex-n2.5-mini:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "Absolutely — I’m EchoSoul. For settling your thoughts, I’d suggest a **soft 432 Hz ambient pad** with gentle nature soun",
+    "snippet": "Absolutely — here are some calming options to help settle your thoughts:\n\n- **432 Hz ambient meditation music** — soft p",
     "error": null
   },
   {
@@ -59,11 +59,11 @@
     ],
     "modelsCount": 2,
     "httpStatus": 200,
-    "totalLatencyMs": 14399,
-    "modelUsed": "poolside/laguna-s-2.1:free",
+    "totalLatencyMs": 3993,
+    "modelUsed": "nex-agi/nex-n2.5-mini:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "**Marcus Aurelius Quote:**\n\n> \"The impediment to action advances us to the good. What stands in the way becomes the way.",
+    "snippet": "**Marcus Aurelius:**  \n> “The mind adapts and converts to its own purposes the obstacle to our action.”\n\nThis matters be",
     "error": null
   },
   {
@@ -76,11 +76,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 2266,
+    "totalLatencyMs": 3817,
     "modelUsed": "nex-agi/nex-n2.5-pro:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "1. **Set up for 5 minutes.** Choose one study spot, clear only what you need, and write down the single topic you’ll sta",
+    "snippet": "1. **Set up one 25-minute study block.**  \n   Choose one subject or task, clear your space, put your phone away, and stu",
     "error": null
   }
 ]

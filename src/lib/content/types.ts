@@ -150,3 +150,29 @@ export interface RecommendationResult<T> {
   reason: string;
   reason_codes: string[];
 }
+
+export interface CountryRecord {
+  iso2: string;
+  iso3: string;
+  name: string;
+  native_name?: string;
+  continent?: string;
+  capital?: string;
+  phone_code?: string;
+  currency?: string;
+  languages: string[];
+}
+
+export interface CityRecord {
+  geonames_id: number;
+  name: string;
+  ascii: string;
+  alt: string[];
+  country: string;
+  admin: string;
+  lat: number;
+  lon: number;
+  pop: number;
+  tz: string;
+}
+

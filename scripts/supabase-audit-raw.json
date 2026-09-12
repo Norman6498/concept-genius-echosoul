@@ -12,11 +12,11 @@
     },
     "sessions": {
       "exists": true,
-      "rowCount": 11
+      "rowCount": 17
     },
     "messages": {
       "exists": true,
-      "rowCount": 6
+      "rowCount": 9
     },
     "context_snapshots": {
       "exists": true,
@@ -28,7 +28,7 @@
     },
     "moments": {
       "exists": true,
-      "rowCount": 11
+      "rowCount": 17
     },
     "novel_chapters": {
       "exists": true,
@@ -80,7 +80,7 @@
     },
     "music_tracks": {
       "exists": true,
-      "rowCount": 4
+      "rowCount": 1004
     },
     "master_music_catalog": {
       "exists": true,
@@ -108,7 +108,7 @@
     },
     "books": {
       "exists": true,
-      "rowCount": 6
+      "rowCount": 1106
     },
     "shayari": {
       "exists": true,
@@ -124,7 +124,7 @@
     },
     "authors": {
       "exists": true,
-      "rowCount": 8
+      "rowCount": 42
     },
     "content_sources": {
       "exists": true,

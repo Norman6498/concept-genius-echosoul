@@ -13,7 +13,13 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "verify-infra": "npx tsx scripts/verify-infra.ts",
-    "audit:production": "node scripts/audit-production.mjs"
+    "audit:production": "node scripts/audit-production.mjs",
+    "catalog:books": "node scripts/catalog/books.mjs",
+    "catalog:music": "node scripts/catalog/music.mjs",
+    "catalog:cities": "node scripts/catalog/cities.mjs",
+    "catalog:enrich": "node scripts/catalog/enrich.mjs",
+    "catalog:validate": "node scripts/catalog/validate.mjs",
+    "catalog:all": "node scripts/catalog/books.mjs && node scripts/catalog/music.mjs && node scripts/catalog/cities.mjs && node scripts/catalog/enrich.mjs && node scripts/catalog/validate.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

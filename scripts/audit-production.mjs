@@ -81,33 +81,34 @@ run(
 
 // ===== SECTION 5: Supabase Infrastructure =====
 SECTION('5. SUPABASE INFRASTRUCTURE');
-const infraOut = run(
-  'Auth health endpoint responds 200',
-  'node scripts/audit-backend.mjs',
-  { parseResult: (out) => out.includes('Auth Health: 200 OK') }
-);
+let backendOutput = null;
+try {
+  backendOutput = execSync('node scripts/audit-backend.mjs', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], cwd: process.cwd() });
+} catch (e) {
+  backendOutput = '';
+}
 
-run(
-  '40 tables exposed via PostgREST',
-  'node scripts/audit-backend.mjs',
-  { parseResult: (out) => {
-    const m = out.match(/Discovered tables in PostgREST: \[([^\]]+)\]/s);
-    if (!m) return false;
-    const count = (m[1].match(/'/g) || []).length / 2;
-    return count >= 40;
-  }}
-);
+const authOk = backendOutput.includes('Auth Health: 200 OK');
+console.log(`  ${authOk ? PASS : FAIL}  Auth health endpoint responds 200`);
+results.push({ label: 'Auth health endpoint responds 200', passed: authOk });
 
-run(
-  '5 storage buckets exist (all private)',
-  'node scripts/audit-backend.mjs',
-  { parseResult: (out) => {
-    const m = out.match(/Buckets found: \[([^\]]+)\]/s);
-    if (!m) return false;
-    const count = (m[1].match(/'/g) || []).length / 2;
-    return count >= 5;
-  }}
-);
+let postgrestCount = 0;
+const mPost = backendOutput.match(/Discovered tables in PostgREST: \[([^\]]+)\]/s);
+if (mPost) {
+  postgrestCount = (mPost[1].match(/'/g) || []).length / 2;
+}
+const tablesOk = postgrestCount >= 40;
+console.log(`  ${tablesOk ? PASS : FAIL}  40 tables exposed via PostgREST`);
+results.push({ label: '40 tables exposed via PostgREST', passed: tablesOk });
+
+let bucketCount = 0;
+const mBuck = backendOutput.match(/Buckets found: \[([^\]]+)\]/s);
+if (mBuck) {
+  bucketCount = (mBuck[1].match(/'/g) || []).length / 2;
+}
+const bucketsOk = bucketCount >= 5;
+console.log(`  ${bucketsOk ? PASS : FAIL}  5 storage buckets exist (all private)`);
+results.push({ label: '5 storage buckets exist (all private)', passed: bucketsOk });
 
 // ===== SECTION 6: Security Headers =====
 SECTION('6. SECURITY HEADERS (next.config.ts)');
