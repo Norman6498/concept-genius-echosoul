@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+  <defs>
+    <linearGradient id="bg_ess" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141E28" />
+      <stop offset="100%" stop-color="#080D14" />
+    </linearGradient>
+  </defs>
+
+  <!-- Cover Body -->
+  <rect width="400" height="600" rx="12" fill="url(#bg_ess)" />
+  <rect x="0" y="0" width="28" height="600" fill="#000000" opacity="0.3" />
+
+  <!-- Minimalist Framed Layout -->
+  <rect x="42" y="30" width="326" height="540" rx="4" fill="none" stroke="#F2D78A" stroke-width="1.2" opacity="0.4" />
+
+  <!-- The Classic Essentialism Scribble -> Focused Arrow Icon -->
+  <g transform="translate(205, 220)">
+    <!-- Entangled Scribble on Left -->
+    <path d="M-80,-20 Q-60,30 -75,-10 Q-50,-30 -60,20 Q-45,0 -40,-20 Q-35,25 -20,0" fill="none" stroke="#CFC5B5" stroke-width="2" opacity="0.5" />
+    <!-- Straight Clear Directed Vector on Right -->
+    <line x1="0" y1="0" x2="80" y2="0" stroke="#F2D78A" stroke-width="3.5" stroke-linecap="round" />
+    <polygon points="80,-6 92,0 80,6" fill="#F2D78A" />
+  </g>
+
+  <!-- Author Name -->
+  <text x="205" y="110" font-family="'Inter', 'Helvetica', sans-serif" font-size="12" fill="#F2D78A" letter-spacing="4" text-anchor="middle" font-weight="600">
+    GREG MCKEOWN
+  </text>
+  <line x1="150" y1="125" x2="260" y2="125" stroke="#F2D78A" stroke-width="1" opacity="0.4" />
+
+  <!-- Book Title -->
+  <text x="205" y="340" font-family="'Inter', sans-serif" font-size="28" fill="#FFF8E1" letter-spacing="3" text-anchor="middle" font-weight="800">
+    ESSENTIALISM
+  </text>
+
+  <!-- Subtitle -->
+  <text x="205" y="380" font-family="'Inter', sans-serif" font-size="10" fill="#CFC5B5" letter-spacing="2" text-anchor="middle" opacity="0.8">
+    THE DISCIPLINED PURSUIT OF LESS
+  </text>
+
+  <line x1="160" y1="480" x2="250" y2="480" stroke="#F2D78A" stroke-width="1" opacity="0.4" />
+  <text x="205" y="515" font-family="'Inter', sans-serif" font-size="9" fill="#F2D78A" letter-spacing="3" text-anchor="middle" opacity="0.8">
+    DO LESS, BUT BETTER
+  </text>
+</svg>

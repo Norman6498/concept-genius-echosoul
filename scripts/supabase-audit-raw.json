@@ -1,0 +1,262 @@
+{
+  "supabaseConnection": false,
+  "authReachable": true,
+  "tables": {
+    "profiles": {
+      "exists": true,
+      "rowCount": 1
+    },
+    "user_settings": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "sessions": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "messages": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "context_snapshots": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "memory_items": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "moments": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "novel_chapters": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "moment_memory_links": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "literature_works": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "literary_passages": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "literature_tags": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "literature_feedback": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "saved_words": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "creative_jobs": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "goals": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "habits": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "entitlements": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "audit_events": {
+      "exists": true,
+      "rowCount": 0
+    },
+    "music_tracks": {
+      "exists": true,
+      "rowCount": null
+    },
+    "master_music_catalog": {
+      "exists": true,
+      "rowCount": null
+    },
+    "melodies": {
+      "exists": true,
+      "rowCount": null
+    },
+    "meditations": {
+      "exists": true,
+      "rowCount": null
+    },
+    "visual_scenes": {
+      "exists": true,
+      "rowCount": null
+    },
+    "scenes": {
+      "exists": true,
+      "rowCount": null
+    },
+    "ambient_audio": {
+      "exists": true,
+      "rowCount": null
+    },
+    "books": {
+      "exists": true,
+      "rowCount": null
+    },
+    "shayari": {
+      "exists": true,
+      "rowCount": null
+    },
+    "poetry": {
+      "exists": true,
+      "rowCount": null
+    },
+    "quotes": {
+      "exists": true,
+      "rowCount": null
+    },
+    "authors": {
+      "exists": true,
+      "rowCount": null
+    },
+    "content_sources": {
+      "exists": true,
+      "rowCount": null
+    },
+    "recommendation_events": {
+      "exists": true,
+      "rowCount": null
+    },
+    "experience_sessions": {
+      "exists": true,
+      "rowCount": null
+    },
+    "user_collections": {
+      "exists": true,
+      "rowCount": null
+    },
+    "user_onboarding": {
+      "exists": true,
+      "rowCount": null
+    },
+    "chat_sessions": {
+      "exists": true,
+      "rowCount": null
+    }
+  },
+  "buckets": [
+    {
+      "id": "user-media",
+      "name": "user-media",
+      "owner": "",
+      "public": false,
+      "type": "STANDARD",
+      "file_size_limit": null,
+      "allowed_mime_types": null,
+      "created_at": "2026-09-08T08:22:49.433Z",
+      "updated_at": "2026-09-08T08:22:49.433Z"
+    },
+    {
+      "id": "generated-scenes",
+      "name": "generated-scenes",
+      "owner": "",
+      "public": false,
+      "type": "STANDARD",
+      "file_size_limit": null,
+      "allowed_mime_types": null,
+      "created_at": "2026-09-08T08:22:49.433Z",
+      "updated_at": "2026-09-08T08:22:49.433Z"
+    },
+    {
+      "id": "generated-videos",
+      "name": "generated-videos",
+      "owner": "",
+      "public": false,
+      "type": "STANDARD",
+      "file_size_limit": null,
+      "allowed_mime_types": null,
+      "created_at": "2026-09-08T08:22:49.433Z",
+      "updated_at": "2026-09-08T08:22:49.433Z"
+    },
+    {
+      "id": "generated-audio",
+      "name": "generated-audio",
+      "owner": "",
+      "public": false,
+      "type": "STANDARD",
+      "file_size_limit": null,
+      "allowed_mime_types": null,
+      "created_at": "2026-09-08T08:22:49.433Z",
+      "updated_at": "2026-09-08T08:22:49.433Z"
+    },
+    {
+      "id": "literature-assets",
+      "name": "literature-assets",
+      "owner": "",
+      "public": false,
+      "type": "STANDARD",
+      "file_size_limit": null,
+      "allowed_mime_types": null,
+      "created_at": "2026-09-08T08:22:49.433Z",
+      "updated_at": "2026-09-08T08:22:49.433Z"
+    }
+  ],
+  "bucketFiles": {
+    "user-media": [],
+    "generated-scenes": [],
+    "generated-videos": [],
+    "generated-audio": [],
+    "literature-assets": []
+  },
+  "rlsTests": {
+    "profiles_anon_select": {
+      "allowed": false,
+      "rowCount": 0,
+      "error": "column profiles.full_name does not exist"
+    },
+    "messages_anon_select": {
+      "allowed": true,
+      "rowCount": 0,
+      "error": null
+    },
+    "moments_anon_select": {
+      "allowed": true,
+      "rowCount": 0,
+      "error": null
+    },
+    "literature_works_anon_select": {
+      "allowed": true,
+      "rowCount": 0,
+      "error": null
+    }
+  },
+  "postgrestTables": [
+    "journey_events",
+    "literature_tags",
+    "creative_jobs",
+    "literature_works",
+    "sessions",
+    "memory_items",
+    "literature_feedback",
+    "moments",
+    "entitlements",
+    "literary_passages",
+    "saved_words",
+    "audit_events",
+    "user_settings",
+    "profiles",
+    "habits",
+    "moment_memory_links",
+    "messages",
+    "context_snapshots",
+    "goals",
+    "novel_chapters"
+  ]
+}

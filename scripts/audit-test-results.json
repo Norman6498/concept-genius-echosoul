@@ -1,0 +1,472 @@
+{
+  "pages": {
+    "/": {
+      "category": "PUBLIC",
+      "status": 200,
+      "latencyMs": 286,
+      "redirectLocation": null,
+      "htmlLength": 37386,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/about": {
+      "category": "PUBLIC",
+      "status": 200,
+      "latencyMs": 31,
+      "redirectLocation": null,
+      "htmlLength": 26777,
+      "hasError": false,
+      "titleSnippet": "About EchoSoul | A Place for What You Feel"
+    },
+    "/features": {
+      "category": "PUBLIC",
+      "status": 200,
+      "latencyMs": 27,
+      "redirectLocation": null,
+      "htmlLength": 51120,
+      "hasError": false,
+      "titleSnippet": "Features — Tools for a more meaningful you | EchoSoul"
+    },
+    "/pricing": {
+      "category": "PUBLIC",
+      "status": 404,
+      "latencyMs": 25,
+      "redirectLocation": null,
+      "htmlLength": 10438,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/how-it-works": {
+      "category": "PUBLIC",
+      "status": 404,
+      "latencyMs": 19,
+      "redirectLocation": null,
+      "htmlLength": 10438,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/login": {
+      "category": "AUTH",
+      "status": 200,
+      "latencyMs": 31,
+      "redirectLocation": null,
+      "htmlLength": 24355,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Sign In | Welcome Back to Your Sanctuary"
+    },
+    "/signup": {
+      "category": "AUTH",
+      "status": 200,
+      "latencyMs": 21,
+      "redirectLocation": null,
+      "htmlLength": 24542,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Create Your Account | Enter Your Realm"
+    },
+    "/onboarding": {
+      "category": "ONBOARDING",
+      "status": 200,
+      "latencyMs": 42,
+      "redirectLocation": null,
+      "htmlLength": 49724,
+      "hasError": false,
+      "titleSnippet": "Step 1: About You | EchoSoul"
+    },
+    "/onboarding/appearance": {
+      "category": "ONBOARDING",
+      "status": 200,
+      "latencyMs": 37,
+      "redirectLocation": null,
+      "htmlLength": 43320,
+      "hasError": false,
+      "titleSnippet": "Step 5: Appearance — EchoSoul"
+    },
+    "/onboarding/interests": {
+      "category": "ONBOARDING",
+      "status": 200,
+      "latencyMs": 38,
+      "redirectLocation": null,
+      "htmlLength": 65489,
+      "hasError": false,
+      "titleSnippet": "Your Interests — EchoSoul"
+    },
+    "/onboarding/preferences": {
+      "category": "ONBOARDING",
+      "status": 200,
+      "latencyMs": 36,
+      "redirectLocation": null,
+      "htmlLength": 44930,
+      "hasError": false,
+      "titleSnippet": "Step 4: Preferences — EchoSoul"
+    },
+    "/onboarding/world": {
+      "category": "ONBOARDING",
+      "status": 200,
+      "latencyMs": 40,
+      "redirectLocation": null,
+      "htmlLength": 44349,
+      "hasError": false,
+      "titleSnippet": "Step 3: Your World — EchoSoul"
+    },
+    "/onboarding/complete": {
+      "category": "ONBOARDING",
+      "status": 200,
+      "latencyMs": 38,
+      "redirectLocation": null,
+      "htmlLength": 26572,
+      "hasError": false,
+      "titleSnippet": "Step 6: Complete — EchoSoul"
+    },
+    "/app": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 27,
+      "redirectLocation": null,
+      "htmlLength": 68522,
+      "hasError": false,
+      "titleSnippet": "Sanctuary | EchoSoul"
+    },
+    "/app/talk": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 26,
+      "redirectLocation": null,
+      "htmlLength": 44416,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/app/words": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 36,
+      "redirectLocation": null,
+      "htmlLength": 51878,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/app/music": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 31,
+      "redirectLocation": null,
+      "htmlLength": 56644,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/app/visuals": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 23,
+      "redirectLocation": null,
+      "htmlLength": 46962,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/app/journey": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 30,
+      "redirectLocation": null,
+      "htmlLength": 44543,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/app/journal": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 31,
+      "redirectLocation": null,
+      "htmlLength": 40848,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/app/guidance": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 32,
+      "redirectLocation": null,
+      "htmlLength": 42491,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/app/moments": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 30,
+      "redirectLocation": null,
+      "htmlLength": 51975,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/app/community": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 28,
+      "redirectLocation": null,
+      "htmlLength": 38561,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/app/profile": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 38,
+      "redirectLocation": null,
+      "htmlLength": 38382,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    },
+    "/app/settings": {
+      "category": "APP",
+      "status": 200,
+      "latencyMs": 46,
+      "redirectLocation": null,
+      "htmlLength": 40135,
+      "hasError": false,
+      "titleSnippet": "EchoSoul — Enter a realm where you can finally be you."
+    }
+  },
+  "apiRoutes": {
+    "health": {
+      "url": "/api/ai/health",
+      "method": "GET",
+      "status": 200,
+      "latencyMs": 2041,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "home": {
+      "url": "/api/home",
+      "method": "GET",
+      "status": 401,
+      "latencyMs": 63,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "chat_anxiety": {
+      "url": "/api/ai/chat",
+      "method": "POST",
+      "status": 200,
+      "latencyMs": 618,
+      "headers": {
+        "requestId": "req_1789139022191_oefmq8",
+        "policy": "REALTIME_CHAT",
+        "modelUsed": "poolside/laguna-s-2.1:free",
+        "totalMs": "582",
+        "latencyMs": "571"
+      },
+      "hasCanonicalSchema": true,
+      "sampleContent": "I'm having a little trouble gathering my thoughts. Give me a moment....",
+      "literatureSource": "Bhagavad Gita",
+      "musicTitle": "Mountain Calm (432 Hz)"
+    },
+    "chat_book_request": {
+      "url": "/api/ai/chat",
+      "method": "POST",
+      "status": 200,
+      "latencyMs": 453,
+      "headers": {
+        "requestId": "req_1789139022804_dej2lx",
+        "policy": "REALTIME_CHAT",
+        "modelUsed": "poolside/laguna-s-2.1:free",
+        "totalMs": "428",
+        "latencyMs": "426"
+      },
+      "hasCanonicalSchema": true,
+      "sampleContent": "I'm having a little trouble gathering my thoughts. Give me a moment....",
+      "literatureSource": "Meditations",
+      "musicTitle": "Woh Kagaz Ki Kashti"
+    },
+    "voice_turn": {
+      "url": "/api/ai/chat",
+      "method": "POST",
+      "status": 200,
+      "latencyMs": 327,
+      "headers": {
+        "requestId": "req_1789139023242_1givkj",
+        "policy": "FAST_VOICE",
+        "modelUsed": "poolside/laguna-s-2.1:free",
+        "totalMs": "314",
+        "latencyMs": "311"
+      },
+      "hasCanonicalSchema": true,
+      "sampleContent": "I'm having a little trouble gathering my thoughts. Give me a moment....",
+      "literatureSource": "Meditations",
+      "musicTitle": "Woh Kagaz Ki Kashti"
+    },
+    "ai_voice_route": {
+      "url": "/api/ai/voice",
+      "method": "POST",
+      "status": 200,
+      "latencyMs": 455,
+      "headers": {
+        "requestId": "req_1789139023624_y3hmzj",
+        "policy": "FAST_VOICE",
+        "modelUsed": "poolside/laguna-s-2.1:free",
+        "totalMs": "393",
+        "latencyMs": "388"
+      },
+      "hasCanonicalSchema": true,
+      "sampleContent": "I'm having a little trouble gathering my thoughts. Give me a moment....",
+      "literatureSource": "Meditations",
+      "musicTitle": "Woh Kagaz Ki Kashti"
+    },
+    "books_recommended": {
+      "url": "/api/content/books/recommended",
+      "method": "GET",
+      "status": 200,
+      "latencyMs": 27,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "music_recommended": {
+      "url": "/api/content/music/recommended",
+      "method": "GET",
+      "status": 200,
+      "latencyMs": 50,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "literature_search": {
+      "url": "/api/content/literature/search?q=Marcus",
+      "method": "GET",
+      "status": 200,
+      "latencyMs": 41,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "quotes_search": {
+      "url": "/api/content/quotes/search?q=strength",
+      "method": "GET",
+      "status": 200,
+      "latencyMs": 17,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "scenes_search": {
+      "url": "/api/content/scenes/search?q=mountain",
+      "method": "GET",
+      "status": 200,
+      "latencyMs": 33,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "shayari_search": {
+      "url": "/api/content/shayari/search?q=ghalib",
+      "method": "GET",
+      "status": 200,
+      "latencyMs": 22,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "personalization_post": {
+      "url": "/api/personalization",
+      "method": "POST",
+      "status": 200,
+      "latencyMs": 16,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "moments_route_check": {
+      "url": "/api/moments",
+      "method": "GET",
+      "status": 404,
+      "latencyMs": 9,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "journey_route_check": {
+      "url": "/api/journey",
+      "method": "GET",
+      "status": 404,
+      "latencyMs": 14,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "profile_route_check": {
+      "url": "/api/profile",
+      "method": "GET",
+      "status": 404,
+      "latencyMs": 15,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    },
+    "settings_route_check": {
+      "url": "/api/settings",
+      "method": "GET",
+      "status": 404,
+      "latencyMs": 11,
+      "headers": {},
+      "hasCanonicalSchema": false,
+      "sampleContent": null,
+      "literatureSource": null,
+      "musicTitle": null
+    }
+  },
+  "security": {
+    "strictTransportSecurity": "MISSING",
+    "contentSecurityPolicy": "MISSING",
+    "xContentTypeOptions": "MISSING",
+    "xFrameOptions": "MISSING",
+    "referrerPolicy": "MISSING",
+    "accessControlAllowOrigin": "NOT SET (Same-Origin default)",
+    "allHeaders": [
+      "cache-control",
+      "connection",
+      "content-encoding",
+      "content-type",
+      "date",
+      "etag",
+      "keep-alive",
+      "transfer-encoding",
+      "vary",
+      "x-nextjs-cache",
+      "x-nextjs-prerender",
+      "x-nextjs-stale-time",
+      "x-powered-by"
+    ]
+  },
+  "homePersonalization": {
+    "isDifferentiated": false
+  },
+  "timestamps": {
+    "start": "2026-09-11T15:03:38.959Z",
+    "end": "2026-09-11T15:03:44.341Z"
+  }
+}

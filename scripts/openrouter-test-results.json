@@ -1,0 +1,86 @@
+[
+  {
+    "testName": "1. Simple Chat",
+    "policy": "REALTIME",
+    "modelsSent": [
+      "poolside/laguna-s-2.1:free",
+      "nex-agi/nex-n2.5-mini:free",
+      "liquid/lfm-2.5-2.6b:free"
+    ],
+    "modelsCount": 3,
+    "httpStatus": 200,
+    "totalLatencyMs": 3934,
+    "modelUsed": "poolside/laguna-s-2.1:free",
+    "fallbackUsed": false,
+    "hasValidOutput": true,
+    "snippet": "This is a digital sanctuary—a gentle space where understanding and connection flourish. Here, we prioritize empathy, ref",
+    "error": null
+  },
+  {
+    "testName": "2. Emotional Conversation",
+    "policy": "REALTIME",
+    "modelsSent": [
+      "poolside/laguna-s-2.1:free",
+      "nex-agi/nex-n2.5-mini:free",
+      "liquid/lfm-2.5-2.6b:free"
+    ],
+    "modelsCount": 3,
+    "httpStatus": 200,
+    "totalLatencyMs": 3959,
+    "modelUsed": "poolside/laguna-s-2.1:free",
+    "fallbackUsed": false,
+    "hasValidOutput": true,
+    "snippet": "I hear you, and I want you to know that your exhaustion is completely valid. It takes real courage to acknowledge that w",
+    "error": null
+  },
+  {
+    "testName": "3. Music Request",
+    "policy": "REALTIME",
+    "modelsSent": [
+      "poolside/laguna-s-2.1:free",
+      "nex-agi/nex-n2.5-mini:free",
+      "liquid/lfm-2.5-2.6b:free"
+    ],
+    "modelsCount": 3,
+    "httpStatus": 200,
+    "totalLatencyMs": 2473,
+    "modelUsed": "nex-agi/nex-n2.5-mini:free",
+    "fallbackUsed": false,
+    "hasValidOutput": true,
+    "snippet": "Absolutely. Here are a few calming options to help settle your thoughts:\n\n- **432 Hz ambient tones** — gentle, soft dron",
+    "error": null
+  },
+  {
+    "testName": "4. Literature Request",
+    "policy": "LITERATURE_EXPLANATION",
+    "modelsSent": [
+      "poolside/laguna-s-2.1:free",
+      "nex-agi/nex-n2.5-mini:free"
+    ],
+    "modelsCount": 2,
+    "httpStatus": 200,
+    "totalLatencyMs": 3995,
+    "modelUsed": "nex-agi/nex-n2.5-mini:free",
+    "fallbackUsed": false,
+    "hasValidOutput": true,
+    "snippet": "**“The impediment to action advances action. What stands in the way becomes the way.”**  \n— *Marcus Aurelius, Meditation",
+    "error": null
+  },
+  {
+    "testName": "5. Structured Response (Reasoning)",
+    "policy": "REASONING",
+    "modelsSent": [
+      "nex-agi/nex-n2.5-pro:free",
+      "google/gemma-4-26b-a4b-it:free",
+      "nvidia/nemotron-3.5-lightning:free"
+    ],
+    "modelsCount": 3,
+    "httpStatus": 200,
+    "totalLatencyMs": 9510,
+    "modelUsed": "nex-agi/nex-n2.5-pro:free",
+    "fallbackUsed": false,
+    "hasValidOutput": true,
+    "snippet": "Absolutely — here are 3 small, achievable steps for tomorrow:\n\n1. **Set up for 5 minutes**\n   - Choose one study spot.\n ",
+    "error": null
+  }
+]

@@ -5,6 +5,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { createClient } from "@/lib/supabase/client";
+import {
+  MessageCircle,
+  FileText,
+  Music,
+  Heart,
+  Compass,
+  BookOpen,
+  Leaf,
+  Sparkles,
+  Users,
+  User,
+  Settings as SettingsIcon,
+} from "lucide-react";
 
 interface UserPersonalization {
   userName: string;
@@ -168,6 +181,80 @@ export function AuthenticatedHome() {
     }
   }, []);
 
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const recognitionRef = useRef<any>(null);
+  const [isVoiceRecording, setIsVoiceRecording] = useState(false);
+  const [recentConversations, setRecentConversations] = useState<
+    Array<{ title: string; time: string; fullMessage?: string; reply?: string; timestamp?: number }>
+  >([
+    { title: "How to stay consistent?", time: "Today, 9:12 AM" },
+    { title: "Fear of the future", time: "Yesterday, 8:45 PM" },
+    { title: "Dealing with overthinking", time: "8 Sep, 10:30 AM" },
+  ]);
+  const [dynamicRec, setDynamicRec] = useState<{
+    book?: { title: string; author: string; coverImage?: string; reason: string };
+    music?: { title: string; genre: string; reason: string };
+    guidance?: { title: string; desc: string };
+  } | null>(null);
+
+  const [userMoments, setUserMoments] = useState<Array<{ title: string; date: string; image: string }>>([
+    { title: "That peaceful evening", date: "9 Sep 2026", image: "/home/moment_1.jpg" },
+    { title: "A step forward", date: "7 Sep 2026", image: "/home/moment_2.jpg" },
+    { title: "Clarity after a chat", date: "4 Sep 2026", image: "/home/moment_3.jpg" },
+  ]);
+  const [goalsCount, setGoalsCount] = useState(3);
+  const [journalCount, setJournalCount] = useState(12);
+
+  // Personalization Display Controls
+  const [displayPersonalization, setDisplayPersonalization] = useState(true);
+  const [showPersonalConversations, setShowPersonalConversations] = useState(true);
+  const [showPersonalRecs, setShowPersonalRecs] = useState(true);
+  const [showPersonalMoments, setShowPersonalMoments] = useState(true);
+  const [showInsightDetails, setShowInsightDetails] = useState(false);
+
+  // Load actual recent conversations, moments, goals, journal, and personalization settings from localStorage
+  useEffect(() => {
+    try {
+      const pDisp = localStorage.getItem("echosoul_display_personalization");
+      if (pDisp !== null) setDisplayPersonalization(pDisp === "true");
+      const pConv = localStorage.getItem("echosoul_show_conversations");
+      if (pConv !== null) setShowPersonalConversations(pConv === "true");
+      const pRec = localStorage.getItem("echosoul_show_recs");
+      if (pRec !== null) setShowPersonalRecs(pRec === "true");
+      const pMom = localStorage.getItem("echosoul_show_moments");
+      if (pMom !== null) setShowPersonalMoments(pMom === "true");
+
+      const stored = localStorage.getItem("echosoul_recent_conversations");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setRecentConversations(parsed);
+        }
+      }
+      const storedMoments = localStorage.getItem("echosoul_moments");
+      if (storedMoments) {
+        const parsed = JSON.parse(storedMoments);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setUserMoments(parsed.slice(0, 3));
+        }
+      }
+      const storedGoals = localStorage.getItem("echosoul_goals");
+      if (storedGoals) {
+        const parsed = JSON.parse(storedGoals);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setGoalsCount(parsed.filter((g: any) => !g.done).length || parsed.length);
+        }
+      }
+      const storedJournal = localStorage.getItem("echosoul_journal_entries");
+      if (storedJournal) {
+        const parsed = JSON.parse(storedJournal);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setJournalCount(parsed.length);
+        }
+      }
+    } catch {}
+  }, []);
+
   // Paper writing letter-by-letter animation effect
   const triggerPaperWriting = (fullResponse: string) => {
     if (typingTimerRef.current) clearInterval(typingTimerRef.current);
@@ -187,33 +274,159 @@ export function AuthenticatedHome() {
     }, 20);
   };
 
-  const handleSendTalk = (customQuery?: string) => {
-    const query = customQuery || talkInput;
-    if (!query.trim()) return;
+  const handleSendTalk = async (customQuery?: string) => {
+    const query = (customQuery || talkInput).trim();
+    if (!query || isAiLoading || isWriting) return;
 
     setTalkInput("");
     setIsListening(true);
+    setIsAiLoading(true);
     setPaperOutput(null);
 
-    // Simulate thoughtful listening and letter-by-letter handwritten paper output
-    setTimeout(() => {
-      let response = "";
-      const lower = query.toLowerCase();
+    let personalization: any = {};
+    try {
+      const p1 = localStorage.getItem("echosoul_user_personalization");
+      if (p1) personalization = JSON.parse(p1);
+    } catch {}
 
-      if (lower.includes("stress") || lower.includes("overwhelm")) {
-        response = `Take a slow, deep breath, ${profile.userName}. Right now, in this moment, you are safe. Close your eyes for three seconds and let your shoulders drop. Whatever is demanding your urgency can pause. We will take it one gentle breath at a time.`;
-      } else if (lower.includes("focus") || lower.includes("concentrate")) {
-        response = `Let's clear the horizon, ${profile.userName}. Pick just one single task for the next 25 minutes. Silence notifications, set aside secondary worries, and give yourself the quiet gift of doing one thing with full devotion.`;
-      } else if (lower.includes("book") || lower.includes("read")) {
-        response = `Based on your love for ${profile.interests.slice(0, 2).join(" and ") || "reflection"}, I recommend 'Atomic Habits' by James Clear and 'The Prophet' by Kahlil Gibran. Both will offer you grounding anchors of perspective.`;
-      } else if (lower.includes("visual") || lower.includes("calm")) {
-        response = `Picture an early morning alpine lake. The surface is glassy and still, mirroring the snow-capped peaks in the dawn light. The air is crisp, carrying the scent of pine. You are standing on the shore, unhurried, whole, and at peace.`;
-      } else {
-        response = `I hear you clearly, ${profile.userName}. Sometimes just speaking our unspoken thoughts aloud begins to unravel their weight. Whatever direction today takes, remember that your worth is not measured by relentless output, but by the kindness you offer yourself along the way.`;
+    try {
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: query,
+          personalization: {
+            ...personalization,
+            userName: profile.userName,
+            currentMood: profile.currentMood,
+            currentFocus: profile.currentFocus,
+            interests: profile.interests,
+          },
+        }),
+      });
+
+      const data = await res.json();
+      const reply = data.content || "I am here with you. Take a gentle breath.";
+      setIsAiLoading(false);
+      triggerPaperWriting(reply);
+
+      // Dynamically adapt recommendations based on what the user spoke / asked
+      const q = query.toLowerCase();
+      if (q.includes("stress") || q.includes("anxious") || q.includes("overwhelm") || q.includes("calm") || q.includes("relax")) {
+        setDynamicRec({
+          book: { title: "The Power of Now", author: "Eckhart Tolle", reason: "Recommended from your reflection on stress and seeking stillness." },
+          music: { title: "Hindi Calm & Forest Rain", genre: "Peace • 48 min", reason: "Gentle acoustic resonance to dissolve tension." },
+          guidance: { title: "Grounding in Overwhelm", desc: "Actionable mindful micro-steps based on your voice check-in." },
+        });
+      } else if (q.includes("focus") || q.includes("study") || q.includes("physics") || q.includes("work") || q.includes("exam")) {
+        setDynamicRec({
+          book: { title: "Deep Work", author: "Cal Newport", reason: "Recommended because you asked for focus and clear execution." },
+          music: { title: "Mountain Focus", genre: "Lofi • 45 min", reason: "Steady binaural flow for undisturbed clarity." },
+          guidance: { title: "Sustaining Gentle Focus", desc: "Break your target into 25-minute calm intervals." },
+        });
+      } else if (q.includes("career") || q.includes("job") || q.includes("future") || q.includes("path")) {
+        setDynamicRec({
+          book: { title: "Essentialism", author: "Greg McKeown", reason: "Recommended to guide your decisions on what truly matters." },
+          music: { title: "Morning Motivation", genre: "Energy • 32 min", reason: "Inspirational acoustic clarity." },
+          guidance: { title: "Navigating Crossroads", desc: "Perspective on long-term growth and trust in your steps." },
+        });
+      } else if (q.includes("book") || q.includes("read") || q.includes("poem") || q.includes("shayari") || q.includes("author")) {
+        setDynamicRec({
+          book: { title: "The Prophet", author: "Kahlil Gibran", reason: "Recommended for deep poetic wisdom and heartfelt perspective." },
+          music: { title: "Night Piano", genre: "Stillness • 50 min", reason: "Soft keys accompaniment for reading." },
+          guidance: { title: "Unlocking Creative Flow", desc: "Allow thoughts to blossom naturally without harsh self-critique." },
+        });
       }
 
-      triggerPaperWriting(response);
-    }, 600);
+      // Save real conversation entry
+      const newEntry = {
+        title: query.length > 38 ? query.slice(0, 38) + "..." : query,
+        time: "Just now",
+        fullMessage: query,
+        reply,
+        timestamp: Date.now(),
+      };
+      setRecentConversations((prev) => {
+        const updated = [newEntry, ...prev.filter((p) => p.title !== newEntry.title)].slice(0, 6);
+        try {
+          localStorage.setItem("echosoul_recent_conversations", JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
+    } catch {
+      setIsAiLoading(false);
+      const fallback = `I hear you clearly, ${profile.userName}. Sometimes just speaking our unspoken thoughts aloud begins to unravel their weight. Whatever direction today takes, remember that your worth is not measured by relentless output, but by the kindness you offer yourself along the way.`;
+      triggerPaperWriting(fallback);
+    }
+  };
+
+  const toggleHomeVoice = () => {
+    if (isVoiceRecording) {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {}
+        recognitionRef.current = null;
+      }
+      setIsVoiceRecording(false);
+      if (talkInput.trim()) {
+        handleSendTalk(talkInput.trim());
+      }
+      return;
+    }
+
+    const SpeechRecognition =
+      typeof window !== "undefined"
+        ? (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+        : null;
+
+    if (!SpeechRecognition) {
+      alert("Speech recognition is not supported in this browser. Please type into the bar.");
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+      let accumulated = "";
+
+      recognition.onstart = () => {
+        setIsVoiceRecording(true);
+        accumulated = "";
+      };
+
+      recognition.onresult = (event: any) => {
+        let interim = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const trans = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            accumulated += (accumulated ? " " : "") + trans;
+          } else {
+            interim += trans;
+          }
+        }
+        const full = (accumulated + " " + interim).trim();
+        setTalkInput(full);
+      };
+
+      recognition.onerror = () => {
+        // keep recording on silence / non-fatal warning
+      };
+
+      recognition.onend = () => {
+        // Only stop if user toggled off
+        if (!isVoiceRecording) {
+          setIsVoiceRecording(false);
+        }
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch {
+      setIsVoiceRecording(false);
+    }
   };
 
   const handleSaveMood = async (mood: string) => {
@@ -241,6 +454,19 @@ export function AuthenticatedHome() {
   const currentThought = SHAYARI_LIBRARY[thoughtIndex];
 
   // Dynamic recommendation based on user onboarding data
+  const resolveBookCover = (title?: string, author?: string): string => {
+    const query = `${title ?? ""} ${author ?? ""}`.toLowerCase();
+    if (query.includes("prophet")) return "/books/the_prophet.svg";
+    if (query.includes("meditation") || query.includes("aurelius")) return "/books/meditations.svg";
+    if (query.includes("now") || query.includes("tolle")) return "/books/the_power_of_now.svg";
+    if (query.includes("essentialism") || query.includes("mckeown")) return "/books/essentialism.svg";
+    if (query.includes("road") || query.includes("frost")) return "/books/the_road_not_taken.svg";
+    if (query.includes("gita") || query.includes("karma")) return "/books/bhagavad_gita.svg";
+    if (query.includes("ghalib") || query.includes("diwan")) return "/books/ghazals_ghalib.svg";
+    if (query.includes("habit") || query.includes("clear")) return "/books/atomic_habits.svg";
+    return "/books/the_prophet.svg";
+  };
+
   const getDynamicBook = () => {
     const hasPhil = profile.interests.some((i) => i.toLowerCase().includes("philosophy"));
     const hasLit = profile.interests.some((i) => i.toLowerCase().includes("literature") || i.toLowerCase().includes("poetry"));
@@ -251,7 +477,7 @@ export function AuthenticatedHome() {
       return {
         title: "Meditations",
         author: "Marcus Aurelius",
-        coverImage: "/home/book_atomic_habits.jpg",
+        coverImage: "/books/meditations.svg",
         reason: "Because you seek timeless stoic wisdom and clarity.",
       };
     }
@@ -259,7 +485,7 @@ export function AuthenticatedHome() {
       return {
         title: "The Prophet",
         author: "Kahlil Gibran",
-        coverImage: "/home/book_atomic_habits.jpg",
+        coverImage: "/books/the_prophet.svg",
         reason: "Because you appreciate soulful poetic reflection.",
       };
     }
@@ -267,7 +493,7 @@ export function AuthenticatedHome() {
       return {
         title: "The Power of Now",
         author: "Eckhart Tolle",
-        coverImage: "/home/book_atomic_habits.jpg",
+        coverImage: "/books/the_power_of_now.svg",
         reason: "Because you value presence and inner calm.",
       };
     }
@@ -275,7 +501,7 @@ export function AuthenticatedHome() {
       return {
         title: "Essentialism",
         author: "Greg McKeown",
-        coverImage: "/home/book_atomic_habits.jpg",
+        coverImage: "/books/essentialism.svg",
         reason: "Because you're focusing on what truly matters.",
       };
     }
@@ -283,12 +509,25 @@ export function AuthenticatedHome() {
     return {
       title: "Atomic Habits",
       author: "James Clear",
-      coverImage: "/home/book_atomic_habits.jpg",
+      coverImage: "/books/atomic_habits.svg",
       reason: "Because you asked about building better routines.",
     };
   };
 
-  const userBook = getDynamicBook();
+  const userBook = dynamicRec?.book
+    ? {
+        title: dynamicRec.book.title,
+        author: dynamicRec.book.author,
+        coverImage: resolveBookCover(dynamicRec.book.title, dynamicRec.book.author),
+        reason: dynamicRec.book.reason,
+      }
+    : getDynamicBook();
+
+  const userMusic = dynamicRec?.music ?? {
+    title: "Focus Flow",
+    genre: "Lofi • 45 min",
+    reason: "Calm, steady, and focused for your study session.",
+  };
 
   // Visual World Scenery Image
   const getVisualWorldInfo = () => {
@@ -366,7 +605,7 @@ export function AuthenticatedHome() {
     };
   };
 
-  const userGuidance = getDynamicGuidance();
+  const userGuidance = dynamicRec?.guidance ?? getDynamicGuidance();
 
   // Date formatting
   const formattedDate = new Date().toLocaleDateString("en-US", {
@@ -480,15 +719,15 @@ export function AuthenticatedHome() {
             </Link>
 
             {[
-              { label: "Talk", icon: "💬", href: "/app/talk" },
-              { label: "Words", icon: "📜", href: "/app/words" },
-              { label: "Music", icon: "🎵", href: "/app/music" },
-              { label: "Visuals", icon: "🤍", href: "/app/visuals" },
-              { label: "Journey", icon: "🧭", href: "/app/journey" },
-              { label: "Journal", icon: "📓", href: "/app/journal" },
-              { label: "Guidance", icon: "🍃", href: "/app/guidance" },
-              { label: "Moments", icon: "✨", href: "/app/moments" },
-              { label: "Community", icon: "👥", href: "#", badge: "Soon" },
+              { label: "Talk", icon: <MessageCircle className="w-4 h-4" />, href: "/app/talk" },
+              { label: "Words", icon: <FileText className="w-4 h-4" />, href: "/app/words" },
+              { label: "Music", icon: <Music className="w-4 h-4" />, href: "/app/music" },
+              { label: "Visuals", icon: <Heart className="w-4 h-4" />, href: "/app/visuals" },
+              { label: "Journey", icon: <Compass className="w-4 h-4" />, href: "/app/journey" },
+              { label: "Journal", icon: <BookOpen className="w-4 h-4" />, href: "/app/journal" },
+              { label: "Guidance", icon: <Leaf className="w-4 h-4" />, href: "/app/guidance" },
+              { label: "Moments", icon: <Sparkles className="w-4 h-4" />, href: "/app/moments" },
+              { label: "Community", icon: <Users className="w-4 h-4" />, href: "#", badge: "Soon" },
             ].map((item) => (
               <Link
                 key={item.label}
@@ -496,7 +735,7 @@ export function AuthenticatedHome() {
                 className="flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-ui text-[#CFC5B5] hover:text-[#FFF8E1] hover:bg-white/5 transition-all group"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-sm opacity-80 group-hover:opacity-100">{item.icon}</span>
+                  <span className="opacity-80 group-hover:opacity-100">{item.icon}</span>
                   <span>{item.label}</span>
                 </div>
                 {item.badge && (
@@ -513,47 +752,90 @@ export function AuthenticatedHome() {
               href="/app/profile"
               className="flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-ui text-[#CFC5B5] hover:text-[#FFF8E1] hover:bg-white/5 transition-all"
             >
-              <span className="text-sm">👤</span>
+              <User className="w-4 h-4 opacity-80" />
               <span>Profile</span>
             </Link>
             <Link
               href="/app/settings"
               className="flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-ui text-[#CFC5B5] hover:text-[#FFF8E1] hover:bg-white/5 transition-all"
             >
-              <span className="text-sm">⚙️</span>
+              <SettingsIcon className="w-4 h-4 opacity-80" />
               <span>Settings</span>
             </Link>
           </div>
 
           {/* Bottom Card: Display Personalization */}
-          <div className="p-3.5 rounded-2xl bg-[#0C1B25]/80 border border-white/10 space-y-2.5 text-[11px] font-ui">
+          <div className="p-3.5 rounded-2xl bg-[#0C1B25]/80 border border-white/10 space-y-2.5 text-[11px] font-manrope">
             <div className="flex items-center justify-between">
               <span className="font-medium text-[#FFF8E1]">Display Personalization</span>
-              <span className="w-6 h-3.5 rounded-full bg-[#F2D78A] flex items-center justify-end px-0.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#0B0F14]" />
-              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  const next = !displayPersonalization;
+                  setDisplayPersonalization(next);
+                  try {
+                    localStorage.setItem("echosoul_display_personalization", String(next));
+                  } catch {}
+                }}
+                className={`w-7 h-4 rounded-full flex items-center px-0.5 transition-colors cursor-pointer ${
+                  displayPersonalization ? "bg-[#F2D78A] justify-end" : "bg-white/20 justify-start"
+                }`}
+                title={displayPersonalization ? "Hide personalization from Home" : "Show personalization on Home"}
+              >
+                <span className={`w-3 h-3 rounded-full ${displayPersonalization ? "bg-[#0B0F14]" : "bg-white"}`} />
+              </button>
             </div>
             <p className="text-[#9AA8B0] text-[10px] leading-tight">
               Show or hide personal data, history and recommendations from Home.
             </p>
             <div className="space-y-1.5 pt-1 text-[#CFC5B5] text-[10px]">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" defaultChecked className="rounded accent-[#F2D78A]" />
+                <input
+                  type="checkbox"
+                  checked={showPersonalConversations}
+                  onChange={(e) => {
+                    setShowPersonalConversations(e.target.checked);
+                    try {
+                      localStorage.setItem("echosoul_show_conversations", String(e.target.checked));
+                    } catch {}
+                  }}
+                  className="rounded accent-[#F2D78A] cursor-pointer"
+                />
                 <span>Show my recent conversations</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" defaultChecked className="rounded accent-[#F2D78A]" />
+                <input
+                  type="checkbox"
+                  checked={showPersonalRecs}
+                  onChange={(e) => {
+                    setShowPersonalRecs(e.target.checked);
+                    try {
+                      localStorage.setItem("echosoul_show_recs", String(e.target.checked));
+                    } catch {}
+                  }}
+                  className="rounded accent-[#F2D78A] cursor-pointer"
+                />
                 <span>Show my personalized recommendations</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" defaultChecked className="rounded accent-[#F2D78A]" />
+                <input
+                  type="checkbox"
+                  checked={showPersonalMoments}
+                  onChange={(e) => {
+                    setShowPersonalMoments(e.target.checked);
+                    try {
+                      localStorage.setItem("echosoul_show_moments", String(e.target.checked));
+                    } catch {}
+                  }}
+                  className="rounded accent-[#F2D78A] cursor-pointer"
+                />
                 <span>Show my moments &amp; journey</span>
               </label>
             </div>
             <div className="pt-1">
-              <span className="text-[10px] text-[#F2D78A] hover:underline cursor-pointer">
+              <Link href="/app/settings" className="text-[10px] text-[#F2D78A] hover:underline cursor-pointer">
                 Manage what&apos;s shown →
-              </span>
+              </Link>
             </div>
           </div>
 
@@ -610,11 +892,18 @@ export function AuthenticatedHome() {
                 {/* Talk to EchoSoul Input Pill */}
                 <div className="pt-2 space-y-2.5">
                   <div className="relative flex items-center rounded-full bg-[#070D12]/90 border border-[#F2D78A]/45 backdrop-blur-xl p-1 shadow-2xl focus-within:ring-2 focus-within:ring-[#F2D78A]/50">
-                    <div className="pl-3.5 pr-2 text-[#F2D78A]">
+                    <button
+                      type="button"
+                      onClick={toggleHomeVoice}
+                      title="Speak with your microphone"
+                      className={`pl-3.5 pr-2 transition-colors cursor-pointer ${
+                        isVoiceRecording ? "text-[#EF4444] animate-pulse" : "text-[#F2D78A] hover:text-[#FFF8E1]"
+                      }`}
+                    >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                       </svg>
-                    </div>
+                    </button>
                     <input
                       type="text"
                       value={talkInput}
@@ -625,15 +914,19 @@ export function AuthenticatedHome() {
                           handleSendTalk();
                         }
                       }}
-                      placeholder="Talk to EchoSoul..."
+                      placeholder={isVoiceRecording ? "Listening to your voice... speak freely" : "Talk to EchoSoul..."}
                       className="w-full h-10 bg-transparent text-xs sm:text-sm text-[#FFF8E1] placeholder-[#9AA8B0]/70 focus:outline-none pr-2"
                     />
 
                     {/* Soundwave animation & Gold Action button */}
                     <div className="flex items-center gap-2 pr-1">
-                      {isListening ? (
-                        <div className="flex items-center gap-1 px-2 text-[#F2D78A] text-xs font-mono animate-pulse">
+                      {isVoiceRecording ? (
+                        <div className="flex items-center gap-1 px-2 text-[#EF4444] text-xs font-mono animate-pulse">
                           <span>Listening...</span>
+                        </div>
+                      ) : isAiLoading ? (
+                        <div className="flex items-center gap-1 px-2 text-[#F2D78A] text-xs font-mono animate-pulse">
+                          <span>Reflecting...</span>
                         </div>
                       ) : (
                         <div className="flex items-center gap-0.5 px-2">
@@ -646,7 +939,8 @@ export function AuthenticatedHome() {
                         type="button"
                         onClick={() => handleSendTalk()}
                         aria-label="Send query"
-                        className="w-9 h-9 rounded-full btn-gold-primary flex items-center justify-center shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+                        disabled={isAiLoading}
+                        className="w-9 h-9 rounded-full btn-gold-primary flex items-center justify-center shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50"
                       >
                         <svg className="w-4 h-4 text-[#0B0F14]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -726,10 +1020,9 @@ export function AuthenticatedHome() {
                     </p>
                   </div>
 
-                  {/* Bottom Controls: Save, Share */}
+                  {/* Bottom Controls: Save */}
                   <div className="relative z-10 flex items-center justify-between pt-2 border-t border-[#2C241D]/10 text-xs font-ui font-medium">
                     <span className="text-[#8A5A1A] hover:underline cursor-pointer">Save</span>
-                    <span className="text-[#8A5A1A] hover:underline cursor-pointer">&lt; Share →</span>
                   </div>
                 </div>
               </div>
@@ -860,11 +1153,11 @@ export function AuthenticatedHome() {
                     <span>Music for Your Mood</span>
                   </div>
                   <h3 className="font-editorial text-sm font-semibold text-[#FFF8E1] group-hover:text-[#F2D78A] transition-colors mt-0.5">
-                    Focus Flow
+                    {userMusic.title}
                   </h3>
-                  <p className="text-[10px] text-[#CFC5B5] font-ui">Lofi • 45 min</p>
+                  <p className="text-[10px] text-[#CFC5B5] font-ui">{userMusic.genre}</p>
                   <p className="font-ui text-[11px] text-[#9AA8B0] mt-0.5 leading-snug line-clamp-2">
-                    Calm, steady, and focused for your study session.
+                    {userMusic.reason}
                   </p>
                 </div>
               </div>
@@ -948,21 +1241,17 @@ export function AuthenticatedHome() {
               </div>
 
               <div className="space-y-2">
-                {[
-                  { title: "How to stay consistent?", time: "Today, 9:12 AM" },
-                  { title: "Fear of the future", time: "Yesterday, 8:45 PM" },
-                  { title: "Dealing with overthinking", time: "8 Sep, 10:30 AM" },
-                ].map((item, i) => (
+                {recentConversations.map((item, i) => (
                   <div
                     key={i}
-                    onClick={() => handleSendTalk(item.title)}
+                    onClick={() => handleSendTalk(item.fullMessage || item.title)}
                     className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[#F2D78A]/30 transition-all cursor-pointer flex items-center justify-between text-xs"
                   >
                     <div className="space-y-0.5">
-                      <p className="text-[#FFF8E1] font-medium leading-tight">{item.title}</p>
+                      <p className="text-[#FFF8E1] font-medium leading-tight line-clamp-1">{item.title}</p>
                       <span className="text-[10px] text-[#9AA8B0]">{item.time}</span>
                     </div>
-                    <div className="w-6 h-6 rounded-lg bg-[#112431] flex items-center justify-center text-xs text-[#F2D78A]">
+                    <div className="w-6 h-6 rounded-lg bg-[#112431] flex items-center justify-center text-xs text-[#F2D78A] shrink-0 ml-2">
                       💬
                     </div>
                   </div>
@@ -979,18 +1268,14 @@ export function AuthenticatedHome() {
                     Your Moments
                   </h3>
                 </div>
-                <span className="text-[11px] font-ui text-[#F2D78A] cursor-pointer hover:underline">
+                <Link href="/app/moments" className="text-[11px] font-ui text-[#F2D78A] cursor-pointer hover:underline">
                   See all →
-                </span>
+                </Link>
               </div>
 
               <div className="grid grid-cols-3 gap-2">
-                {[
-                  { title: "That peaceful evening", date: "9 Sep 2026", image: "/home/moment_1.jpg" },
-                  { title: "A step forward", date: "7 Sep 2026", image: "/home/moment_2.jpg" },
-                  { title: "Clarity after a chat", date: "4 Sep 2026", image: "/home/moment_3.jpg" },
-                ].map((moment, idx) => (
-                  <div key={idx} className="space-y-1 group cursor-pointer">
+                {userMoments.map((moment, idx) => (
+                  <Link href="/app/moments" key={idx} className="space-y-1 group cursor-pointer block">
                     <div className="relative h-20 rounded-lg overflow-hidden bg-[#08131B] border border-white/10">
                       <Image
                         src={moment.image}
@@ -1004,7 +1289,7 @@ export function AuthenticatedHome() {
                       {moment.title}
                     </p>
                     <span className="text-[9px] text-[#9AA8B0] block">{moment.date}</span>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -1018,40 +1303,40 @@ export function AuthenticatedHome() {
                     Your Journey
                   </h3>
                 </div>
-                <span className="text-[11px] font-ui text-[#F2D78A] cursor-pointer hover:underline">
+                <Link href="/app/journey" className="text-[11px] font-ui text-[#F2D78A] cursor-pointer hover:underline">
                   See all →
-                </span>
+                </Link>
               </div>
 
               <div className="space-y-2 text-xs font-ui">
-                <div className="p-2 rounded-xl bg-white/5 flex items-center justify-between">
+                <Link href="/app/journey" className="p-2 rounded-xl bg-white/5 flex items-center justify-between hover:bg-white/10 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="text-sm">👤</span>
                     <span className="text-[#FFF8E1]">Goals</span>
                   </div>
-                  <span className="text-[11px] text-[#F2D78A] font-medium">3 active goals</span>
-                </div>
-                <div className="p-2 rounded-xl bg-white/5 flex items-center justify-between">
+                  <span className="text-[11px] text-[#F2D78A] font-medium">{goalsCount} active goals</span>
+                </Link>
+                <Link href="/app/journey" className="p-2 rounded-xl bg-white/5 flex items-center justify-between hover:bg-white/10 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="text-sm">😊</span>
                     <span className="text-[#FFF8E1]">Emotions</span>
                   </div>
                   <span className="text-[11px] text-[#9AA8B0]">Mood patterns &gt;</span>
-                </div>
-                <div className="p-2 rounded-xl bg-white/5 flex items-center justify-between">
+                </Link>
+                <Link href="/app/journal" className="p-2 rounded-xl bg-white/5 flex items-center justify-between hover:bg-white/10 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="text-sm">📖</span>
                     <span className="text-[#FFF8E1]">Reflections</span>
                   </div>
-                  <span className="text-[11px] text-[#F2D78A] font-medium">12 journal entries</span>
-                </div>
-                <div className="p-2 rounded-xl bg-white/5 flex items-center justify-between">
+                  <span className="text-[11px] text-[#F2D78A] font-medium">{journalCount} journal entries</span>
+                </Link>
+                <Link href="/app/journey" className="p-2 rounded-xl bg-white/5 flex items-center justify-between hover:bg-white/10 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="text-sm">📚</span>
                     <span className="text-[#FFF8E1]">Life Novel</span>
                   </div>
                   <span className="text-[11px] text-[#9AA8B0]">Your story in progress &gt;</span>
-                </div>
+                </Link>
               </div>
             </div>
 
@@ -1064,29 +1349,65 @@ export function AuthenticatedHome() {
           {/* Today's Insights Card */}
           <div className="p-4 rounded-2xl bg-[#0C1B25]/90 border border-white/10 space-y-3 shadow-lg">
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
-              <h3 className="font-editorial text-sm font-semibold text-[#FFF8E1]">
+              <h3 className="font-cormorant text-base font-semibold text-[#FFF8E1]">
                 Today&apos;s Insights
               </h3>
-              <div className="flex items-center gap-1.5 text-[10px] font-ui text-[#9AA8B0]">
+              <div className="flex items-center gap-1.5 text-[10px] font-manrope text-[#9AA8B0]">
                 <span>Show details</span>
-                <span className="w-5 h-3 rounded-full bg-[#F2D78A] flex items-center justify-end px-0.5">
-                  <span className="w-2 h-2 rounded-full bg-[#0B0F14]" />
-                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowInsightDetails(!showInsightDetails)}
+                  className={`w-7 h-4 rounded-full flex items-center px-0.5 transition-colors cursor-pointer ${
+                    showInsightDetails ? "bg-[#F2D78A] justify-end" : "bg-white/20 justify-start"
+                  }`}
+                  title={showInsightDetails ? "Hide metrics" : "Show detailed metrics"}
+                >
+                  <span className={`w-3 h-3 rounded-full ${showInsightDetails ? "bg-[#0B0F14]" : "bg-white"}`} />
+                </button>
               </div>
             </div>
 
-            <div className="space-y-2 text-xs font-ui text-[#CFC5B5]">
-              <div className="flex items-start gap-2.5 p-2 rounded-xl bg-white/5">
-                <span className="text-base text-[#F2D78A]">✨</span>
-                <p className="leading-tight">Your mood seems more stable this week.</p>
+            <div className="space-y-2.5 text-xs font-manrope text-[#CFC5B5]">
+              {/* Insight 1: Mood */}
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-1.5">
+                <div className="flex items-start gap-2">
+                  <span className="text-base text-[#F2D78A] shrink-0">✨</span>
+                  <p className="leading-tight text-[#FFF8E1] font-medium">Your mood seems more stable this week.</p>
+                </div>
+                {showInsightDetails && (
+                  <div className="pl-6 space-y-1 text-[11px] text-[#9AA8B0] border-t border-white/5 pt-1.5 animate-fadeIn">
+                    <p className="text-[#CFC5B5]">Sentiment metrics show +28% stability across 4 check-ins with reduced evening anxiety variance.</p>
+                    <p className="text-[#F2D78A]/90 font-medium">Key factor: Regular wind-down routines protecting your sleep buffer.</p>
+                  </div>
+                )}
               </div>
-              <div className="flex items-start gap-2.5 p-2 rounded-xl bg-white/5">
-                <span className="text-base text-[#4ADE80]">🍃</span>
-                <p className="leading-tight">You&apos;re talking more about your goals.</p>
+
+              {/* Insight 2: Goals */}
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-1.5">
+                <div className="flex items-start gap-2">
+                  <span className="text-base text-[#4ADE80] shrink-0">🍃</span>
+                  <p className="leading-tight text-[#FFF8E1] font-medium">You&apos;re talking more about your goals.</p>
+                </div>
+                {showInsightDetails && (
+                  <div className="pl-6 space-y-1 text-[11px] text-[#9AA8B0] border-t border-white/5 pt-1.5 animate-fadeIn">
+                    <p className="text-[#CFC5B5]">Detected repeat focus on &apos;consistency&apos; and &apos;study progress&apos; in recent conversations.</p>
+                    <p className="text-[#4ADE80]/90 font-medium">Next step: Keep daily focus blocks small (25–50 min) to sustain momentum.</p>
+                  </div>
+                )}
               </div>
-              <div className="flex items-start gap-2.5 p-2 rounded-xl bg-white/5">
-                <span className="text-base text-[#F2D78A]">💛</span>
-                <p className="leading-tight">You&apos;ve been more consistent. Keep going!</p>
+
+              {/* Insight 3: Consistency */}
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-1.5">
+                <div className="flex items-start gap-2">
+                  <span className="text-base text-[#F2D78A] shrink-0">💛</span>
+                  <p className="leading-tight text-[#FFF8E1] font-medium">You&apos;ve been more consistent. Keep going!</p>
+                </div>
+                {showInsightDetails && (
+                  <div className="pl-6 space-y-1 text-[11px] text-[#9AA8B0] border-t border-white/5 pt-1.5 animate-fadeIn">
+                    <p className="text-[#CFC5B5]">Active 4-day check-in streak. Micro-habits are compounding into an established habit loop.</p>
+                    <p className="text-[#F2D78A]/90 font-medium">Takeaway: Consistency beats intensity. Give yourself credit for showing up.</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1140,33 +1461,67 @@ export function AuthenticatedHome() {
             </div>
           </div>
 
-          {/* Quick Actions Card */}
+          {/* Quick Actions Card - Bound to real user data */}
           <div className="p-4 rounded-2xl bg-[#0C1B25]/90 border border-white/10 space-y-2.5 shadow-lg">
-            <h3 className="font-editorial text-sm font-semibold text-[#FFF8E1] border-b border-white/10 pb-1.5">
+            <h3 className="font-cormorant text-base font-semibold text-[#FFF8E1] border-b border-white/10 pb-1.5">
               Quick Actions
             </h3>
-            <div className="space-y-2 text-xs font-ui">
+            <div className="space-y-2 text-xs font-manrope">
               {[
-                { title: "Continue Last Conversation", desc: "You: How to manage time?", icon: "💬", iconBg: "bg-teal-950/60 border-teal-500/40 text-teal-300", href: "/app/talk" },
-                { title: "Open Your Journal", desc: "Write your thoughts", icon: "📓", iconBg: "bg-emerald-950/60 border-emerald-500/40 text-emerald-300", href: "/app/journal" },
-                { title: "Explore Moments", desc: "See your recent highlights", icon: "🖼️", iconBg: "bg-rose-950/60 border-rose-500/40 text-rose-300", href: "/app/moments" },
-                { title: "Generate a Visualization", desc: "A calm space for you", icon: "🌌", iconBg: "bg-blue-950/60 border-blue-500/40 text-blue-300", href: "/app/visuals" },
+                {
+                  title: "Continue Last Conversation",
+                  desc: displayPersonalization && recentConversations[0]
+                    ? `You: "${recentConversations[0].title}"`
+                    : "Start a thoughtful conversation",
+                  icon: "💬",
+                  iconBg: "bg-teal-950/60 border-teal-500/40 text-teal-300",
+                  href: "/app/talk",
+                },
+                {
+                  title: "Open Your Journal",
+                  desc: displayPersonalization && journalCount > 0
+                    ? `${journalCount} entries saved • Write thoughts`
+                    : "Write your thoughts",
+                  icon: "📓",
+                  iconBg: "bg-emerald-950/60 border-emerald-500/40 text-emerald-300",
+                  href: "/app/journal",
+                },
+                {
+                  title: "Explore Moments",
+                  desc: displayPersonalization && userMoments.length > 0
+                    ? `${userMoments.length} highlights • "${userMoments[0].title}"`
+                    : "See your recent highlights",
+                  icon: "🖼️",
+                  iconBg: "bg-rose-950/60 border-rose-500/40 text-rose-300",
+                  href: "/app/moments",
+                },
+                {
+                  title: "Generate a Visualization",
+                  desc: profile.visualWorld
+                    ? `Active: ${profile.visualWorld.replace(/_/g, " ")}`
+                    : "A calm space for you",
+                  icon: "🌌",
+                  iconBg: "bg-blue-950/60 border-blue-500/40 text-blue-300",
+                  href: "/app/visuals",
+                },
               ].map((action, i) => (
                 <Link
                   key={i}
                   href={action.href}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-between transition-colors group"
+                  className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-between transition-colors group"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center border text-sm ${action.iconBg}`}>
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center border text-sm shrink-0 ${action.iconBg}`}>
                       {action.icon}
                     </div>
-                    <div>
-                      <p className="text-[#FFF8E1] font-medium leading-tight group-hover:text-[#F2D78A] transition-colors">{action.title}</p>
-                      <span className="text-[10px] text-[#9AA8B0]">{action.desc}</span>
+                    <div className="min-w-0">
+                      <p className="text-[#FFF8E1] font-medium leading-tight group-hover:text-[#F2D78A] transition-colors truncate">
+                        {action.title}
+                      </p>
+                      <span className="text-[10px] text-[#9AA8B0] truncate block">{action.desc}</span>
                     </div>
                   </div>
-                  <span className="text-[#9AA8B0] group-hover:translate-x-0.5 transition-transform">&gt;</span>
+                  <span className="text-[#9AA8B0] group-hover:translate-x-0.5 transition-transform text-xs">&gt;</span>
                 </Link>
               ))}
             </div>

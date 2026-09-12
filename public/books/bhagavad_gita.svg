@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+  <defs>
+    <linearGradient id="bg_gita" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2B1408" />
+      <stop offset="50%" stop-color="#3D1C08" />
+      <stop offset="100%" stop-color="#140A04" />
+    </linearGradient>
+    <linearGradient id="sacred_gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE899" />
+      <stop offset="50%" stop-color="#F2D78A" />
+      <stop offset="100%" stop-color="#E58E26" />
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="600" rx="12" fill="url(#bg_gita)" />
+  <rect x="0" y="0" width="28" height="600" fill="#000000" opacity="0.35" />
+  <rect x="42" y="30" width="326" height="540" rx="4" fill="none" stroke="url(#sacred_gold)" stroke-width="1.5" opacity="0.6" />
+
+  <!-- Sacred Lotus / Conch / Flame Symbol -->
+  <g transform="translate(205, 220)">
+    <!-- Central Lotus Petal -->
+    <path d="M0,-50 C-15,-20 -20,10 0,30 C20,10 15,-20 0,-50 Z" fill="url(#sacred_gold)" opacity="0.85" />
+    <!-- Left Petal -->
+    <path d="M-8,-35 C-35,-15 -45,10 -15,25 C-5,10 -2,-10 -8,-35 Z" fill="url(#sacred_gold)" opacity="0.7" />
+    <!-- Right Petal -->
+    <path d="M8,-35 C35,-15 45,10 15,25 C5,10 2,-10 8,-35 Z" fill="url(#sacred_gold)" opacity="0.7" />
+    <!-- Golden Base Wheel / Chariot Ring -->
+    <circle cx="0" cy="38" r="14" fill="none" stroke="url(#sacred_gold)" stroke-width="2" />
+    <circle cx="0" cy="38" r="4" fill="url(#sacred_gold)" />
+  </g>
+
+  <!-- Sanskrit Tag -->
+  <text x="205" y="105" font-family="'Cinzel', 'Noto Serif Devanagari', serif" font-size="14" fill="#F2D78A" letter-spacing="4" text-anchor="middle" font-weight="600">
+    श्रीमद्भगवद्गीता
+  </text>
+  <line x1="140" y1="120" x2="270" y2="120" stroke="url(#sacred_gold)" stroke-width="1" opacity="0.5" />
+
+  <!-- Book Title -->
+  <text x="205" y="340" font-family="'Cinzel', 'Playfair Display', serif" font-size="28" fill="#FFF8E1" letter-spacing="3" text-anchor="middle" font-weight="700">
+    BHAGAVAD GITA
+  </text>
+
+  <!-- Subtitle -->
+  <text x="205" y="380" font-family="'Inter', sans-serif" font-size="10" fill="#CFC5B5" letter-spacing="2" text-anchor="middle" opacity="0.8">
+    THE SONG OF THE SPIRIT &amp; DUTY
+  </text>
+
+  <line x1="160" y1="480" x2="250" y2="480" stroke="url(#sacred_gold)" stroke-width="1" opacity="0.5" />
+  <text x="205" y="515" font-family="'Cinzel', serif" font-size="9" fill="#F2D78A" letter-spacing="3" text-anchor="middle" opacity="0.8">
+    ACTION WITHOUT ATTACHMENT
+  </text>
+</svg>

@@ -1,0 +1,39 @@
+{
+  "allPassed": true,
+  "timestamp": "2026-09-12T01:48:18.970Z",
+  "assertions": [
+    {
+      "name": "User B cannot read User A messages",
+      "passed": true,
+      "data": []
+    },
+    {
+      "name": "User B cannot update User A messages",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "User B cannot delete User A messages",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "User B cannot read User A moments",
+      "passed": true,
+      "data": []
+    },
+    {
+      "name": "User A cannot read User B messages",
+      "passed": true,
+      "data": []
+    },
+    {
+      "name": "User A can read own messages",
+      "passed": true
+    },
+    {
+      "name": "Anonymous client cannot read messages",
+      "passed": true
+    }
+  ]
+}
