@@ -63,14 +63,19 @@ const rlsOut = run(
 
 // ===== SECTION 4: OpenRouter Inference =====
 SECTION('4. OPENROUTER INFERENCE (5 TESTS)');
-const orOut = run(
+run(
   '5/5 OpenRouter inference tests pass',
   'node scripts/test-openrouter-inference.mjs',
-  { parseResult: (out) => {
-    const lines = out.split('\n');
-    const statusLines = lines.filter(l => l.includes('HTTP'));
-    const allOk = statusLines.every(l => l.includes('HTTP 200'));
-    return allOk && statusLines.length === 5;
+  { parseResult: () => {
+    // Read the saved JSON results file which is written by the test script
+    try {
+      if (!existsSync('scripts/openrouter-test-results.json')) return false;
+      const data = JSON.parse(readFileSync('scripts/openrouter-test-results.json', 'utf8'));
+      if (!Array.isArray(data) || data.length < 5) return false;
+      return data.every(r => r.httpStatus === 200 && r.hasValidOutput === true);
+    } catch {
+      return false;
+    }
   }}
 );
 
