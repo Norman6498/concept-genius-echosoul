@@ -361,6 +361,7 @@ create policy "Public can view authors" on authors for select using (true);
 create policy "Public can view music artists" on music_artists for select using (true);
 create policy "Public can view music albums" on music_albums for select using (true);
 create policy "Public can view music tracks" on music_tracks for select using (true);
+create policy "Public can view music lyrics" on music_lyrics for select using (true);
 create policy "Public can view books" on books for select using (true);
 create policy "Public can view literary passages" on literary_passages for select using (true);
 create policy "Public can view shayari" on shayari for select using (true);
