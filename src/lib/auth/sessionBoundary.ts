@@ -30,7 +30,8 @@ const KNOWN_UNSCOPED_KEYS = [
 ];
 
 /**
- * Returns a strictly user-scoped key for client-side storage.
+ * Returns a strictly user-scoped key for client-side storage and caches.
+ * Generic unscoped keys like ["onboarding"] are strictly forbidden.
  * e.g., 'echosoul_usr_123e4567_personalization' or 'echosoul_guest_personalization'
  */
 export function getUserStorageKey(userId: string | null | undefined, baseKey: string): string {
@@ -40,6 +41,19 @@ export function getUserStorageKey(userId: string | null | undefined, baseKey: st
   }
   const sanitizedId = userId.replace(/[^a-zA-Z0-9_-]/g, "");
   return `echosoul_usr_${sanitizedId}_${cleanBase}`;
+}
+
+/**
+ * Validates that a cache key or storage key conforms to strict user isolation.
+ */
+export function isUserScopedKey(key: string, userId: string | null | undefined): boolean {
+  if (!key) return false;
+  if (key === "onboarding" || key === "echosoul_onboarding") {
+    // Unscoped onboarding cache key is strictly forbidden
+    return false;
+  }
+  const expectedPrefix = userId ? `echosoul_usr_${userId.replace(/[^a-zA-Z0-9_-]/g, "")}_` : "echosoul_guest_";
+  return key.startsWith(expectedPrefix);
 }
 
 /**
@@ -80,6 +94,28 @@ export function removeScopedStorageItem(userId: string | null | undefined, baseK
     window.localStorage.removeItem(key);
   } catch {
     // Ignore
+  }
+}
+
+/**
+ * Invalidates all client caches and storage strictly belonging to a specific user.
+ * Called whenever an account switch occurs or user ID changes.
+ */
+export function invalidateUserCaches(userId: string | null | undefined): void {
+  if (typeof window === "undefined" || !userId) return;
+  try {
+    const sanitizedId = userId.replace(/[^a-zA-Z0-9_-]/g, "");
+    const prefix = `echosoul_usr_${sanitizedId}_`;
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const k = window.localStorage.key(i);
+      if (k && k.startsWith(prefix)) {
+        keysToRemove.push(k);
+      }
+    }
+    keysToRemove.forEach((k) => window.localStorage.removeItem(k));
+  } catch (err) {
+    console.warn("Error invalidating user caches:", err);
   }
 }
 

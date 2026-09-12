@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { IconSet } from "@/components/ui/IconSet";
 import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/auth/context";
 
 interface AuthRealmProps {
   initialMode?: "signup" | "login" | "otp";
@@ -30,6 +32,9 @@ const CAROUSEL_SLIDES = [
 ];
 
 export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
+  const router = useRouter();
+  const { user, authStatus, onboardingCompleted, isLoading: authLoading, resolvePostAuthRoute, refreshAuth } = useAuth();
+
   const [mode, setMode] = useState<"signup" | "login" | "otp">(initialMode);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -40,6 +45,43 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
+
+  // If already authenticated with completed onboarding, redirect straight to /app
+  useEffect(() => {
+    if (!authLoading && authStatus === "AUTHENTICATED" && user) {
+      if (onboardingCompleted === true) {
+        router.replace("/app");
+      } else if (onboardingCompleted === false) {
+        router.replace(resolvePostAuthRoute());
+      }
+    }
+  }, [authLoading, authStatus, onboardingCompleted, resolvePostAuthRoute, router, user]);
+
+  const resolveTargetRoute = useCallback(async (supabase: any, userId: string): Promise<string> => {
+    try {
+      const { data: userProfile } = await supabase
+        .from("profiles")
+        .select("onboarding_completed, onboarding_step")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (userProfile?.onboarding_completed === true) {
+        return "/app";
+      }
+      if (userProfile?.onboarding_step && userProfile.onboarding_step > 1) {
+        switch (userProfile.onboarding_step) {
+          case 2: return "/onboarding/interests";
+          case 3: return "/onboarding/world";
+          case 4: return "/onboarding/preferences";
+          case 5: return "/onboarding/appearance";
+          case 6: return "/onboarding/complete";
+        }
+      }
+    } catch {
+      // Fallback
+    }
+    return "/onboarding";
+  }, []);
 
   // Carousel State
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -126,13 +168,17 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
       if (error) {
         setMessage({ type: "error", text: error.message });
       } else if (data.session) {
+        const targetRoute = await resolveTargetRoute(supabase, data.session.user.id);
         setMessage({
           type: "success",
-          text: "Verification successful! Entering your realm...",
+          text: targetRoute === "/app"
+            ? "Welcome back! Entering your sanctuary..."
+            : "Verification successful! Entering your realm...",
         });
+        await refreshAuth();
         setTimeout(() => {
-          window.location.href = "/onboarding";
-        }, 1000);
+          window.location.href = targetRoute;
+        }, 500);
       }
     } catch (err) {
       setMessage({ type: "error", text: (err as Error).message });
@@ -174,14 +220,15 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
             setMessage({ type: "error", text: error.message });
           }
         } else if (data.session) {
-          // Direct session created
+          // Direct session created for brand-new account
           setMessage({
             type: "success",
             text: `Welcome to EchoSoul, ${name || "friend"}! Entering Step 1...`,
           });
+          await refreshAuth();
           setTimeout(() => {
             window.location.href = "/onboarding";
-          }, 1000);
+          }, 600);
         } else if (data.user && !data.session) {
           // Email confirmation is required by provider
           setMessage({
@@ -198,13 +245,18 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
         if (error) {
           setMessage({ type: "error", text: error.message });
         } else if (data.session) {
+          // Authoritative check on whether user previously completed onboarding
+          const targetRoute = await resolveTargetRoute(supabase, data.session.user.id);
           setMessage({
             type: "success",
-            text: "Welcome back. Opening your personalized space...",
+            text: targetRoute === "/app"
+              ? "Welcome back! Opening your personalized sanctuary..."
+              : "Welcome back. Opening your personalized space...",
           });
+          await refreshAuth();
           setTimeout(() => {
-            window.location.href = "/onboarding";
-          }, 1000);
+            window.location.href = targetRoute;
+          }, 500);
         }
       }
     } catch (err) {

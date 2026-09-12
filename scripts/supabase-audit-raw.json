@@ -4,19 +4,19 @@
   "tables": {
     "profiles": {
       "exists": true,
-      "rowCount": 1
+      "rowCount": 3
     },
     "user_settings": {
       "exists": true,
-      "rowCount": 0
+      "rowCount": 1
     },
     "sessions": {
       "exists": true,
-      "rowCount": 0
+      "rowCount": 11
     },
     "messages": {
       "exists": true,
-      "rowCount": 0
+      "rowCount": 6
     },
     "context_snapshots": {
       "exists": true,
@@ -28,7 +28,7 @@
     },
     "moments": {
       "exists": true,
-      "rowCount": 0
+      "rowCount": 11
     },
     "novel_chapters": {
       "exists": true,
@@ -80,7 +80,7 @@
     },
     "music_tracks": {
       "exists": true,
-      "rowCount": null
+      "rowCount": 4
     },
     "master_music_catalog": {
       "exists": true,
@@ -96,7 +96,7 @@
     },
     "visual_scenes": {
       "exists": true,
-      "rowCount": null
+      "rowCount": 6
     },
     "scenes": {
       "exists": true,
@@ -108,11 +108,11 @@
     },
     "books": {
       "exists": true,
-      "rowCount": null
+      "rowCount": 6
     },
     "shayari": {
       "exists": true,
-      "rowCount": null
+      "rowCount": 5
     },
     "poetry": {
       "exists": true,
@@ -120,11 +120,11 @@
     },
     "quotes": {
       "exists": true,
-      "rowCount": null
+      "rowCount": 5
     },
     "authors": {
       "exists": true,
-      "rowCount": null
+      "rowCount": 8
     },
     "content_sources": {
       "exists": true,
@@ -132,7 +132,7 @@
     },
     "recommendation_events": {
       "exists": true,
-      "rowCount": null
+      "rowCount": 0
     },
     "experience_sessions": {
       "exists": true,
@@ -140,7 +140,7 @@
     },
     "user_collections": {
       "exists": true,
-      "rowCount": null
+      "rowCount": 0
     },
     "user_onboarding": {
       "exists": true,
@@ -217,9 +217,9 @@
   },
   "rlsTests": {
     "profiles_anon_select": {
-      "allowed": false,
+      "allowed": true,
       "rowCount": 0,
-      "error": "column profiles.full_name does not exist"
+      "error": null
     },
     "messages_anon_select": {
       "allowed": true,
@@ -240,23 +240,43 @@
   "postgrestTables": [
     "journey_events",
     "literature_tags",
+    "ambient_sounds",
     "creative_jobs",
     "literature_works",
     "sessions",
+    "user_interests",
     "memory_items",
+    "authors",
     "literature_feedback",
+    "books",
+    "user_collections",
+    "current_user_state",
+    "quotes",
+    "scripts",
+    "poems",
+    "music_lyrics",
+    "music_artists",
     "moments",
     "entitlements",
+    "visual_scenes",
     "literary_passages",
     "saved_words",
     "audit_events",
+    "music_albums",
     "user_settings",
     "profiles",
+    "music_tracks",
     "habits",
     "moment_memory_links",
     "messages",
+    "recommendation_events",
+    "languages",
     "context_snapshots",
+    "user_music_events",
+    "user_context",
     "goals",
-    "novel_chapters"
+    "novel_chapters",
+    "shayari",
+    "user_goals"
   ]
 }

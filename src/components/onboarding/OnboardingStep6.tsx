@@ -7,6 +7,7 @@ import { BrandLogo } from "@/components/ui/BrandLogo";
 import { VISUAL_WORLDS_CONFIG } from "@/lib/personalization/view-model";
 import { createClient } from "@/lib/supabase/client";
 import { getScopedStorageItem } from "@/lib/auth/sessionBoundary";
+import { useAuth } from "@/lib/auth/context";
 
 const ONBOARDING_STEPS = [
   { number: 1, label: "About You",   href: "/onboarding" },
@@ -27,6 +28,7 @@ const FEATURES_LIST = [
 ];
 
 export function OnboardingStep6() {
+  const { refreshAuth } = useAuth();
   const [userName, setUserName] = useState("Friend");
   const [visualWorld, setVisualWorld] = useState("mountain_calm");
   const [theme, setTheme] = useState("midnight_soul");
@@ -64,11 +66,11 @@ export function OnboardingStep6() {
 
   const worldConfig = VISUAL_WORLDS_CONFIG[visualWorld] || VISUAL_WORLDS_CONFIG.mountain_calm;
 
-  const handleFinish = async () => {
+  const handleFinish = async (targetHref = "/app") => {
     setIsFinishing(true);
-    // Mark onboarding as completed
+    // Mark onboarding as completed authoritatively
     try {
-      await fetch("/api/personalization", {
+      const res = await fetch("/api/personalization", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -76,13 +78,16 @@ export function OnboardingStep6() {
           step: 6,
         }),
       });
+      if (res.ok) {
+        await refreshAuth();
+      }
     } catch {
       // Ignore
     }
 
     setTimeout(() => {
-      window.location.href = "/app";
-    }, 400);
+      window.location.href = targetHref;
+    }, 250);
   };
 
   return (
@@ -237,10 +242,12 @@ export function OnboardingStep6() {
               {/* 6 Actions Menu */}
               <div className="space-y-2">
                 {FEATURES_LIST.map((feat) => (
-                  <Link
+                  <button
                     key={feat.id}
-                    href={feat.href}
-                    className="group p-2.5 rounded-xl border border-white/10 hover:border-[#F2D78A]/50 bg-[#08131B]/60 hover:bg-[#08131B]/90 flex items-center justify-between transition-all"
+                    type="button"
+                    disabled={isFinishing}
+                    onClick={() => handleFinish(feat.href)}
+                    className="w-full group p-2.5 rounded-xl border border-white/10 hover:border-[#F2D78A]/50 bg-[#08131B]/60 hover:bg-[#08131B]/90 flex items-center justify-between transition-all text-left disabled:opacity-60 cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5">
                       <span className="text-base">{feat.icon}</span>
@@ -256,7 +263,7 @@ export function OnboardingStep6() {
                     <span className="text-xs text-[#9AA8B0] group-hover:text-[#F2D78A] transition-transform group-hover:translate-x-0.5">
                       →
                     </span>
-                  </Link>
+                  </button>
                 ))}
               </div>
 
@@ -265,7 +272,7 @@ export function OnboardingStep6() {
                 <button
                   type="button"
                   disabled={isFinishing}
-                  onClick={handleFinish}
+                  onClick={() => handleFinish("/app")}
                   className="w-full py-3.5 px-6 rounded-full btn-gold-primary text-xs sm:text-sm font-semibold tracking-wide flex flex-col items-center justify-center gap-0.5 shadow-xl disabled:opacity-50"
                   style={{ backgroundColor: accentColor, color: "#0B0F14" }}
                 >

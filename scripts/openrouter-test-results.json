@@ -9,11 +9,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 4111,
-    "modelUsed": "poolside/laguna-s-2.1:free",
+    "totalLatencyMs": 1835,
+    "modelUsed": "nex-agi/nex-n2.5-mini:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "Hello, dear seeker of peace. This is a sanctuary of gentle understanding—a space where we tend to the quiet corners of t",
+    "snippet": "A quiet place to breathe.\n\nHere, you can bring your thoughts without having to make them “productive” or impressive. I c",
     "error": null
   },
   {
@@ -26,11 +26,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 5229,
-    "modelUsed": "poolside/laguna-s-2.1:free",
+    "totalLatencyMs": 2508,
+    "modelUsed": "nex-agi/nex-n2.5-mini:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "I hear you. That deep exhaustion—the kind that settles in your bones, not just your muscles—it's real and heavy right no",
+    "snippet": "I’m really sorry you’re carrying that today. When expectations pile up and you’re already depleted, even small tasks can",
     "error": null
   },
   {
@@ -43,11 +43,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 13217,
-    "modelUsed": "poolside/laguna-s-2.1:free",
+    "totalLatencyMs": 5817,
+    "modelUsed": "nex-agi/nex-n2.5-mini:free",
     "fallbackUsed": false,
-    "hasValidOutput": false,
-    "snippet": null,
+    "hasValidOutput": true,
+    "snippet": "Absolutely — I’m EchoSoul. For settling your thoughts, I’d suggest a **soft 432 Hz ambient pad** with gentle nature soun",
     "error": null
   },
   {
@@ -59,11 +59,11 @@
     ],
     "modelsCount": 2,
     "httpStatus": 200,
-    "totalLatencyMs": 5963,
+    "totalLatencyMs": 14399,
     "modelUsed": "poolside/laguna-s-2.1:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "Here's a powerful quote about resilience from Marcus Aurelius:\n\n**\"The impediment to action advances action. What stands",
+    "snippet": "**Marcus Aurelius Quote:**\n\n> \"The impediment to action advances us to the good. What stands in the way becomes the way.",
     "error": null
   },
   {
@@ -76,11 +76,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 4040,
+    "totalLatencyMs": 2266,
     "modelUsed": "nex-agi/nex-n2.5-pro:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "Here are 3 small, achievable steps for tomorrow:\n\n1. **Set up for 5 minutes**  \n   Choose one study task, clear your spa",
+    "snippet": "1. **Set up for 5 minutes.** Choose one study spot, clear only what you need, and write down the single topic you’ll sta",
     "error": null
   }
 ]

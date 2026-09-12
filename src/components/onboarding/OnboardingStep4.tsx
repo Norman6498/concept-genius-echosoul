@@ -128,28 +128,24 @@ export function OnboardingStep4() {
     updatePreferences(payload);
 
     try {
-      // Save to Supabase user_settings / user_context
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
 
       // Save scoped locally
       setScopedStorageItem(user?.id, "preferences", payload);
 
-      if (user) {
-        await supabase.from("user_settings").upsert({
-          user_id: user.id,
-          support_style: preferences.communicationStyle,
-          response_depth: preferences.responseLength,
-          sound_enabled: preferences.musicRecommendations,
-          updated_at: new Date().toISOString(),
-        });
-        await supabase.from("user_context").upsert({
-          user_id: user.id,
-          support_needs: preferences.selectedTopics,
-          privacy_mode: preferences.privacyPreference ? "strict" : "standard",
-          updated_at: new Date().toISOString(),
-        });
-      }
+      // Persist to server API
+      await fetch("/api/personalization", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          step: 4,
+          supportStyle: preferences.communicationStyle,
+          responseDepth: preferences.responseLength,
+          enableMusic: preferences.musicRecommendations,
+          memoryPreference: preferences.privacyPreference ? "strict" : "remember",
+        }),
+      });
 
       router.push("/onboarding/appearance");
     } catch {

@@ -62,7 +62,7 @@ export const MASTER_MUSIC_CATALOG: MusicTrack[] = [
     tempo: "slow",
     mood_tags: ["reflection", "warmth", "longing", "peace"],
     theme_tags: ["love", "healing", "night", "stillness"],
-    artwork_url: "/home/music_focus_flow.jpg",
+    artwork_url: "/home/music_focus_flow_hd.jpg",
     rights_status: "public_domain",
   },
   {
@@ -77,7 +77,7 @@ export const MASTER_MUSIC_CATALOG: MusicTrack[] = [
     tempo: "slow",
     mood_tags: ["catharsis", "peace", "healing", "solace"],
     theme_tags: ["loss", "memory", "solace", "longing"],
-    artwork_url: "/home/music_focus_flow.jpg",
+    artwork_url: "/home/music_focus_flow_hd.jpg",
     rights_status: "public_domain",
   },
 

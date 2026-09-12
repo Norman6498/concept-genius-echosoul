@@ -76,21 +76,7 @@ export async function POST(req: Request) {
       try {
         const service = createServiceClient();
 
-        // 1. Upsert Profile
-        await service.from("profiles").upsert({
-          id: userId,
-          display_name: name || undefined,
-          age_range: ageRange,
-          role: role,
-          goals: goals || [],
-          current_focus: currentFocus,
-          current_mood: currentMood,
-          onboarding_step: step,
-          onboarding_completed: onboardingCompleted || step >= 6,
-          updated_at: new Date().toISOString(),
-        });
-
-        // 2. Persist Interests in user_interests if provided
+        // 1. Persist Interests in user_interests if provided
         if (Array.isArray(interests) && interests.length > 0) {
           try {
             await service.from("user_interests").delete().eq("user_id", userId);
@@ -105,7 +91,7 @@ export async function POST(req: Request) {
           }
         }
 
-        // 3. Persist Goals in user_goals if provided
+        // 2. Persist Goals in user_goals if provided
         if (Array.isArray(goals) && goals.length > 0) {
           try {
             await service.from("user_goals").delete().eq("user_id", userId);
@@ -119,7 +105,7 @@ export async function POST(req: Request) {
           }
         }
 
-        // 4. Persist Current User State
+        // 3. Persist Current User State
         try {
           await service.from("current_user_state").upsert({
             user_id: userId,
@@ -131,7 +117,7 @@ export async function POST(req: Request) {
           console.warn("current_user_state table write note:", stateErr);
         }
 
-        // 5. Persist User Context (Step 3: Your World)
+        // 4. Persist User Context (Step 3: Your World)
         try {
           await service.from("user_context").upsert({
             user_id: userId,
@@ -150,7 +136,7 @@ export async function POST(req: Request) {
           console.warn("user_context table write note:", contextErr);
         }
 
-        // 6. Persist User Settings (Step 4 & Step 5)
+        // 5. Persist User Settings (Step 4 & Step 5)
         try {
           await service.from("user_settings").upsert({
             user_id: userId,
@@ -171,8 +157,39 @@ export async function POST(req: Request) {
         } catch (settingsErr) {
           console.warn("user_settings table write note:", settingsErr);
         }
+
+        // 6. Authoritative Profile Persistence
+        // The completion write is performed only after all required onboarding data has successfully persisted.
+        const shouldMarkCompleted = onboardingCompleted === true || step >= 6;
+
+        // Fetch existing profile to preserve completion if already true
+        const { data: existingProfile } = await service
+          .from("profiles")
+          .select("onboarding_completed, onboarding_step")
+          .eq("id", userId)
+          .maybeSingle();
+
+        const finalCompleted = shouldMarkCompleted || (existingProfile?.onboarding_completed === true);
+        const finalStep = Math.max(step, existingProfile?.onboarding_step ?? 1);
+
+        await service.from("profiles").upsert({
+          id: userId,
+          display_name: name || undefined,
+          age_range: ageRange || undefined,
+          role: role || undefined,
+          goals: Array.isArray(goals) && goals.length > 0 ? goals : undefined,
+          current_focus: currentFocus || undefined,
+          current_mood: currentMood || undefined,
+          onboarding_step: finalStep,
+          onboarding_completed: finalCompleted,
+          updated_at: new Date().toISOString(),
+        });
       } catch (dbErr) {
-        console.warn("Supabase persistence note:", dbErr);
+        console.error("Supabase persistence error in /api/personalization:", dbErr);
+        return NextResponse.json(
+          { error: "Failed to persist onboarding state", details: (dbErr as Error).message },
+          { status: 500 }
+        );
       }
     }
 

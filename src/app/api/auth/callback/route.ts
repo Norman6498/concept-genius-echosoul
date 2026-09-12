@@ -30,9 +30,21 @@ export async function GET(request: Request) {
       }
     );
 
-    await supabase.auth.exchangeCodeForSession(code);
+    const { data: { session } } = await supabase.auth.exchangeCodeForSession(code);
+    if (session?.user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("onboarding_completed, onboarding_step")
+        .eq("id", session.user.id)
+        .maybeSingle();
+
+      if (profile?.onboarding_completed === true) {
+        return NextResponse.redirect(`${origin}/app`);
+      }
+      return NextResponse.redirect(`${origin}/onboarding`);
+    }
   }
 
-  // URL to redirect to after sign in process completes
-  return NextResponse.redirect(`${origin}/app`);
+  // Fallback redirect
+  return NextResponse.redirect(`${origin}/login`);
 }

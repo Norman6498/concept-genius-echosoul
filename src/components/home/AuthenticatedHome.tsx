@@ -1116,7 +1116,7 @@ export function AuthenticatedHome() {
               <div className="p-3.5 rounded-2xl bg-[#0C1B25]/90 border border-white/10 hover:border-[#F2D78A]/40 transition-all flex flex-col justify-between shadow-lg group">
                 <div className="relative w-full h-24 rounded-xl overflow-hidden bg-[#08131B] mb-2">
                   <Image
-                    src="/home/music_focus_flow.jpg"
+                    src="/home/music_focus_flow_hd.jpg"
                     alt="Music for Your Mood"
                     fill
                     sizes="260px"
@@ -1187,7 +1187,7 @@ export function AuthenticatedHome() {
               <div className="p-3.5 rounded-2xl bg-[#0C1B25]/90 border border-white/10 hover:border-[#F2D78A]/40 transition-all flex flex-col justify-between shadow-lg group">
                 <div className="relative w-full h-24 rounded-xl overflow-hidden bg-[#08131B] mb-2">
                   <Image
-                    src="/home/guidance_overthinking.jpg"
+                    src="/home/guidance_overthinking_hd.jpg"
                     alt={userGuidance.title}
                     fill
                     sizes="260px"

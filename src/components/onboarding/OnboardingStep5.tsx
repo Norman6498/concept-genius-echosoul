@@ -94,23 +94,29 @@ export function OnboardingStep5() {
     setIsSaving(true);
 
     try {
-      // Save to Supabase user_settings
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
 
       // Save scoped locally
       setScopedStorageItem(user?.id, "appearance", appearance);
 
-      if (user) {
-        await supabase.from("user_settings").upsert({
-          user_id: user.id,
-          theme_mode: appearance.theme,
-          accent_color: appearance.accentColor,
-          font_family: appearance.fontStyle,
-          sound_enabled: appearance.backgroundMusic,
-          updated_at: new Date().toISOString(),
-        });
-      }
+      // Persist to server API
+      await fetch("/api/personalization", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          step: 5,
+          theme: appearance.theme,
+          accentColor: appearance.accentColor,
+          backgroundEnvironment: appearance.backgroundEnvironment,
+          layoutMode: appearance.layout,
+          fontStyle: appearance.fontStyle,
+          ambientAnimations: appearance.ambientAnimations,
+          enableMusic: appearance.backgroundMusic,
+          timeBasedEnv: appearance.timeBasedEnvironment,
+          reducedMotion: appearance.reducedMotion,
+        }),
+      });
 
       router.push("/onboarding/complete");
     } catch {
