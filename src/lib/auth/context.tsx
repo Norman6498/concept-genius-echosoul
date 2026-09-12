@@ -221,7 +221,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const supabase = createClient();
 
     // 1. Initial Session Restoration
-    setAuthStatus("AUTH_LOADING");
     supabase.auth.getUser().then(({ data: { user: currentUser } }) => {
       if (!mounted) return;
       if (currentUser) {

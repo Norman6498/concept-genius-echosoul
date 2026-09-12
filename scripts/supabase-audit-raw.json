@@ -12,11 +12,11 @@
     },
     "sessions": {
       "exists": true,
-      "rowCount": 23
+      "rowCount": 29
     },
     "messages": {
       "exists": true,
-      "rowCount": 12
+      "rowCount": 15
     },
     "context_snapshots": {
       "exists": true,
@@ -28,7 +28,7 @@
     },
     "moments": {
       "exists": true,
-      "rowCount": 23
+      "rowCount": 29
     },
     "novel_chapters": {
       "exists": true,
@@ -261,6 +261,7 @@
     "visual_scenes",
     "literary_passages",
     "saved_words",
+    "geography_cities",
     "audit_events",
     "music_albums",
     "user_settings",
@@ -269,7 +270,9 @@
     "habits",
     "moment_memory_links",
     "messages",
+    "catalog_sources",
     "recommendation_events",
+    "geography_countries",
     "languages",
     "context_snapshots",
     "user_music_events",

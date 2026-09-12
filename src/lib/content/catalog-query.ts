@@ -90,7 +90,6 @@ export async function queryBooksFromDB(params: {
 
       const { data, error } = await dbQuery;
       if (!error && data && data.length > 0) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const randomMatch = data[Math.floor(Math.random() * data.length)] as any;
         const authorName = randomMatch.authors?.canonical_name || "Historical Author";
 
@@ -179,7 +178,6 @@ export async function queryMusicFromDB(params: {
 
       const { data, error } = await dbQuery;
       if (!error && data && data.length > 0) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const randomMatch = data[Math.floor(Math.random() * data.length)] as any;
         const artistName = randomMatch.music_artists?.name || "Various Artists";
 

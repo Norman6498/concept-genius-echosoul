@@ -16,6 +16,11 @@ The following actions must be performed outside the code repository in third-par
 - **Site URL**: `https://echosoul.app` (or your custom production domain)
 - **Redirect URLs**: Add `https://echosoul.app/api/auth/callback`, `https://echosoul.app/onboarding`, `https://echosoul.app/app`
 
+### C. Enable Leaked Password Protection (HaveIBeenPwned Integration)
+- **Location**: Supabase Dashboard -> Project `echosoul` (`bblkonxcqymwkngpmvjc`) -> Authentication -> Attack Protection / Password Security (or Providers -> Email)
+- **Action**: Toggle **"Prevent use of leaked passwords"** to **Enabled**.
+- **Rationale**: Resolves advisor warning `auth_leaked_password_protection`. Supabase Auth verifies passwords against HaveIBeenPwned.org to reject compromised credentials upon signup and password change (Requires Pro Plan).
+
 ---
 
 ## 2. Vercel / Production Hosting Environment Variables

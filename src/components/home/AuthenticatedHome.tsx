@@ -103,6 +103,29 @@ export function AuthenticatedHome() {
   const [displayedText, setDisplayedText] = useState("");
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const userIdRef = useRef<string | null>(null);
+  const recognitionRef = useRef<any>(null);
+
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [isVoiceRecording, setIsVoiceRecording] = useState(false);
+  const [recentConversations, setRecentConversations] = useState<
+    Array<{ title: string; time: string; fullMessage?: string; reply?: string; timestamp?: number }>
+  >([]);
+  const [dynamicRec, setDynamicRec] = useState<{
+    book?: { title: string; author: string; coverImage?: string; reason: string };
+    music?: { title: string; genre: string; reason: string };
+    guidance?: { title: string; desc: string };
+  } | null>(null);
+
+  const [userMoments, setUserMoments] = useState<Array<{ title: string; date: string; image: string }>>([]);
+  const [goalsCount, setGoalsCount] = useState(0);
+  const [journalCount, setJournalCount] = useState(0);
+
+  // Personalization Display Controls
+  const [displayPersonalization, setDisplayPersonalization] = useState(true);
+  const [showPersonalConversations, setShowPersonalConversations] = useState(true);
+  const [showPersonalRecs, setShowPersonalRecs] = useState(true);
+  const [showPersonalMoments, setShowPersonalMoments] = useState(true);
+  const [showInsightDetails, setShowInsightDetails] = useState(false);
 
   // Load Saved Personalization from Supabase & User-Scoped Storage
   useEffect(() => {
@@ -217,29 +240,6 @@ export function AuthenticatedHome() {
     initHomeProfile();
     return () => { isMounted = false; };
   }, []);
-
-  const [isAiLoading, setIsAiLoading] = useState(false);
-  const recognitionRef = useRef<any>(null);
-  const [isVoiceRecording, setIsVoiceRecording] = useState(false);
-  const [recentConversations, setRecentConversations] = useState<
-    Array<{ title: string; time: string; fullMessage?: string; reply?: string; timestamp?: number }>
-  >([]);
-  const [dynamicRec, setDynamicRec] = useState<{
-    book?: { title: string; author: string; coverImage?: string; reason: string };
-    music?: { title: string; genre: string; reason: string };
-    guidance?: { title: string; desc: string };
-  } | null>(null);
-
-  const [userMoments, setUserMoments] = useState<Array<{ title: string; date: string; image: string }>>([]);
-  const [goalsCount, setGoalsCount] = useState(0);
-  const [journalCount, setJournalCount] = useState(0);
-
-  // Personalization Display Controls
-  const [displayPersonalization, setDisplayPersonalization] = useState(true);
-  const [showPersonalConversations, setShowPersonalConversations] = useState(true);
-  const [showPersonalRecs, setShowPersonalRecs] = useState(true);
-  const [showPersonalMoments, setShowPersonalMoments] = useState(true);
-  const [showInsightDetails, setShowInsightDetails] = useState(false);
 
   // Load personalization display preferences from scoped storage
   useEffect(() => {
