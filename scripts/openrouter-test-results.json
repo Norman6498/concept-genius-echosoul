@@ -9,11 +9,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 4886,
+    "totalLatencyMs": 2990,
     "modelUsed": "nex-agi/nex-n2.5-mini:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "Hello. I’m EchoSoul — a warm, empathetic companion. This sanctuary is a quiet space for reflection, comfort, and honest ",
+    "snippet": "Hello. This is a sanctuary of conversation — a quiet place where you can slow down, be honest, and feel heard without ju",
     "error": null
   },
   {
@@ -26,11 +26,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 5331,
-    "modelUsed": "poolside/laguna-s-2.1:free",
+    "totalLatencyMs": 3619,
+    "modelUsed": "nex-agi/nex-n2.5-mini:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "I can feel how heavy that exhaustion is sitting on you right now, and I want you to know that your feelings are complete",
+    "snippet": "I’m really sorry today feels this heavy. When there are expectations stacked on top of each other, even ordinary tasks c",
     "error": null
   },
   {
@@ -43,11 +43,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 3601,
+    "totalLatencyMs": 5756,
     "modelUsed": "nex-agi/nex-n2.5-mini:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "Absolutely — here are some calming options to help settle your thoughts:\n\n### 432 Hz / Calming Frequencies\n- **Search:**",
+    "snippet": "Absolutely — here are some calming options to help settle your thoughts:\n\n- **432 Hz ambient piano** — gentle, spacious,",
     "error": null
   },
   {
@@ -59,11 +59,11 @@
     ],
     "modelsCount": 2,
     "httpStatus": 200,
-    "totalLatencyMs": 1876,
+    "totalLatencyMs": 2145,
     "modelUsed": "nex-agi/nex-n2.5-mini:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "**Marcus Aurelius:**  \n> “The impediment to action advances action. What stands in the way becomes the way.”\n\n**Why it m",
+    "snippet": "> “The impediment to action advances action. What stands in the way becomes the way.”  \n> — Marcus Aurelius, *Meditation",
     "error": null
   },
   {
@@ -76,11 +76,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 4590,
+    "totalLatencyMs": 4168,
     "modelUsed": "nex-agi/nex-n2.5-pro:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "Here are 3 small, achievable steps for tomorrow:\n\n1. **Set up your study space — 5 minutes**  \n   Clear one small area, ",
+    "snippet": "Absolutely — here are 3 small, achievable steps for tomorrow:\n\n1. **Set up for 5 minutes**  \n   Pick one study spot, gat",
     "error": null
   }
 ]

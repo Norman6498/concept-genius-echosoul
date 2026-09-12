@@ -12,11 +12,11 @@
     },
     "sessions": {
       "exists": true,
-      "rowCount": 29
+      "rowCount": 33
     },
     "messages": {
       "exists": true,
-      "rowCount": 15
+      "rowCount": 17
     },
     "context_snapshots": {
       "exists": true,
@@ -28,7 +28,7 @@
     },
     "moments": {
       "exists": true,
-      "rowCount": 29
+      "rowCount": 33
     },
     "novel_chapters": {
       "exists": true,
