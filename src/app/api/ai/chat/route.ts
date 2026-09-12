@@ -5,6 +5,7 @@ import { buildSystemPrompt } from "@/ai/prompts/system";
 import { supervisorDecide } from "@/ai/routing/supervisor";
 import { judgeResponse } from "@/ai/quality/judge";
 import { PersonalizationContext } from "@/ai/adapters/base";
+import { rateLimit } from "@/lib/rateLimit";
 import {
   ROUTING_POLICIES,
   getRouteModels,
@@ -26,6 +27,23 @@ import {
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
   const requestId = generateRequestId();
+
+  // Rate Limiting Check (Phase 19)
+  const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
+  const rateResult = rateLimit(`chat_${clientIp}`, { windowMs: 60000, max: 45 });
+  if (!rateResult.success) {
+    return NextResponse.json(
+      { error: "Too many requests. Please take a gentle breath before continuing." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": Math.ceil(rateResult.resetMs / 1000).toString(),
+          "X-RateLimit-Limit": rateResult.limit.toString(),
+          "X-RateLimit-Remaining": "0",
+        },
+      }
+    );
+  }
 
   let message = "";
   let isVoice = false;

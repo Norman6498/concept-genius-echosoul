@@ -9,11 +9,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 3934,
+    "totalLatencyMs": 4111,
     "modelUsed": "poolside/laguna-s-2.1:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "This is a digital sanctuary—a gentle space where understanding and connection flourish. Here, we prioritize empathy, ref",
+    "snippet": "Hello, dear seeker of peace. This is a sanctuary of gentle understanding—a space where we tend to the quiet corners of t",
     "error": null
   },
   {
@@ -26,11 +26,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 3959,
+    "totalLatencyMs": 5229,
     "modelUsed": "poolside/laguna-s-2.1:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "I hear you, and I want you to know that your exhaustion is completely valid. It takes real courage to acknowledge that w",
+    "snippet": "I hear you. That deep exhaustion—the kind that settles in your bones, not just your muscles—it's real and heavy right no",
     "error": null
   },
   {
@@ -43,11 +43,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 2473,
-    "modelUsed": "nex-agi/nex-n2.5-mini:free",
+    "totalLatencyMs": 13217,
+    "modelUsed": "poolside/laguna-s-2.1:free",
     "fallbackUsed": false,
-    "hasValidOutput": true,
-    "snippet": "Absolutely. Here are a few calming options to help settle your thoughts:\n\n- **432 Hz ambient tones** — gentle, soft dron",
+    "hasValidOutput": false,
+    "snippet": null,
     "error": null
   },
   {
@@ -59,11 +59,11 @@
     ],
     "modelsCount": 2,
     "httpStatus": 200,
-    "totalLatencyMs": 3995,
-    "modelUsed": "nex-agi/nex-n2.5-mini:free",
+    "totalLatencyMs": 5963,
+    "modelUsed": "poolside/laguna-s-2.1:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "**“The impediment to action advances action. What stands in the way becomes the way.”**  \n— *Marcus Aurelius, Meditation",
+    "snippet": "Here's a powerful quote about resilience from Marcus Aurelius:\n\n**\"The impediment to action advances action. What stands",
     "error": null
   },
   {
@@ -76,11 +76,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 9510,
+    "totalLatencyMs": 4040,
     "modelUsed": "nex-agi/nex-n2.5-pro:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "Absolutely — here are 3 small, achievable steps for tomorrow:\n\n1. **Set up for 5 minutes**\n   - Choose one study spot.\n ",
+    "snippet": "Here are 3 small, achievable steps for tomorrow:\n\n1. **Set up for 5 minutes**  \n   Choose one study task, clear your spa",
     "error": null
   }
 ]

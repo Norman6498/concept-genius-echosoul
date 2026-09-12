@@ -67,19 +67,25 @@ export default function TalkPage() {
         .replace(/https?:\/\/\S+/g, "")
         .trim();
 
-      const utterance = new SpeechSynthesisUtterance(cleanSpoken);
-      utterance.rate = 0.93;
-      utterance.pitch = 1.0;
+      // Split into clean sentence chunks for immediate progressive delivery (Architecture B)
+      const rawSentences = cleanSpoken.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [cleanSpoken];
+      const sentences = rawSentences.map((s) => s.trim()).filter((s) => s.length > 0);
 
       const voices = window.speechSynthesis.getVoices();
       const preferredVoice =
         voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Female"))) ||
         voices.find((v) => v.lang.startsWith("en"));
-      if (preferredVoice) {
-        utterance.voice = preferredVoice;
-      }
 
-      window.speechSynthesis.speak(utterance);
+      // Queue each sentence so the first sentence speaks immediately (<180ms)
+      for (const sentence of sentences) {
+        const utterance = new SpeechSynthesisUtterance(sentence);
+        utterance.rate = 0.94;
+        utterance.pitch = 1.0;
+        if (preferredVoice) {
+          utterance.voice = preferredVoice;
+        }
+        window.speechSynthesis.speak(utterance);
+      }
     } catch (e) {
       console.warn("Speech synthesis error:", e);
     }
@@ -148,6 +154,13 @@ export default function TalkPage() {
     const text = (msgToSend || inputText || speechTranscript).trim();
     if (!text || isLoading || isWriting) return;
 
+    // Instant interruption / barge-in: cancel any currently speaking audio
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {}
+    }
+
     // Stop recognition if active
     if (isListening) {
       stopListening();
@@ -165,9 +178,21 @@ export default function TalkPage() {
     saveMessagesToStorage(updatedUserMessages);
     setIsLoading(true);
 
+    // Retrieve or generate valid UUID session ID
+    let currentSessionId = "";
+    try {
+      currentSessionId = localStorage.getItem("echosoul_active_session_id") || "";
+      if (!currentSessionId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(currentSessionId)) {
+        currentSessionId = crypto.randomUUID();
+        localStorage.setItem("echosoul_active_session_id", currentSessionId);
+      }
+    } catch {
+      currentSessionId = crypto.randomUUID();
+    }
+
     // Anchor conversation for cross-experience orchestration
     setConversationAnchor({
-      sessionId: "talk_session",
+      sessionId: currentSessionId,
       lastUserMessage: text,
       lastTopic: text.length > 36 ? text.slice(0, 36) + "..." : text,
       timestamp: Date.now(),
@@ -196,6 +221,7 @@ export default function TalkPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: text,
+          conversation_id: currentSessionId,
           personalization,
           is_voice: mode === "voice",
         }),
@@ -312,12 +338,33 @@ export default function TalkPage() {
       accumulatedTranscriptRef.current = "";
       setSpeechTranscript("");
 
+      recognition.onspeechstart = () => {
+        // Voice Barge-in: cancel any speaking utterance immediately when user begins talking
+        if (typeof window !== "undefined" && "speechSynthesis" in window) {
+          try {
+            window.speechSynthesis.cancel();
+          } catch {}
+        }
+      };
+
       recognition.onstart = () => {
         setIsListening(true);
+        if (typeof window !== "undefined" && "speechSynthesis" in window) {
+          try {
+            window.speechSynthesis.cancel();
+          } catch {}
+        }
         resetSilenceTimer();
       };
 
       recognition.onresult = (event: any) => {
+        // Voice Barge-in assurance
+        if (typeof window !== "undefined" && "speechSynthesis" in window) {
+          try {
+            window.speechSynthesis.cancel();
+          } catch {}
+        }
+
         let interim = "";
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const trans = event.results[i][0].transcript;
@@ -384,8 +431,14 @@ export default function TalkPage() {
 
   const clearChat = () => {
     if (confirm("Would you like to clear your current Sanctuary reflection history?")) {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        try {
+          window.speechSynthesis.cancel();
+        } catch {}
+      }
       setMessages([]);
       localStorage.removeItem("echosoul_talk_messages");
+      localStorage.removeItem("echosoul_active_session_id");
     }
   };
 

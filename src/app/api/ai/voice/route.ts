@@ -6,11 +6,13 @@ import { supervisorDecide } from "@/ai/routing/supervisor";
 import { judgeResponse } from "@/ai/quality/judge";
 import { SAFE_FALLBACK_RESPONSE } from "@/ai/contracts/response-schema";
 import { PersonalizationContext } from "@/ai/adapters/base";
+import { rateLimit } from "@/lib/rateLimit";
 import {
   ROUTING_POLICIES,
   getRouteModels,
   generateRequestId,
   enrichResponseWithContentUniverse,
+  generateCuratedContextualResponse,
 } from "@/ai/routing/latency-router";
 
 /**
@@ -22,6 +24,48 @@ import {
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
   const requestId = generateRequestId();
+
+  // Rate Limiting Check (Phase 19)
+  const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
+  const rateResult = rateLimit(`voice_${clientIp}`, { windowMs: 60000, max: 45 });
+  if (!rateResult.success) {
+    return NextResponse.json(
+      { error: "Too many requests. Please take a gentle breath before continuing." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": Math.ceil(rateResult.resetMs / 1000).toString(),
+          "X-RateLimit-Limit": rateResult.limit.toString(),
+          "X-RateLimit-Remaining": "0",
+        },
+      }
+    );
+  }
+
+  let message = "";
+  let conversationId = crypto.randomUUID();
+  let userId = "guest_sanctuary_user";
+
+  let personalization: PersonalizationContext = {
+    profile: {
+      name: "Friend",
+      role: "Explorer",
+    },
+    preferences: {
+      support_style: "balanced",
+      language: "en",
+    },
+    goals: [],
+    interests: ["Literature", "Philosophy"],
+    appearance: { theme: "midnight_soul", environment: "mountain_calm" },
+    current_state: {
+      mood: "calm",
+      focus: "wellbeing",
+      time_of_day: "day",
+    },
+    relevant_history: [],
+    relevant_moments: [],
+  };
 
   try {
     const supabase = await createServerClient();
@@ -36,9 +80,9 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const message: string = body.message?.trim();
-    const conversationId: string = body.conversation_id ?? crypto.randomUUID();
-    const userId = user?.id ?? body.user_id ?? "guest_sanctuary_user";
+    message = body.message?.trim() ?? "";
+    conversationId = body.conversation_id ?? crypto.randomUUID();
+    userId = user?.id ?? body.user_id ?? "guest_sanctuary_user";
 
     if (!message || message.length === 0) {
       return NextResponse.json({ error: "message is required" }, { status: 400 });
@@ -158,25 +202,51 @@ export async function POST(req: NextRequest) {
     // Handle judge decision
     if (judgeResult.action === "reject") {
       const totalMs = Date.now() - startTime;
-      const res = NextResponse.json({ ...SAFE_FALLBACK_RESPONSE, response_id: requestId });
+      const curatedFallback = generateCuratedContextualResponse(
+        message,
+        personalization,
+        true,
+        requestId
+      );
+      const { _meta, ...publicCurated } = curatedFallback;
+      const res = NextResponse.json(publicCurated);
       res.headers.set("x-request-id", requestId);
+      res.headers.set("x-policy", policy.policy);
+      res.headers.set("x-model-used", "echosoul_curated_universe");
       res.headers.set("x-total-ms", totalMs.toString());
       return res;
     }
 
-    // Save message + response to Supabase if authenticated
-    if (user) {
+    const totalMs = Date.now() - startTime;
+
+    // Save message + response to Supabase if authenticated with valid UUID
+    const isUuid = user?.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(user.id);
+    if (user && isUuid) {
       try {
+        await supabase.from("sessions").upsert(
+          { id: conversationId, user_id: user.id, mode: "balanced" },
+          { onConflict: "id" }
+        );
         await supabase.from("messages").insert([
           { session_id: conversationId, user_id: user.id, role: "user", content: message },
-          { session_id: conversationId, user_id: user.id, role: "assistant", content: response.content },
+          {
+            session_id: conversationId,
+            user_id: user.id,
+            role: "assistant",
+            content: response.content,
+            metadata: {
+              response_id: response.response_id,
+              model_used: response._meta?.model_id ?? adapter.modelId,
+              policy: policy.policy,
+              latency_ms: totalMs,
+            },
+          },
         ]);
       } catch (e) {
         console.error("[Voice] Save error:", e);
       }
     }
 
-    const totalMs = Date.now() - startTime;
     const { _meta, ...publicResponse } = response;
     const res = NextResponse.json({ ...publicResponse, quality: judgeResult });
     res.headers.set("x-request-id", requestId);
@@ -187,10 +257,19 @@ export async function POST(req: NextRequest) {
     return res;
 
   } catch (error) {
-    console.error("[/api/ai/voice] Unhandled error:", error);
+    console.error("[/api/ai/voice] Unhandled error, serving curated response:", error);
     const totalMs = Date.now() - startTime;
-    const res = NextResponse.json({ ...SAFE_FALLBACK_RESPONSE, response_id: requestId }, { status: 200 });
+    const curatedFallback = generateCuratedContextualResponse(
+      message || "Hello",
+      personalization,
+      true,
+      requestId
+    );
+    const { _meta, ...publicCurated } = curatedFallback;
+    const res = NextResponse.json(publicCurated, { status: 200 });
     res.headers.set("x-request-id", requestId);
+    res.headers.set("x-policy", "FAST_VOICE");
+    res.headers.set("x-model-used", "echosoul_curated_universe");
     res.headers.set("x-total-ms", totalMs.toString());
     return res;
   }

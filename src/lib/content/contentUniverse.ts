@@ -738,7 +738,7 @@ export const VISUAL_SANCTUARIES: VisualSanctuaryEntity[] = [
       exhale_sec: 4,
       rest_sec: 4,
     },
-    mood_tags: ["focus", "overwhelm", "seeking_peace"],
+    mood_tags: ["focus", "seeking_peace"],
     tagline: "Breathe. Slow down. Be here.",
     description: "Clear mountain lake reflecting pristine alpine skies. Calibrated for centered decision-making and mental equilibrium.",
   },
@@ -868,16 +868,27 @@ export function queryContentUniverse(queryText: string, mood?: ContentMood, focu
   const work = LITERARY_WORKS[matchedPassage.work_id] ?? LITERARY_WORKS.meditations;
   const author = AUTHORS[matchedPassage.author_id] ?? AUTHORS.marcus_aurelius;
 
-  // Find best audio
+  // Find best audio based on user's active mood & focus first, then passage tags
   let matchedAudio = AUDIO_CATALOG.find((a) =>
-    a.mood_tags.some((m) => matchedPassage!.mood_tags.includes(m))
+    (mood && a.mood_tags.includes(mood)) ||
+    (focus && a.focus_tags.includes(focus))
   );
+  if (!matchedAudio) {
+    matchedAudio = AUDIO_CATALOG.find((a) =>
+      a.mood_tags.some((m) => matchedPassage!.mood_tags.includes(m))
+    );
+  }
   if (!matchedAudio) matchedAudio = AUDIO_CATALOG[0];
 
-  // Find best visual sanctuary
+  // Find best visual sanctuary based on user's active mood first, then passage tags
   let matchedSanctuary = VISUAL_SANCTUARIES.find((s) =>
-    s.mood_tags.some((m) => matchedPassage!.mood_tags.includes(m))
+    mood && s.mood_tags.includes(mood)
   );
+  if (!matchedSanctuary) {
+    matchedSanctuary = VISUAL_SANCTUARIES.find((s) =>
+      s.mood_tags.some((m) => matchedPassage!.mood_tags.includes(m))
+    );
+  }
   if (!matchedSanctuary) matchedSanctuary = VISUAL_SANCTUARIES[0];
 
   return {
