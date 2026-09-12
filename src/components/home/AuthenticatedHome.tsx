@@ -128,7 +128,7 @@ export function AuthenticatedHome() {
 
         if (user?.user_metadata?.display_name) {
           name = user.user_metadata.display_name;
-        } else if (p1?.name && p1.name !== "Pratik") {
+        } else if (p1?.name) {
           name = p1.name;
         }
 

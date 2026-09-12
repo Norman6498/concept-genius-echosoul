@@ -72,6 +72,20 @@ export async function POST(req: Request) {
       // In dev or guest demo mode
     }
 
+    if (!userId) {
+      const authHeader = req.headers.get("authorization");
+      if (authHeader?.startsWith("Bearer ")) {
+        const token = authHeader.substring(7);
+        try {
+          const service = createServiceClient();
+          const { data: { user } } = await service.auth.getUser(token);
+          if (user) userId = user.id;
+        } catch {
+          // Token verification fallback
+        }
+      }
+    }
+
     if (userId) {
       try {
         const service = createServiceClient();

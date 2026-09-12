@@ -9,11 +9,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 5737,
+    "totalLatencyMs": 7135,
     "modelUsed": "poolside/laguna-s-2.1:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "Hello, dear one. This is a space of gentle understanding—a sanctuary where words are held with care and every heart find",
+    "snippet": "Hello, dear seeker of serenity. This is a sanctuary of the soul—a gentle haven where weary hearts find rest. Here, we te",
     "error": null
   },
   {
@@ -26,11 +26,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 3205,
-    "modelUsed": "nex-agi/nex-n2.5-mini:free",
+    "totalLatencyMs": 7007,
+    "modelUsed": "poolside/laguna-s-2.1:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "I’m really sorry today is weighing on you like that. When expectations pile up, even ordinary tasks can start to feel im",
+    "snippet": "I hear you. That deep exhaustion—the kind that settles into your bones, not just your muscles—that's real and valid. It'",
     "error": null
   },
   {
@@ -43,11 +43,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 4365,
-    "modelUsed": "nex-agi/nex-n2.5-mini:free",
+    "totalLatencyMs": 8563,
+    "modelUsed": "poolside/laguna-s-2.1:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "Absolutely — here are some calming options to help settle your thoughts:\n\n- **432 Hz ambient meditation music** — soft p",
+    "snippet": "Absolutely! Here are some calming music and 432 Hz sound recommendations to help settle your thoughts and promote relaxa",
     "error": null
   },
   {
@@ -59,11 +59,11 @@
     ],
     "modelsCount": 2,
     "httpStatus": 200,
-    "totalLatencyMs": 3993,
+    "totalLatencyMs": 2548,
     "modelUsed": "nex-agi/nex-n2.5-mini:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "**Marcus Aurelius:**  \n> “The mind adapts and converts to its own purposes the obstacle to our action.”\n\nThis matters be",
+    "snippet": "> “The impediment to action advances action. What stands in the way becomes the way.”  \n> — Marcus Aurelius, *Meditation",
     "error": null
   },
   {
@@ -76,11 +76,11 @@
     ],
     "modelsCount": 3,
     "httpStatus": 200,
-    "totalLatencyMs": 3817,
+    "totalLatencyMs": 20092,
     "modelUsed": "nex-agi/nex-n2.5-pro:free",
     "fallbackUsed": false,
     "hasValidOutput": true,
-    "snippet": "1. **Set up one 25-minute study block.**  \n   Choose one subject or task, clear your space, put your phone away, and stu",
+    "snippet": "Here are 3 small, achievable steps for tomorrow:\n\n1. **Set up for 5 minutes**\n   - Choose one study topic.\n   - Put your",
     "error": null
   }
 ]

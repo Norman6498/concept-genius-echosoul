@@ -99,7 +99,7 @@ export function EchoSoulShell({ children, activePath }: EchoSoulShellProps) {
           setUserName(user.user_metadata.display_name);
         } else {
           const p1 = getScopedStorageItem<any>(user?.id, "personalization", null);
-          if (p1?.name && p1.name !== "Pratik") {
+          if (p1?.name) {
             setUserName(p1.name);
           } else if (user) {
             const { data: profile } = await supabase

@@ -7,13 +7,34 @@ export async function GET(req: Request) {
   const startTime = Date.now();
 
   try {
-    const serverClient = await createServerClient();
-    const {
-      data: { user },
-      error: authError,
-    } = await serverClient.auth.getUser();
+    let authUser: any = null;
+    try {
+      const serverClient = await createServerClient();
+      const {
+        data: { user },
+      } = await serverClient.auth.getUser();
+      if (user) authUser = user;
+    } catch {
+      // Cookie reading fallback
+    }
 
-    if (authError || !user) {
+    if (!authUser) {
+      const authHeader = req.headers.get("authorization");
+      if (authHeader?.startsWith("Bearer ")) {
+        const token = authHeader.substring(7);
+        try {
+          const service = createServiceClient();
+          const {
+            data: { user: tokenUser },
+          } = await service.auth.getUser(token);
+          if (tokenUser) authUser = tokenUser;
+        } catch {
+          // Token verification fallback
+        }
+      }
+    }
+
+    if (!authUser) {
       return NextResponse.json({
         authenticated: false,
         userId: null,
@@ -26,26 +47,29 @@ export async function GET(req: Request) {
     // Masked identifier for safe diagnostic logging (never log plain tokens or sensitive data)
     const hashedUserId = crypto
       .createHash("sha256")
-      .update(user.id)
+      .update(authUser.id)
       .digest("hex")
       .slice(0, 12);
 
     // Fetch authoritative profile using server client (enforcing RLS with user session)
-    const { data: profile, error: profileError } = await serverClient
-      .from("profiles")
-      .select("id, display_name, full_name, onboarding_completed, onboarding_step")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    let resolvedProfile = profile;
+    let resolvedProfile: any = null;
+    try {
+      const serverClient = await createServerClient();
+      const { data: profile } = await serverClient
+        .from("profiles")
+        .select("id, display_name, full_name, onboarding_completed, onboarding_step")
+        .eq("id", authUser.id)
+        .maybeSingle();
+      if (profile) resolvedProfile = profile;
+    } catch {}
 
     // Resilient fallback with service client if profile trigger had race on signup
-    if (!resolvedProfile && !profileError) {
-      const serviceClient = createServiceClient();
+    const serviceClient = createServiceClient();
+    if (!resolvedProfile) {
       const { data: serviceProfile } = await serviceClient
         .from("profiles")
         .select("id, display_name, full_name, onboarding_completed, onboarding_step")
-        .eq("id", user.id)
+        .eq("id", authUser.id)
         .maybeSingle();
 
       if (serviceProfile) {
@@ -55,7 +79,7 @@ export async function GET(req: Request) {
         const { data: insertedProfile } = await serviceClient
           .from("profiles")
           .upsert({
-            id: user.id,
+            id: authUser.id,
             onboarding_step: 1,
             onboarding_completed: false,
           })
@@ -65,9 +89,30 @@ export async function GET(req: Request) {
       }
     }
 
+    // Self-healing: if auth user metadata indicates completion but DB had false/null, heal DB
+    const metadataIndicatesComplete =
+      authUser.user_metadata?.onboarding_completed === true ||
+      authUser.user_metadata?.personalization?.onboardingCompleted === true ||
+      authUser.user_metadata?.personalization?.step >= 6;
+
+    if (metadataIndicatesComplete && resolvedProfile?.onboarding_completed !== true) {
+      await serviceClient
+        .from("profiles")
+        .update({
+          onboarding_completed: true,
+          onboarding_step: 6,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", authUser.id);
+      if (resolvedProfile) {
+        resolvedProfile.onboarding_completed = true;
+        resolvedProfile.onboarding_step = 6;
+      }
+    }
+
     const onboardingCompleted = resolvedProfile?.onboarding_completed === true;
     const onboardingStep = resolvedProfile?.onboarding_step ?? 1;
-    const displayName = resolvedProfile?.display_name || resolvedProfile?.full_name || null;
+    const displayName = resolvedProfile?.display_name || resolvedProfile?.full_name || authUser.user_metadata?.display_name || null;
     const durationMs = Date.now() - startTime;
 
     // Safe debugging log with zero sensitive tokens
@@ -87,7 +132,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       authenticated: true,
-      userId: user.id,
+      userId: authUser.id,
       onboardingCompleted,
       onboardingStep,
       displayName,

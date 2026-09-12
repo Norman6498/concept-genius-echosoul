@@ -68,26 +68,55 @@ export function OnboardingStep6() {
 
   const handleFinish = async (targetHref = "/app") => {
     setIsFinishing(true);
-    // Mark onboarding as completed authoritatively
     try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session?.user) {
+        // Direct RLS update to ensure instant client database sync
+        try {
+          await supabase
+            .from("profiles")
+            .update({
+              onboarding_completed: true,
+              onboarding_step: 6,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", session.user.id);
+
+          await supabase.auth.updateUser({
+            data: {
+              onboarding_completed: true,
+            },
+          });
+        } catch (dbSyncErr) {
+          console.warn("Direct profile update warning:", dbSyncErr);
+        }
+      }
+
+      // Mark onboarding as completed authoritatively via server API
       const res = await fetch("/api/personalization", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
         body: JSON.stringify({
           onboardingCompleted: true,
           step: 6,
         }),
       });
+
       if (res.ok) {
         await refreshAuth();
       }
-    } catch {
-      // Ignore
+    } catch (err) {
+      console.warn("Onboarding finish handler notice:", err);
     }
 
     setTimeout(() => {
       window.location.href = targetHref;
-    }, 250);
+    }, 150);
   };
 
   return (

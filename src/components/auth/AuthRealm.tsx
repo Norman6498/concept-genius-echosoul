@@ -57,8 +57,9 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
     }
   }, [authLoading, authStatus, onboardingCompleted, resolvePostAuthRoute, router, user]);
 
-  const resolveTargetRoute = useCallback(async (supabase: any, userId: string): Promise<string> => {
+  const resolveTargetRoute = useCallback(async (supabase: any, userId: string, accessToken?: string): Promise<string> => {
     try {
+      // 1. Direct database profile lookup
       const { data: userProfile } = await supabase
         .from("profiles")
         .select("onboarding_completed, onboarding_step")
@@ -68,6 +69,31 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
       if (userProfile?.onboarding_completed === true) {
         return "/app";
       }
+
+      // 2. Authoritative server verification with token
+      try {
+        const res = await fetch("/api/auth/onboarding-status", {
+          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+        });
+        if (res.ok) {
+          const status = await res.json();
+          if (status.onboardingCompleted === true) {
+            return "/app";
+          }
+          if (status.onboardingStep && status.onboardingStep > 1) {
+            switch (status.onboardingStep) {
+              case 2: return "/onboarding/interests";
+              case 3: return "/onboarding/world";
+              case 4: return "/onboarding/preferences";
+              case 5: return "/onboarding/appearance";
+              case 6: return "/onboarding/complete";
+            }
+          }
+        }
+      } catch {
+        // API fallback
+      }
+
       if (userProfile?.onboarding_step && userProfile.onboarding_step > 1) {
         switch (userProfile.onboarding_step) {
           case 2: return "/onboarding/interests";
@@ -168,7 +194,7 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
       if (error) {
         setMessage({ type: "error", text: error.message });
       } else if (data.session) {
-        const targetRoute = await resolveTargetRoute(supabase, data.session.user.id);
+        const targetRoute = await resolveTargetRoute(supabase, data.session.user.id, data.session.access_token);
         setMessage({
           type: "success",
           text: targetRoute === "/app"
@@ -246,7 +272,7 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
           setMessage({ type: "error", text: error.message });
         } else if (data.session) {
           // Authoritative check on whether user previously completed onboarding
-          const targetRoute = await resolveTargetRoute(supabase, data.session.user.id);
+          const targetRoute = await resolveTargetRoute(supabase, data.session.user.id, data.session.access_token);
           setMessage({
             type: "success",
             text: targetRoute === "/app"

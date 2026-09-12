@@ -1,0 +1,75 @@
+{
+  "timestamp": "2026-09-12T10:27:19.007Z",
+  "project_ref": "bblkonxcqymwkngpmvjc",
+  "supabase_url": "https://bblkonxcqymwkngpmvjc.supabase.co",
+  "branch": "audit/multi-user-production-hardening",
+  "table_counts": {
+    "profiles": 3,
+    "books": 1106,
+    "music_tracks": 1004,
+    "music_artists": 24,
+    "authors": 42,
+    "languages": 11,
+    "scripts": 7,
+    "quotes": 5,
+    "visual_scenes": 6,
+    "shayari_couplets": 0,
+    "conversations": 0,
+    "chat_messages": 0,
+    "memory_nodes": 0,
+    "user_goals": 2,
+    "user_interests": 3,
+    "user_settings": 1,
+    "user_context": 1,
+    "current_user_state": 1,
+    "moments": 21,
+    "journal_entries": 0,
+    "content_bookmarks": 0,
+    "catalog_sources": 0,
+    "geography_countries": 0,
+    "geography_cities": 0
+  },
+  "postgrest_exposed_tables_count": 40,
+  "storage_buckets": [
+    {
+      "name": "user-media",
+      "id": "user-media",
+      "public": false
+    },
+    {
+      "name": "generated-scenes",
+      "id": "generated-scenes",
+      "public": false
+    },
+    {
+      "name": "generated-videos",
+      "id": "generated-videos",
+      "public": false
+    },
+    {
+      "name": "generated-audio",
+      "id": "generated-audio",
+      "public": false
+    },
+    {
+      "name": "literature-assets",
+      "id": "literature-assets",
+      "public": false
+    }
+  ],
+  "storage_buckets_count": 5,
+  "routes": {
+    "total": 40,
+    "api_routes_count": 15,
+    "page_routes_count": 25
+  },
+  "verification_suites": {
+    "typescript_errors": 0,
+    "catalog_validation": "10/10 PASSED",
+    "auth_onboarding_lifecycle": "37/37 PASSED",
+    "multi_user_attack_suite": "23/23 PASSED",
+    "rls_isolation_suite": "7/7 PASSED",
+    "openrouter_inference_suite": "5/5 PASSED",
+    "production_audit_checks": "18/18 PASSED"
+  }
+}

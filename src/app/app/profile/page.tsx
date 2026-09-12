@@ -82,7 +82,7 @@ export default function ProfilePage() {
 
         // Check user-scoped local storage
         const userScoped = getScopedStorageItem<any>(user?.id, "personalization", null);
-        if (userScoped?.name && userScoped.name !== "Pratik") name = userScoped.name;
+        if (userScoped?.name) name = userScoped.name;
         if (userScoped?.role) role = userScoped.role;
         if (userScoped?.ageRange) ageRange = userScoped.ageRange;
 
