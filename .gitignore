@@ -94,3 +94,6 @@ npm-debug.log
 # Test Screenshots
 *_landing_cdp.png
 *_fullpage.png
+
+.vercel
+.env*

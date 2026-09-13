@@ -26,6 +26,7 @@ import { MusicTrack } from "@/lib/content/types";
 import { TRACK_AUDIO_PROFILES } from "@/lib/audio/trackSynthesizer";
 import { createServiceClient } from "@/lib/supabase/server";
 import { OpenRouterAdapter } from "@/lib/ai/openrouter";
+import { ProviderRegistry } from "@/ai/providers";
 
 export type SourceAvailabilityState =
   | "AVAILABLE"
@@ -299,7 +300,10 @@ export class MusicMeaningAgent {
     language: string
   ): Promise<StructuredMeaningResult> {
     try {
-      const adapter = new OpenRouterAdapter();
+      const registry = ProviderRegistry.getInstance();
+      const hqProvider = registry.getHighQualityProvider();
+      const isHqAvailable = hqProvider.isAvailable();
+
       const prompt = `You are the EchoSoul Music Meaning Agent.
 Analyze the following song and generate a structured meaning analysis.
 
@@ -331,16 +335,59 @@ SCHEMA:
   "listener_reflection": "A gentle contemplative prompt for the listener"
 }`;
 
-      const res = await adapter.chat({
-        messages: [
-          { role: "system", content: "You are an empathetic, literary musical hermeneutics scholar. Always respond in valid JSON." },
-          { role: "user", content: prompt },
-        ],
-        temperature: 0.5,
-        maxTokens: 1200,
-      });
+      let parsed: Record<string, any> | null = null;
+      let modelName = "openrouter";
 
-      const parsed = JSON.parse(res.content.replace(/```json/g, "").replace(/```/g, "").trim());
+      if (isHqAvailable) {
+        try {
+          const genOut = await hqProvider.generate({
+            message: prompt,
+            conversation_id: `music_meaning_${track.id}`,
+            user_id: "system_music_pipeline",
+            personalization: {
+              profile: { name: "Music Explorer", role: "Listener" },
+              preferences: { support_style: "reflective", language },
+              goals: [],
+              interests: [track.genre],
+              appearance: { theme: "midnight_soul", environment: "sanctuary" },
+              current_state: { mood: "contemplative", time_of_day: "evening" },
+              relevant_history: [],
+              relevant_moments: [],
+            },
+            is_voice: false,
+            request_id: `req_music_${Date.now()}`,
+            system_prompt: "You are an empathetic, literary musical hermeneutics scholar. Always respond in valid JSON.",
+            temperature: 0.5,
+            max_tokens: 1400,
+            requires_reasoning: true,
+          });
+
+          const cleanJson = genOut.raw_content.replace(/```json/g, "").replace(/```/g, "").trim();
+          parsed = JSON.parse(cleanJson);
+          modelName = genOut.model_id;
+        } catch (hqErr) {
+          console.warn("[MusicMeaningAgent] HighQualityProvider failed, falling back to standard OpenRouter:", hqErr);
+        }
+      }
+
+      if (!parsed) {
+        const adapter = new OpenRouterAdapter();
+        const res = await adapter.chat({
+          messages: [
+            { role: "system", content: "You are an empathetic, literary musical hermeneutics scholar. Always respond in valid JSON." },
+            { role: "user", content: prompt },
+          ],
+          temperature: 0.5,
+          maxTokens: 1200,
+        });
+
+        parsed = JSON.parse(res.content.replace(/```json/g, "").replace(/```/g, "").trim());
+        modelName = res.model || "openrouter";
+      }
+
+      if (!parsed) {
+        throw new Error("Failed to parse model meaning JSON");
+      }
 
       return {
         track_id: track.id,
@@ -357,7 +404,7 @@ SCHEMA:
         confidence: 0.92,
         source_type: sourceType,
         source_reference: "OpenRouter Hermeneutic Synthesis",
-        model: res.model || "openrouter",
+        model: modelName,
         model_version: MODEL_VERSION,
         prompt_version: PROMPT_VERSION,
       };

@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { CinematicBackground, AmbientParticles } from "@/components/visual";
 
 export function RealAboutPage() {
   const pillars = [
@@ -86,23 +87,21 @@ export function RealAboutPage() {
 
   return (
     <div className="relative min-h-screen w-full bg-[#050B10] text-[#FFF8E1] flex flex-col justify-between overflow-x-hidden select-none">
-      {/* ── Photographic Atmosphere Layer (media_1789094812501.jpg backdrop) ── */}
-      <div
-        className="fixed inset-0 z-0 bg-cover bg-right sm:bg-center bg-no-repeat pointer-events-none"
-        style={{
-          backgroundImage: "url('/about-backdrop.jpg')",
-          backgroundSize: "cover",
-        }}
+      {/* ── Photographic Atmosphere Layer with Next.js LCP Priority ── */}
+      <CinematicBackground
+        src="/about-backdrop.jpg"
+        alt="Solenne About Observatory Atmosphere"
+        priority
+        focalPoint={{ desktop: "center center", mobile: "right center" }}
+        overlay="none"
       >
         {/* Deep ambient vignette for readability on the left */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#050B10] via-[#050B10]/80 to-transparent w-full md:w-[62%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#050B10] via-transparent to-[#050B10]/40" />
 
         {/* Twinkling star lights in the night sky */}
-        <div className="absolute top-[16%] right-[32%] w-1.5 h-1.5 rounded-full bg-white animate-star-twinkle shadow-[0_0_8px_white]" />
-        <div className="absolute top-[22%] right-[28%] w-1 h-1 rounded-full bg-[#F2D78A] animate-star-twinkle shadow-[0_0_6px_#F2D78A]" style={{ animationDelay: "1.5s" }} />
-        <div className="absolute top-[12%] right-[36%] w-1.5 h-1.5 rounded-full bg-white animate-star-twinkle shadow-[0_0_8px_white]" style={{ animationDelay: "2.5s" }} />
-      </div>
+        <AmbientParticles count={14} type="stars" palette="celestial" />
+      </CinematicBackground>
 
       {/* ── Top Header Bar ────────────────────────────────────────────── */}
       <header className="relative z-30 w-full max-w-[1536px] mx-auto px-6 sm:px-10 h-20 flex items-center justify-between">

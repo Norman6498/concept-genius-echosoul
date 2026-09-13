@@ -94,6 +94,7 @@ export function AuthenticatedHome() {
   const [activeMood, setActiveMood] = useState("Calm");
   const [moodSaved, setMoodSaved] = useState(false);
   const [thoughtIndex, setThoughtIndex] = useState(0);
+  const [isGuest, setIsGuest] = useState(false);
 
   // Talk Interactive State with Paper Writing Words Animation
   const [talkInput, setTalkInput] = useState("");
@@ -138,14 +139,16 @@ export function AuthenticatedHome() {
         if (!isMounted) return;
 
         userIdRef.current = user?.id || null;
+        const isGuestUser = !user || user.user_metadata?.is_guest === true || user.email?.endsWith("@guest.solenne.internal") || (user as any).is_anonymous === true;
+        if (isMounted) setIsGuest(isGuestUser);
 
         const p1 = getScopedStorageItem<any>(user?.id, "personalization", null);
         const p2 = getScopedStorageItem<any>(user?.id, "interests", null);
         const p3 = getScopedStorageItem<any>(user?.id, "world", null);
         const p5 = getScopedStorageItem<any>(user?.id, "appearance", null);
 
-        let name = "Friend";
-        let role = "Explorer";
+        let name = isGuestUser ? "Guest Explorer" : "Friend";
+        let role = isGuestUser ? "Guest Explorer" : "Explorer";
         let mood = "calm";
         let focus = "studies";
 
@@ -860,12 +863,38 @@ export function AuthenticatedHome() {
                     {formattedDate}
                   </span>
                   <h1 className="font-editorial text-2xl sm:text-4xl text-[#FFF8E1] font-normal tracking-tight">
-                    Good evening, {profile.userName} <span className="text-[#F2D78A]">✨</span>
+                    {isGuest ? (
+                      "Welcome to Solenne."
+                    ) : (
+                      <>
+                        Good evening, {profile.userName} <span className="text-[#F2D78A]">✨</span>
+                      </>
+                    )}
                   </h1>
                   <p className="font-ui text-xs sm:text-sm text-[#CFC5B5] font-light">
-                    A calmer mind creates a stronger you.
+                    {isGuest ? "Take a moment. Explore your space." : "A calmer mind creates a stronger you."}
                   </p>
                 </div>
+
+                {/* Intentional Guest Explorer Banner */}
+                {isGuest && (
+                  <div className="p-3.5 rounded-2xl bg-[#F2D78A]/10 border border-[#F2D78A]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-ui font-semibold text-[#F2D78A]">
+                        Guest Explorer Mode
+                      </p>
+                      <p className="text-[11px] font-ui text-[#CFC5B5]">
+                        Take your time exploring books, music, and quiet reflection. Create an account anytime to save your sanctuary.
+                      </p>
+                    </div>
+                    <Link
+                      href="/signup"
+                      className="px-3.5 py-1.5 rounded-xl bg-[#F2D78A] text-[#0B0F14] text-[11px] font-ui font-semibold hover:bg-[#E5C77A] transition-colors whitespace-nowrap self-start sm:self-auto text-center shadow-md"
+                    >
+                      Create Account →
+                    </Link>
+                  </div>
+                )}
 
                 {/* Scenic Floating Quote over the mountain landscape */}
                 <div className="pt-2">

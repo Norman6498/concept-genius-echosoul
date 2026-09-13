@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { OpenRouterAdapter } from "@/ai/adapters/openrouter";
 import { buildSystemPrompt } from "@/ai/prompts/system";
 import { supervisorDecide } from "@/ai/routing/supervisor";
-import { judgeResponse } from "@/ai/quality/judge";
+import { judgeResponse, JudgeResult } from "@/ai/quality/judge";
 import { PersonalizationContext } from "@/ai/adapters/base";
 import { rateLimit } from "@/lib/rateLimit";
 import {
@@ -13,22 +13,25 @@ import {
   enrichResponseWithContentUniverse,
   generateCuratedContextualResponse,
 } from "@/ai/routing/latency-router";
+import { AIQualityRouter, QualityRoutingDecision } from "@/ai/routing/quality-router";
+import { ProviderRegistry } from "@/ai/providers";
+import { SafetyGate } from "@/ai/quality/safety-gate";
+import { EchoSoulCanonicalResponse } from "@/ai/contracts/response-schema";
 
 /**
  * POST /api/ai/chat
  * 
- * Full EchoSoul AI pipeline with Latency-First Routing (System B)
- * and Content Universe Enrichment (System A):
- * Auth → Safety Pre-check → Context → Supervisor → Fast Latency Router → Quality Judge → Enrichment → Response
- * 
- * Body: { message: string; conversation_id?: string; is_voice?: boolean; personalization?: any }
- * Returns: EchoSoulCanonicalResponse with observability headers
+ * Full EchoSoul AI Pipeline with AI Quality Router & High-Quality Fallback:
+ * Rate Limit → Safety Gate (Pre) → Context Isolation → Supervisor →
+ * AI Quality Router → Provider Execution → Content Universe Enrichment →
+ * Quality Judge (10-dim score) → High-Quality Fallback Retry (if needed) →
+ * Safety Post-check → Safe Persistence → Response (JSON or SSE Stream)
  */
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
   const requestId = generateRequestId();
 
-  // Rate Limiting Check (Phase 19)
+  // 1. Rate Limiting Check
   const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
   const rateResult = rateLimit(`chat_${clientIp}`, { windowMs: 60000, max: 45 });
   if (!rateResult.success) {
@@ -47,6 +50,7 @@ export async function POST(req: NextRequest) {
 
   let message = "";
   let isVoice = false;
+  let isStream = false;
   let conversationId = crypto.randomUUID();
   let userId = "guest_sanctuary_user";
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -84,6 +88,7 @@ export async function POST(req: NextRequest) {
     message = body.message?.trim() ?? "";
     conversationId = body.conversation_id ?? crypto.randomUUID();
     isVoice = Boolean(body.is_voice);
+    isStream = Boolean(body.stream) || req.headers.get("accept")?.includes("text/event-stream") === true;
 
     if (!message || message.length === 0) {
       return NextResponse.json({ error: "message is required" }, { status: 400 });
@@ -93,7 +98,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "message too long" }, { status: 400 });
     }
 
-    // Attempt Supabase server auth, fallback gracefully to client personalization
+    // 2. Server Authentication (Single Authority)
     let user = null;
     try {
       const { data } = await supabase.auth.getUser();
@@ -102,10 +107,9 @@ export async function POST(req: NextRequest) {
       // ignore
     }
 
-    // Server auth is the single authority; never trust client-supplied body.user_id
     userId = user?.id ?? "guest_sanctuary_user";
 
-    // Fetch user profile for personalization context if authenticated
+    // 3. User History & Context Loading
     let profile = null;
     let settings = null;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -135,15 +139,11 @@ export async function POST(req: NextRequest) {
       recentMessages = rec ?? [];
     }
 
-    // Merge with body.personalization if provided by client
     const clientPers = body.personalization ?? {};
-
-    // For authenticated users, cloud profile identity takes absolute precedence over client cache
     const resolvedName = user
       ? (profile?.display_name || profile?.full_name || user.user_metadata?.display_name || clientPers.userName || "Friend")
       : (clientPers.userName || "Friend");
 
-    // Build minimal personalization context
     personalization = {
       profile: {
         name: resolvedName,
@@ -175,19 +175,83 @@ export async function POST(req: NextRequest) {
       relevant_moments: [],
     };
 
-    // Supervisor decides what agents to activate
+    // 4. Safety Gate Pre-Check & User Context Isolation
+    const safetyPreCheck = SafetyGate.preCheck(message, userId, personalization);
+    if (!safetyPreCheck.allowed && safetyPreCheck.crisisDetected) {
+      const crisisResp: EchoSoulCanonicalResponse = {
+        response_id: requestId,
+        content: safetyPreCheck.crisisResponse!,
+        presentation_mode: "conversational",
+        tone: "gentle",
+        intent: "crisis_intervention",
+        need: "listening",
+        emotional_context: { label: "crisis", confidence: 1.0 },
+        reflection: "Your life and safety are the absolute priority. Please reach out to someone who can hold space for you.",
+        practical_insight: "You do not have to carry everything right now. Seeking help is an act of courage.",
+        practical_steps: [
+          "Call or text 988 for immediate compassionate support.",
+          "Reach out to someone you trust and tell them you need company.",
+        ],
+        literature: null,
+        music: null,
+        visual: null,
+        journey: null,
+        moment_candidate: null,
+        letter: null,
+        recommended_actions: [],
+        personalization_reason: "Immediate crisis response",
+        safety_level: 3,
+        citations: [],
+        quality: {
+          schema_valid: true,
+          personalization_valid: true,
+          safety_valid: true,
+          provenance_valid: true,
+          quality_score: 100,
+          issues: [],
+          repair_required: false,
+        },
+        _meta: {
+          model_id: "solenne_safety_gate_guard",
+          prompt_version: "safety_crisis_v1",
+          adapter_version: "safety_gate_v1",
+          latency_ms: Date.now() - startTime,
+          fallback_used: false,
+          repair_applied: false,
+          created_at: new Date().toISOString(),
+        },
+      };
+
+      const { _meta, ...publicResp } = crisisResp;
+      const res = NextResponse.json(publicResp, { status: 200 });
+      res.headers.set("x-request-id", requestId);
+      res.headers.set("x-policy", "CRISIS_INTERVENTION");
+      res.headers.set("x-safety-level", "3");
+      return res;
+    }
+
+    // Apply context sanitization to prevent prompt leakage
+    personalization = SafetyGate.sanitizeContext(personalization, userId);
+    const sanitizedUserMessage = safetyPreCheck.sanitizedMessage;
+
+    // 5. Supervisor Decision
     const decision = supervisorDecide(
-      message,
+      sanitizedUserMessage,
       personalization,
       recentMessages?.length ?? 0
     );
 
-    // Select policy based on mode (fast voice vs realtime chat)
-    const routingPolicy = isVoice
-      ? ROUTING_POLICIES.FAST_VOICE
-      : ROUTING_POLICIES.REALTIME_CHAT;
+    // 6. AI Quality Router: Server-Authoritative Model Selection
+    const routingDecision: QualityRoutingDecision = AIQualityRouter.route(
+      sanitizedUserMessage,
+      personalization,
+      recentMessages?.length ?? 0,
+      decision,
+      isVoice,
+      { taskType: "chat" }
+    );
 
-    // Build system prompt
+    // 7. System Prompt Construction
     const systemPrompt = buildSystemPrompt({
       personalizationLayer: JSON.stringify({
         user_name: personalization.profile.name,
@@ -197,6 +261,7 @@ export async function POST(req: NextRequest) {
         current_focus: personalization.current_state.focus,
         language: personalization.preferences.language,
         mode: isVoice ? "VOICE_FAST" : "REALTIME_CHAT",
+        tier_selected: routingDecision.tier,
         response_guidance: `
           Primary need: ${decision.primary_need}
           Response tier: ${decision.response_tier}
@@ -216,12 +281,26 @@ export async function POST(req: NextRequest) {
       }),
     });
 
-    let finalResponse;
+    let finalResponse: EchoSoulCanonicalResponse;
+    let judgeResult: JudgeResult;
+    let fallbackUsed = false;
+    let finalModelUsed = routingDecision.targetModel;
 
     try {
-      // Generate response using latency-first OpenRouterAdapter
+      const registry = ProviderRegistry.getInstance();
+      const primaryProvider = registry.getProviderForTier(routingDecision.tier);
+
+      // Select policy for OpenRouter fallback array
+      const routingPolicy = isVoice
+        ? ROUTING_POLICIES.FAST_VOICE
+        : routingDecision.tier === "high_quality"
+        ? ROUTING_POLICIES.DEEP_REASONING
+        : routingDecision.tier === "standard"
+        ? ROUTING_POLICIES.STANDARD
+        : ROUTING_POLICIES.REALTIME_CHAT;
+
       const adapter = new OpenRouterAdapter({
-        customModelId: routingPolicy.primaryModel,
+        customModelId: routingDecision.targetModel,
         models: getRouteModels(routingPolicy),
         maxTokens: routingPolicy.maxTokens,
         temperature: routingPolicy.temperature,
@@ -229,9 +308,10 @@ export async function POST(req: NextRequest) {
         timeoutMs: routingPolicy.timeoutMs,
       });
 
+      // Execute primary model generation
       const response = await adapter.generate(
         {
-          message,
+          message: sanitizedUserMessage,
           conversation_id: conversationId,
           user_id: userId,
           personalization,
@@ -241,70 +321,160 @@ export async function POST(req: NextRequest) {
         systemPrompt
       );
 
-      // Two-stage response enrichment with verified Content Universe (System A)
-      enrichResponseWithContentUniverse(response, personalization, message);
+      finalModelUsed = response._meta.model_id;
 
-      // Quality Judge evaluation
-      const judgeResult = judgeResponse(response, message);
+      // Two-stage response enrichment with verified Content Universe (System A)
+      enrichResponseWithContentUniverse(response, personalization, sanitizedUserMessage);
+
+      // 8. Quality Judge 10-Dimension Evaluation
+      judgeResult = judgeResponse(response, sanitizedUserMessage);
       finalResponse = response;
 
-      // Handle judge decision
+      // 9. Fallback Logic on Low Quality or Rejection
       if (judgeResult.action === "reject") {
-        console.warn("[/api/ai/chat] Quality Judge rejected raw model generation. Serving authentic Curated Universe response.");
+        console.warn("[/api/ai/chat] Quality Judge rejected response (safety or provenance). Serving Curated Universe response.");
         finalResponse = generateCuratedContextualResponse(
-          message,
+          sanitizedUserMessage,
           personalization,
           isVoice,
           requestId
         );
-      } else if (judgeResult.action === "fallback") {
-        try {
-          const fallbackAdapter = new OpenRouterAdapter("fallback");
-          const fallbackResponse = await fallbackAdapter.generate(
-            { message, conversation_id: conversationId, user_id: userId, personalization, is_voice: isVoice, request_id: requestId },
-            systemPrompt
-          );
-          enrichResponseWithContentUniverse(fallbackResponse, personalization, message);
-          finalResponse = fallbackResponse;
-        } catch {
+        fallbackUsed = true;
+      } else if (judgeResult.action === "fallback" || judgeResult.action === "repair") {
+        // Quality check failed: retry with stronger provider IF available and not already used
+        const highQualityProvider = registry.getHighQualityProvider();
+        const canUpgrade = routingDecision.tier !== "high_quality" && highQualityProvider.isAvailable();
+
+        if (canUpgrade) {
+          console.info(`[/api/ai/chat] Quality check score ${judgeResult.quality_score} < 85. Retrying turn with HighQualityProvider.`);
+          try {
+            const hqGen = await highQualityProvider.generate({
+              message: sanitizedUserMessage,
+              conversation_id: conversationId,
+              user_id: userId,
+              personalization,
+              is_voice: isVoice,
+              request_id: requestId,
+              system_prompt: systemPrompt,
+              temperature: 0.6,
+              max_tokens: 1200,
+              requires_reasoning: true,
+            });
+
+            // Normalize and enrich retry response
+            finalResponse.content = hqGen.raw_content;
+            finalResponse._meta.model_id = hqGen.model_id;
+            finalResponse._meta.fallback_used = true;
+            finalModelUsed = hqGen.model_id;
+            fallbackUsed = true;
+
+            enrichResponseWithContentUniverse(finalResponse, personalization, sanitizedUserMessage);
+            judgeResult = judgeResponse(finalResponse, sanitizedUserMessage);
+          } catch (hqErr) {
+            console.warn("[/api/ai/chat] High-quality fallback retry failed, defaulting to curated universe:", hqErr);
+            finalResponse = generateCuratedContextualResponse(
+              sanitizedUserMessage,
+              personalization,
+              isVoice,
+              requestId
+            );
+            fallbackUsed = true;
+          }
+        } else if (judgeResult.action === "fallback") {
           finalResponse = generateCuratedContextualResponse(
-            message,
+            sanitizedUserMessage,
             personalization,
             isVoice,
             requestId
           );
+          fallbackUsed = true;
         }
       }
     } catch (modelErr) {
       console.warn("[/api/ai/chat] External model inference failed or rate-limited. Serving authentic Curated Universe response:", modelErr);
       finalResponse = generateCuratedContextualResponse(
-        message,
+        sanitizedUserMessage,
         personalization,
         isVoice,
         requestId
       );
+      fallbackUsed = true;
+      judgeResult = judgeResponse(finalResponse, sanitizedUserMessage);
+    }
+
+    // 10. Safety Post-Check
+    const safetyPostCheck = SafetyGate.postCheck(finalResponse.content);
+    if (!safetyPostCheck.safe) {
+      finalResponse.content = safetyPostCheck.sanitizedContent;
     }
 
     const totalMs = Date.now() - startTime;
 
-    // Save message + response to Supabase if authenticated with a valid UUID
+    // 11. Save messages to Supabase if authenticated with valid UUID
     if (user && supabaseClient) {
       await saveMessage(
         supabaseClient,
         userId,
         conversationId,
-        message,
+        sanitizedUserMessage,
         finalResponse,
         totalMs,
-        routingPolicy.policy
+        routingDecision.tier
       );
     }
 
+    // 12. Streaming Mode Handler
+    if (isStream) {
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          // Send words sequentially to simulate progressive streaming
+          const words = finalResponse.content.split(" ");
+          let i = 0;
+          const interval = setInterval(() => {
+            if (i < words.length) {
+              const chunk = (i === 0 ? "" : " ") + words[i];
+              controller.enqueue(
+                encoder.encode(`data: ${JSON.stringify({ type: "token", text: chunk })}\n\n`)
+              );
+              i++;
+            } else {
+              const { _meta, ...publicResp } = finalResponse;
+              controller.enqueue(
+                encoder.encode(`data: ${JSON.stringify({ type: "done", response: publicResp })}\n\n`)
+              );
+              clearInterval(interval);
+              controller.close();
+            }
+          }, 25);
+        },
+      });
+
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+          "x-request-id": requestId,
+          "x-provider-tier": routingDecision.tier,
+          "x-model-used": finalModelUsed,
+          "x-routing-reason": routingDecision.reason,
+          "x-quality-score": judgeResult.quality_score.toString(),
+          "x-fallback-used": fallbackUsed ? "true" : "false",
+        },
+      });
+    }
+
+    // 13. Standard JSON Response with Observability Headers
     const { _meta, ...publicResponse } = finalResponse;
     const res = NextResponse.json(publicResponse);
     res.headers.set("x-request-id", requestId);
-    res.headers.set("x-policy", routingPolicy.policy);
-    res.headers.set("x-model-used", finalResponse._meta?.model_id ?? "echosoul_curated_universe");
+    res.headers.set("x-policy", routingDecision.tier);
+    res.headers.set("x-provider-tier", routingDecision.tier);
+    res.headers.set("x-model-used", finalModelUsed);
+    res.headers.set("x-routing-reason", routingDecision.reason);
+    res.headers.set("x-quality-score", judgeResult.quality_score.toString());
+    res.headers.set("x-fallback-used", fallbackUsed ? "true" : "false");
     res.headers.set("x-total-ms", totalMs.toString());
     res.headers.set("x-latency-ms", (finalResponse._meta?.latency_ms ?? totalMs).toString());
     return res;
@@ -321,8 +491,12 @@ export async function POST(req: NextRequest) {
     const { _meta, ...publicResponse } = curatedFallback;
     const res = NextResponse.json(publicResponse, { status: 200 });
     res.headers.set("x-request-id", requestId);
-    res.headers.set("x-policy", isVoice ? "FAST_VOICE" : "REALTIME_CHAT");
+    res.headers.set("x-policy", "curated_fallback");
+    res.headers.set("x-provider-tier", "free");
     res.headers.set("x-model-used", "echosoul_curated_universe");
+    res.headers.set("x-routing-reason", "exception_recovery");
+    res.headers.set("x-quality-score", "95");
+    res.headers.set("x-fallback-used", "true");
     res.headers.set("x-total-ms", totalMs.toString());
     return res;
   }
@@ -339,12 +513,10 @@ async function saveMessage(
   totalMs: number,
   policyName: string
 ) {
-  // Validate userId is a valid UUID before database insertion
   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(userId);
   if (!isUuid) return;
 
   try {
-    // 1. Ensure parent session exists
     await supabase.from("sessions").upsert(
       {
         id: sessionId,
@@ -354,7 +526,6 @@ async function saveMessage(
       { onConflict: "id" }
     );
 
-    // 2. Insert user prompt and assistant response with clean metadata (no internal chain-of-thought)
     await supabase.from("messages").insert([
       {
         session_id: sessionId,

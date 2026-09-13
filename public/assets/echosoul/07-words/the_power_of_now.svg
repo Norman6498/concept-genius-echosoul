@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+  <defs>
+    <linearGradient id="bg_now" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1F1A2E" />
+      <stop offset="50%" stop-color="#2D1E3A" />
+      <stop offset="100%" stop-color="#0A0812" />
+    </linearGradient>
+    <linearGradient id="sun_gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFEAA7" />
+      <stop offset="50%" stop-color="#F39C12" />
+      <stop offset="100%" stop-color="#E67E22" />
+    </linearGradient>
+  </defs>
+
+  <!-- Cover Body -->
+  <rect width="400" height="600" rx="12" fill="url(#bg_now)" />
+  <rect x="0" y="0" width="28" height="600" fill="#000000" opacity="0.35" />
+  <line x1="28" y1="0" x2="28" y2="600" stroke="#F39C12" stroke-width="1.5" opacity="0.4" />
+
+  <rect x="42" y="30" width="326" height="540" rx="6" fill="none" stroke="url(#sun_gold)" stroke-width="1.5" opacity="0.6" />
+
+  <!-- Radiant Presence Sunburst -->
+  <g transform="translate(205, 225)">
+    <circle cx="0" cy="0" r="45" fill="none" stroke="url(#sun_gold)" stroke-width="2" opacity="0.4" />
+    <circle cx="0" cy="0" r="30" fill="url(#sun_gold)" opacity="0.2" />
+    <circle cx="0" cy="0" r="18" fill="url(#sun_gold)" opacity="0.85" />
+    <!-- Rays -->
+    <line x1="0" y1="-65" x2="0" y2="-50" stroke="url(#sun_gold)" stroke-width="2" opacity="0.6" />
+    <line x1="0" y1="50" x2="0" y2="65" stroke="url(#sun_gold)" stroke-width="2" opacity="0.6" />
+    <line x1="-65" y1="0" x2="-50" y2="0" stroke="url(#sun_gold)" stroke-width="2" opacity="0.6" />
+    <line x1="50" y1="0" x2="65" y2="0" stroke="url(#sun_gold)" stroke-width="2" opacity="0.6" />
+  </g>
+
+  <!-- Author Name -->
+  <text x="205" y="105" font-family="'Cinzel', 'Playfair Display', serif" font-size="13" fill="#FFEAA7" letter-spacing="5" text-anchor="middle" font-weight="600">
+    ECKHART TOLLE
+  </text>
+  <line x1="140" y1="120" x2="270" y2="120" stroke="url(#sun_gold)" stroke-width="1" opacity="0.5" />
+
+  <!-- Book Title -->
+  <text x="205" y="345" font-family="'Playfair Display', serif" font-size="28" fill="#FFF8E1" letter-spacing="2" text-anchor="middle" font-weight="700">
+    THE POWER OF
+  </text>
+  <text x="205" y="390" font-family="'Cinzel', serif" font-size="44" fill="#F39C12" letter-spacing="6" text-anchor="middle" font-weight="800">
+    NOW
+  </text>
+
+  <!-- Subtitle -->
+  <text x="205" y="430" font-family="'Inter', sans-serif" font-size="10" fill="#CFC5B5" letter-spacing="2" text-anchor="middle" opacity="0.8">
+    A GUIDE TO SPIRITUAL ENLIGHTENMENT
+  </text>
+
+  <line x1="160" y1="490" x2="250" y2="490" stroke="url(#sun_gold)" stroke-width="1" opacity="0.5" />
+  <text x="205" y="520" font-family="'Cinzel', serif" font-size="9" fill="#FFEAA7" letter-spacing="3" text-anchor="middle" opacity="0.75">
+    MINDFULNESS &amp; INNER STILLNESS
+  </text>
+</svg>

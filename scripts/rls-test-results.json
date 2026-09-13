@@ -1,6 +1,6 @@
 {
   "allPassed": true,
-  "timestamp": "2026-09-13T03:51:14.447Z",
+  "timestamp": "2026-09-13T08:00:35.481Z",
   "assertions": [
     {
       "name": "User B cannot read User A messages",

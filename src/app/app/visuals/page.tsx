@@ -71,7 +71,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Nature",
     name: "Golden Meadow",
     tagline: "Warm amber sunlight filtering through wildflowers.",
-    image: "/tabs/guidance_bg.jpg",
+    image: "/visual-worlds/nature_wildlife.jpg",
     frequencyBadge: "528 Hz Miracle",
   },
 
@@ -90,7 +90,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Cities",
     name: "Tokyo Rain Alley",
     tagline: "Glistening wet cobblestones under warm amber lanterns.",
-    image: "/tabs/community_bg.jpg",
+    image: "/visual-worlds/city_lights.jpg",
     frequencyBadge: "396 Hz Release",
   },
   {
@@ -98,7 +98,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Cities",
     name: "Paris Twilight",
     tagline: "Quiet riverbanks under a soft violet evening sky.",
-    image: "/tabs/words_bg.jpg",
+    image: "/visual-worlds/city_lights.jpg",
     frequencyBadge: "432 Hz Solfeggio",
   },
 
@@ -117,7 +117,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Rooms",
     name: "Attic Rain Skylight",
     tagline: "Rain pattering gently against cedar wood glass.",
-    image: "/visual-worlds/cozy_room.jpg",
+    image: "/visual-worlds/classic_vintage.jpg",
     frequencyBadge: "174 Hz Grounding",
   },
   {
@@ -125,7 +125,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Rooms",
     name: "Zen Tea Alcove",
     tagline: "Minimal tatami mats, steaming herbal tea, and breath.",
-    image: "/tabs/journey_bg.jpg",
+    image: "/visual-worlds/fantasy_realm.jpg",
     frequencyBadge: "432 Hz Solfeggio",
   },
 
@@ -144,7 +144,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Space",
     name: "Cosmic Nebula",
     tagline: "Floating through stellar dust and starlit horizons.",
-    image: "/visual-worlds/starry_skies.jpg",
+    image: "/visual-worlds/space_cosmos.jpg",
     frequencyBadge: "852 Hz Intuition",
   },
   {
@@ -152,7 +152,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Space",
     name: "Lunar Orbit",
     tagline: "Profound silence watching Earth rise over craters.",
-    image: "/visual-worlds/starry_skies.jpg",
+    image: "/visual-worlds/space_cosmos.jpg",
     frequencyBadge: "432 Hz Solfeggio",
   },
 
@@ -162,7 +162,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Anime",
     name: "Ghibli Meadow",
     tagline: "Wind rustling through high emerald grass under clouds.",
-    image: "/tabs/guidance_bg.jpg",
+    image: "/visual-worlds/anime_aesthetic.jpg",
     frequencyBadge: "528 Hz Miracle",
   },
   {
@@ -170,7 +170,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Anime",
     name: "Coastal Sunset Train",
     tagline: "Rays of golden dusk beaming into quiet railway windows.",
-    image: "/visual-worlds/ocean_breeze.jpg",
+    image: "/visual-worlds/anime_aesthetic.jpg",
     frequencyBadge: "432 Hz Solfeggio",
   },
   {
@@ -178,7 +178,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Anime",
     name: "Sakura Stone Path",
     tagline: "Cherry blossom petals falling in quiet stillness.",
-    image: "/tabs/words_bg.jpg",
+    image: "/visual-worlds/anime_aesthetic.jpg",
     frequencyBadge: "528 Hz Miracle",
   },
 
@@ -188,7 +188,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Minimal",
     name: "Desert Dawn Dunes",
     tagline: "Clean wind-swept sand ridges in pure early light.",
-    image: "/visual-worlds/mountain_calm.jpg",
+    image: "/visual-worlds/minimal_space.jpg",
     frequencyBadge: "432 Hz Solfeggio",
   },
   {
@@ -196,7 +196,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Minimal",
     name: "Pure Horizon Mist",
     tagline: "Infinite stillness where quiet water mirrors the sky.",
-    image: "/visual-worlds/ocean_breeze.jpg",
+    image: "/visual-worlds/minimal_space.jpg",
     frequencyBadge: "174 Hz Grounding",
   },
   {
@@ -204,7 +204,7 @@ const ALL_VISUAL_WORLDS: VisualWorldItem[] = [
     category: "Minimal",
     name: "Silent Stone Sanctuary",
     tagline: "Raked sand lines, quiet geometry, uncluttered mind.",
-    image: "/tabs/journey_bg.jpg",
+    image: "/visual-worlds/minimal_space.jpg",
     frequencyBadge: "432 Hz Solfeggio",
   },
 ];

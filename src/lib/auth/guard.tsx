@@ -42,7 +42,7 @@ export function AppRouteGuard({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (authStatus === "AUTHENTICATED" && onboardingCompleted === false) {
+    if (authStatus === "AUTHENTICATED" && onboardingCompleted === false && !isGuest) {
       // Incomplete onboarding -> send to onboarding step
       router.replace(resolvePostAuthRoute());
     }
@@ -59,7 +59,7 @@ export function AppRouteGuard({ children }: { children: React.ReactNode }) {
   }
 
   // If authenticated but incomplete onboarding, render loader while redirecting to onboarding
-  if (authStatus === "AUTHENTICATED" && onboardingCompleted === false) {
+  if (authStatus === "AUTHENTICATED" && onboardingCompleted === false && !isGuest) {
     return <SanctuaryLoadingScreen label="Entering Onboarding" />;
   }
 
@@ -82,8 +82,8 @@ export function OnboardingRouteGuard({ children }: { children: React.ReactNode }
       return;
     }
 
-    // RETURNING USER FIX: If user already completed onboarding, redirect straight to /app!
-    if (authStatus === "AUTHENTICATED" && onboardingCompleted === true) {
+    // RETURNING USER FIX: If user already completed onboarding (or in Guest mode), redirect straight to /app!
+    if ((authStatus === "AUTHENTICATED" && onboardingCompleted === true) || isGuest) {
       router.replace("/app");
     }
   }, [authStatus, isGuest, isLoading, onboardingCompleted, router]);
@@ -96,8 +96,8 @@ export function OnboardingRouteGuard({ children }: { children: React.ReactNode }
     return <SanctuaryLoadingScreen label="Redirecting" />;
   }
 
-  // If user completed onboarding, show loader while redirecting to /app
-  if (authStatus === "AUTHENTICATED" && onboardingCompleted === true) {
+  // If user completed onboarding or is guest, show loader while redirecting to /app
+  if ((authStatus === "AUTHENTICATED" && onboardingCompleted === true) || isGuest) {
     return <SanctuaryLoadingScreen label="Opening Sanctuary" />;
   }
 

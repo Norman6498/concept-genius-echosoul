@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { IconSet } from "@/components/ui/IconSet";
+import { CinematicBackground, AmbientParticles, LampGlow } from "@/components/visual";
 
 // ── Navbar ────────────────────────────────────────────────────────────────────
 export function Navbar() {
@@ -183,31 +184,27 @@ export function HeroPage() {
       {/* ── Hero Viewport ───────────────────────────────────────────── */}
       <section className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden">
 
-        {/* BACKGROUND ARTWORK: High-Resolution Visual Artwork (Clean with 0 duplicate text) */}
-        <div
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-          style={{
-            backgroundImage: "url('/page1-clean.png')",
-            backgroundPosition: "center 25%",
-            backgroundSize: "cover",
-          }}
+        {/* BACKGROUND ARTWORK: High-Resolution Visual Artwork with Next.js LCP Priority */}
+        <CinematicBackground
+          src="/page1-clean.png"
+          alt="Solenne Hero Sanctuary Atmosphere"
+          priority
+          focalPoint={{ desktop: "center 25%", mobile: "center 30%" }}
+          overlay="subtle"
         >
-          {/* Subtle atmospheric vignette */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B0F14]/60 via-transparent to-[#0B0F14]/50" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F14] via-transparent to-[#0B0F14]/40" />
-
           {/* Twinkling ambient celestial stars */}
-          <div className="absolute top-[8%] left-[22%] w-1.5 h-1.5 rounded-full bg-white animate-star-twinkle shadow-[0_0_8px_white]" />
-          <div className="absolute top-[12%] left-[35%] w-1 h-1 rounded-full bg-[#F2D78A] animate-star-twinkle shadow-[0_0_6px_#F2D78A]" style={{ animationDelay: "1s" }} />
-          <div className="absolute top-[6%] left-[68%] w-1.5 h-1.5 rounded-full bg-white animate-star-twinkle shadow-[0_0_8px_white]" style={{ animationDelay: "2s" }} />
-          <div className="absolute top-[15%] left-[82%] w-1 h-1 rounded-full bg-[#90E0EF] animate-star-twinkle shadow-[0_0_6px_#90E0EF]" style={{ animationDelay: "0.5s" }} />
+          <AmbientParticles count={22} type="stars" palette="celestial" />
 
           {/* Glowing pulse aura on crescent moon */}
-          <div className="absolute top-[7%] left-[61%] w-24 h-24 rounded-full bg-[#F2D78A]/15 blur-2xl es-moon-glow" />
+          <div className="absolute top-[7%] left-[61%] w-24 h-24 rounded-full bg-[#F2D78A]/15 blur-2xl es-moon-glow pointer-events-none" />
 
           {/* Warm candle glow on right interior */}
-          <div className="absolute bottom-[35%] right-[12%] w-20 h-20 rounded-full bg-[#FFB86B]/20 blur-2xl es-lamp-glow" />
-        </div>
+          <LampGlow
+            position={{ bottom: "35%", right: "12%" }}
+            size={200}
+            color="rgba(255, 184, 107, 0.22)"
+          />
+        </CinematicBackground>
 
         {/* ── CONTENT LAYER ──────────────────────────────────────────── */}
         <div className="relative z-10 flex-1 flex flex-col justify-between pt-24 sm:pt-28">

@@ -46,6 +46,14 @@ const DEFAULT_EMPTY_PROFILE: UserProfile = {
   onboardingStep: 1,
 };
 
+export function isUserGuestIdentity(user: User | null | undefined): boolean {
+  if (!user) return false;
+  if ((user as any).is_anonymous) return true;
+  if (user.user_metadata?.is_guest === true) return true;
+  if (user.email && user.email.endsWith("@guest.solenne.internal")) return true;
+  return false;
+}
+
 interface AuthContextType {
   user: User | null;
   profile: UserProfile;
@@ -56,7 +64,7 @@ interface AuthContextType {
   isGuest: boolean;
   isPrivateSession: boolean;
   setPrivateSession: (value: boolean) => void;
-  signInAsGuest: () => void;
+  signInAsGuest: () => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   refreshAuth: () => Promise<void>;
   resolvePostAuthRoute: () => string;
@@ -102,6 +110,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (authUser: User, force = false): Promise<void> => {
       if (isFetchingProfileRef.current && !force) return;
       isFetchingProfileRef.current = true;
+
+      // Fast-path for guest identity
+      if (isUserGuestIdentity(authUser)) {
+        setIsGuest(true);
+        setProfile({
+          ...DEFAULT_EMPTY_PROFILE,
+          id: authUser.id,
+          name: authUser.user_metadata?.display_name || "Guest Explorer",
+          email: authUser.email,
+          role: "Guest Explorer",
+          onboardingCompleted: true,
+          onboardingStep: 1,
+        });
+        activeUserIdRef.current = authUser.id;
+        setAuthStatus("GUEST");
+        isFetchingProfileRef.current = false;
+        return;
+      }
 
       setAuthStatus("PROFILE_LOADING");
 
@@ -203,8 +229,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } = await supabase.auth.getUser();
 
       if (currentUser) {
+        const isGuestUser = isUserGuestIdentity(currentUser);
         setUser(currentUser);
-        setIsGuest(false);
+        setIsGuest(isGuestUser);
         await loadAuthoritativeProfile(currentUser, true);
       } else {
         setUser(null);
@@ -224,12 +251,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getUser().then(({ data: { user: currentUser } }) => {
       if (!mounted) return;
       if (currentUser) {
+        const isGuestUser = isUserGuestIdentity(currentUser);
         setUser(currentUser);
-        setIsGuest(false);
+        setIsGuest(isGuestUser);
         activeUserIdRef.current = currentUser.id;
         loadAuthoritativeProfile(currentUser);
       } else {
         setUser(null);
+        setIsGuest(false);
         setProfile(DEFAULT_EMPTY_PROFILE);
         setAuthStatus("UNAUTHENTICATED");
       }
@@ -249,6 +278,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (session?.user) {
           const newUserId = session.user.id;
           const previousUserId = activeUserIdRef.current;
+          const isGuestUser = isUserGuestIdentity(session.user);
 
           // Detect account switch: invalidate old user caches
           if (previousUserId && previousUserId !== newUserId) {
@@ -258,7 +288,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
           activeUserIdRef.current = newUserId;
           setUser(session.user);
-          setIsGuest(false);
+          setIsGuest(isGuestUser);
           await loadAuthoritativeProfile(session.user);
         } else if (event === "SIGNED_OUT" || !session) {
           const previousUserId = activeUserIdRef.current;
@@ -267,8 +297,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
           activeUserIdRef.current = null;
           setUser(null);
+          setIsGuest(false);
           setProfile(DEFAULT_EMPTY_PROFILE);
-          setAuthStatus(isGuest ? "GUEST" : "UNAUTHENTICATED");
+          setAuthStatus("UNAUTHENTICATED");
         }
       }
     );
@@ -277,24 +308,108 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       mounted = false;
       authListener.subscription.unsubscribe();
     };
-  }, [isGuest, loadAuthoritativeProfile]);
+  }, [loadAuthoritativeProfile]);
 
-  const signInAsGuest = () => {
-    setIsGuest(true);
-    setUser(null);
-    setAuthStatus("GUEST");
-    setProfile({
-      ...DEFAULT_EMPTY_PROFILE,
-      name: "Guest Explorer",
-      onboardingCompleted: true,
-    });
+  const signInAsGuest = async (): Promise<{ success: boolean; error?: string }> => {
+    setAuthStatus("AUTH_LOADING");
+    const supabase = createClient();
+
+    try {
+      // 1. Attempt native anonymous auth first (if enabled in Supabase remote project)
+      try {
+        const { data: anonData, error: anonError } = await supabase.auth.signInAnonymously();
+        if (!anonError && anonData?.user) {
+          setIsGuest(true);
+          setUser(anonData.user);
+          activeUserIdRef.current = anonData.user.id;
+          setAuthStatus("GUEST");
+          setProfile({
+            ...DEFAULT_EMPTY_PROFILE,
+            id: anonData.user.id,
+            name: "Guest Explorer",
+            role: "Guest Explorer",
+            onboardingCompleted: true,
+            onboardingStep: 1,
+          });
+          return { success: true };
+        }
+      } catch {
+        // Fall through to dedicated server-side guest session
+      }
+
+      // 2. Call dedicated server guest-session API
+      const res = await fetch("/api/auth/guest-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (res.ok) {
+        const creds = await res.json();
+        if (creds.email && creds.password) {
+          const { data: signInData, error: signInErr } = await supabase.auth.signInWithPassword({
+            email: creds.email,
+            password: creds.password,
+          });
+
+          if (!signInErr && signInData?.user) {
+            setIsGuest(true);
+            setUser(signInData.user);
+            activeUserIdRef.current = signInData.user.id;
+            setAuthStatus("GUEST");
+            setProfile({
+              ...DEFAULT_EMPTY_PROFILE,
+              id: signInData.user.id,
+              name: "Guest Explorer",
+              role: "Guest Explorer",
+              onboardingCompleted: true,
+              onboardingStep: 1,
+            });
+            return { success: true };
+          }
+        }
+      }
+
+      // 3. Resilient Client-side fallback if backend or network is temporarily unreachable
+      setIsGuest(true);
+      setUser(null);
+      activeUserIdRef.current = null;
+      setAuthStatus("GUEST");
+      setProfile({
+        ...DEFAULT_EMPTY_PROFILE,
+        id: `guest_${Date.now()}`,
+        name: "Guest Explorer",
+        role: "Guest Explorer",
+        onboardingCompleted: true,
+        onboardingStep: 1,
+      });
+      return { success: true };
+    } catch (err: any) {
+      console.warn("[GuestAuth] Fallback client guest mode engaged:", err);
+      setIsGuest(true);
+      setUser(null);
+      activeUserIdRef.current = null;
+      setAuthStatus("GUEST");
+      setProfile({
+        ...DEFAULT_EMPTY_PROFILE,
+        id: `guest_${Date.now()}`,
+        name: "Guest Explorer",
+        role: "Guest Explorer",
+        onboardingCompleted: true,
+        onboardingStep: 1,
+      });
+      return { success: true };
+    }
   };
 
   const signOut = async () => {
     try {
+      setIsGuest(false);
+      setAuthStatus("UNAUTHENTICATED");
       const supabase = createClient();
       await performSecureLogout(supabase, "/login");
     } catch {
+      setIsGuest(false);
+      setAuthStatus("UNAUTHENTICATED");
       if (typeof window !== "undefined") {
         window.location.href = "/login";
       }

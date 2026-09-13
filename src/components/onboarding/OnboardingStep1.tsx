@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { IconSet, type IconName } from "@/components/ui/IconSet";
+import { CinematicBackground, AmbientParticles } from "@/components/visual";
 import { createClient } from "@/lib/supabase/client";
 import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
@@ -225,23 +226,21 @@ export function OnboardingStep1() {
 
   return (
     <div className="relative min-h-screen w-full bg-[#0B0F14] text-[#FFF8E1] flex flex-col justify-between overflow-x-hidden select-none">
-      {/* ── Background Artwork Layer (Page 3 clean with 0 duplicate text) ── */}
-      <div
-        className="fixed inset-0 z-0 bg-cover bg-left-top sm:bg-center bg-no-repeat pointer-events-none"
-        style={{
-          backgroundImage: "url('/page3-clean.png')",
-          backgroundSize: "cover",
-        }}
+      {/* ── Background Artwork Layer with Next.js LCP Priority ── */}
+      <CinematicBackground
+        src="/page3-clean.png"
+        alt="Solenne Onboarding Atmosphere"
+        priority
+        focalPoint={{ desktop: "center center", mobile: "left center" }}
+        overlay="none"
       >
         {/* Soft atmospheric gradient transitions */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0B0F14]/75 to-[#0B0F14]" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F14] via-transparent to-[#0B0F14]/50" />
 
         {/* Twinkling star lights above the night horizon */}
-        <div className="absolute top-[9%] left-[23%] w-1.5 h-1.5 rounded-full bg-white animate-star-twinkle shadow-[0_0_8px_white]" />
-        <div className="absolute top-[13%] left-[26%] w-1 h-1 rounded-full bg-[#F2D78A] animate-star-twinkle shadow-[0_0_6px_#F2D78A]" style={{ animationDelay: "1.4s" }} />
-        <div className="absolute top-[6%] left-[20%] w-1.5 h-1.5 rounded-full bg-white animate-star-twinkle shadow-[0_0_8px_white]" style={{ animationDelay: "2.2s" }} />
-      </div>
+        <AmbientParticles count={14} type="stars" palette="celestial" />
+      </CinematicBackground>
 
       {/* ── Top Header & Stepper Bar ─────────────────────────────────── */}
       <header className="relative z-30 w-full max-w-[1536px] mx-auto px-6 sm:px-10 h-20 flex items-center justify-between">

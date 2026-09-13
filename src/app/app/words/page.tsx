@@ -5,6 +5,7 @@ import { EchoSoulShell } from "@/components/shell/EchoSoulShell";
 import Image from "next/image";
 import { Bookmark, Sparkles, BookOpen, Compass, Heart, CheckCircle2, ChevronRight, X } from "lucide-react";
 import { getLiteratureTypography } from "@/lib/typography";
+import { PaperTexture } from "@/components/visual";
 import { createClient } from "@/lib/supabase/client";
 import { getScopedStorageItem, setScopedStorageItem } from "@/lib/auth/sessionBoundary";
 
@@ -685,6 +686,7 @@ export default function WordsPage() {
               className="object-cover opacity-25 pointer-events-none transition-all duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#070D12] via-[#070D12]/70 to-black/40 pointer-events-none" />
+            <PaperTexture opacity={0.05} variant="paper" className="absolute inset-0 pointer-events-none" />
 
             {/* Top Badge */}
             <div className="relative z-10 flex items-center justify-between">

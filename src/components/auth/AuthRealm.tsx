@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { IconSet } from "@/components/ui/IconSet";
+import { CinematicBackground, AmbientParticles, LampGlow } from "@/components/visual";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth/context";
 
@@ -33,7 +34,7 @@ const CAROUSEL_SLIDES = [
 
 export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
   const router = useRouter();
-  const { user, authStatus, onboardingCompleted, isLoading: authLoading, resolvePostAuthRoute, refreshAuth } = useAuth();
+  const { user, authStatus, onboardingCompleted, isLoading: authLoading, resolvePostAuthRoute, refreshAuth, signInAsGuest } = useAuth();
 
   const [mode, setMode] = useState<"signup" | "login" | "otp">(initialMode);
   const [name, setName] = useState("");
@@ -44,15 +45,20 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
   const [countdown, setCountdown] = useState(60);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGuestLoading, setIsGuestLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
 
-  // If already authenticated with completed onboarding, redirect straight to /app
+  // If already authenticated or in Guest mode, redirect straight to /app
   useEffect(() => {
-    if (!authLoading && authStatus === "AUTHENTICATED" && user) {
-      if (onboardingCompleted === true) {
+    if (!authLoading && (authStatus === "AUTHENTICATED" || authStatus === "GUEST")) {
+      if (authStatus === "GUEST") {
         router.replace("/app");
-      } else if (onboardingCompleted === false) {
-        router.replace(resolvePostAuthRoute());
+      } else if (user) {
+        if (onboardingCompleted === true) {
+          router.replace("/app");
+        } else if (onboardingCompleted === false) {
+          router.replace(resolvePostAuthRoute());
+        }
       }
     }
   }, [authLoading, authStatus, onboardingCompleted, resolvePostAuthRoute, router, user]);
@@ -292,23 +298,58 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
     }
   };
 
+  const handleGuestExplorer = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isGuestLoading || isLoading) return;
+
+    setIsGuestLoading(true);
+    setMessage(null);
+
+    try {
+      const res = await signInAsGuest();
+      if (res.success) {
+        setMessage({
+          type: "success",
+          text: "Welcome to Solenne. Opening Guest Explorer...",
+        });
+        await refreshAuth();
+        setTimeout(() => {
+          router.replace("/app");
+        }, 400);
+      } else {
+        setMessage({
+          type: "error",
+          text: res.error || "We couldn't open Explorer Mode right now. Please try again.",
+        });
+        setIsGuestLoading(false);
+      }
+    } catch (err: any) {
+      console.error("[GuestAuth] Entry error:", err);
+      setMessage({
+        type: "error",
+        text: "We couldn't open Explorer Mode right now. Please try again.",
+      });
+      setIsGuestLoading(false);
+    }
+  };
+
   return (
     <div className="relative min-h-screen w-full bg-[#0B0F14] text-[#FFF8E1] overflow-x-hidden select-none flex flex-col justify-between">
-      {/* ── Background Visual Artwork ──────── */}
-      <div
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-700 pointer-events-none"
-        style={{
-          backgroundImage: "url('/page2-clean.png')",
-          backgroundPosition: "center center",
-          backgroundSize: "cover",
-        }}
+      {/* ── Background Visual Artwork with Next.js LCP Priority & Responsive Focal Point ──────── */}
+      <CinematicBackground
+        src="/page2-clean.png"
+        alt="Solenne Auth Sanctuary Atmosphere"
+        priority
+        focalPoint={{ desktop: "25% center", mobile: "20% center" }}
+        overlay="sanctuary"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0B0F14]/65 via-transparent to-[#0B0F14]/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F14]/70 via-transparent to-[#0B0F14]/40" />
-        <div className="absolute top-[12%] left-[42%] w-1.5 h-1.5 rounded-full bg-white animate-star-twinkle shadow-[0_0_8px_white]" />
-        <div className="absolute top-[8%] left-[46%] w-1 h-1 rounded-full bg-[#F2D78A] animate-star-twinkle shadow-[0_0_6px_#F2D78A]" style={{ animationDelay: "1.2s" }} />
-        <div className="absolute bottom-[28%] left-[11%] w-24 h-24 rounded-full bg-[#FFB86B]/20 blur-2xl es-lamp-glow pointer-events-none" />
-      </div>
+        <AmbientParticles count={16} type="stars" palette="gold" />
+        <LampGlow
+          position={{ bottom: "28%", left: "11%" }}
+          size={220}
+          color="rgba(255, 184, 107, 0.25)"
+        />
+      </CinematicBackground>
 
       {/* ── Header Layer ─────────────────────────────────── */}
       <header className="relative z-20 w-full max-w-[1440px] mx-auto px-6 sm:px-10 h-20 flex items-center justify-between">
@@ -668,14 +709,23 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
                 </form>
               )}
 
-              {/* Guest / Direct Explorer link */}
+              {/* Guest / Direct Explorer button */}
               <div className="mt-5 text-center">
-                <Link
-                  href="/onboarding"
-                  className="font-ui text-xs text-[#9AA8B0] hover:text-[#F2D78A] transition-colors"
+                <button
+                  type="button"
+                  onClick={handleGuestExplorer}
+                  disabled={isGuestLoading || isLoading}
+                  className="font-ui text-xs text-[#9AA8B0] hover:text-[#F2D78A] transition-colors inline-flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Continue directly as Guest Explorer →
-                </Link>
+                  {isGuestLoading ? (
+                    <>
+                      <span className="w-3.5 h-3.5 rounded-full border-2 border-[#F2D78A] border-t-transparent animate-spin" />
+                      <span>Entering Explorer Mode…</span>
+                    </>
+                  ) : (
+                    <span>Continue directly as Guest Explorer →</span>
+                  )}
+                </button>
               </div>
 
             </div>
