@@ -18,8 +18,8 @@ export function PricingPreviewSection() {
       a: "All personal entries and chapters are encrypted at rest with AES-256 and never sold or fed into public machine learning corpuses. You can export or delete your data anytime.",
     },
     {
-      q: "What makes EchoSoul different from standard AI chatbots?",
-      a: "Standard chatbots rush to fix you, lecture you, or generate endless generic text. EchoSoul offers silence, authentic archival literature (Ghalib, Tagore, Rumi), acoustic soundscapes, and synthesizes your real journey into your private Life Novel.",
+      q: "What makes Solenne different from standard AI chatbots?",
+      a: "Standard chatbots rush to fix you, lecture you, or generate endless generic text. Solenne offers silence, authentic archival literature (Ghalib, Tagore, Rumi), acoustic soundscapes, and synthesizes your real journey into your private Life Novel.",
     },
   ];
 
@@ -116,7 +116,7 @@ export function PricingPreviewSection() {
             </Button>
           </div>
 
-          {/* Plan 2: EchoSoul Patron (Featured) */}
+          {/* Plan 2: Solenne Patron (Featured) */}
           <div className="glass-panel p-8 sm:p-10 border-2 border-[#D9A441] shadow-[0_12px_45px_rgba(217,164,65,0.22)] flex flex-col justify-between relative">
             {/* Luminous Ribbon */}
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-[#D9A441] to-[#F2C86A] text-[#050B10] text-[11px] font-bold uppercase tracking-wider shadow-[0_2px_12px_rgba(217,164,65,0.5)]">
@@ -125,7 +125,7 @@ export function PricingPreviewSection() {
 
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-display text-2xl text-[#F2C86A] font-medium">EchoSoul Patron</h3>
+                <h3 className="font-display text-2xl text-[#F2C86A] font-medium">Solenne Patron</h3>
                 <span className="text-xs uppercase font-mono tracking-wider text-[#D9A441] bg-[#D9A441]/15 px-2.5 py-1 rounded-full font-semibold">
                   Full Sanctum
                 </span>
@@ -163,7 +163,7 @@ export function PricingPreviewSection() {
             </div>
 
             <Button variant="primary" size="lg" href="/signup" fullWidth>
-              Become an EchoSoul Patron
+              Become a Solenne Patron
             </Button>
           </div>
         </div>

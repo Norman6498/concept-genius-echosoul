@@ -24,14 +24,14 @@ export function SafetyTrustSection() {
       title: "No Emotional Gamification",
       badge: "Ethical Technology",
       description:
-        "No streak guilt, no artificial dependency loops, and no dopamine notifications designed to hook you. EchoSoul is here when you need to exhale, and respects your real life.",
+        "No streak guilt, no artificial dependency loops, and no dopamine notifications designed to hook you. Solenne is here when you need to exhale, and respects your real life.",
     },
     {
       icon: "sparkles" as const,
       title: "Human Authenticity First",
       badge: "Careful Limits",
       description:
-        "EchoSoul is honest about what it is: an empathetic AI companion and literary haven. It never pretends to be a biological human or an omniscient authority.",
+        "Solenne is honest about what it is: an empathetic AI companion and literary haven. It never pretends to be a biological human or an omniscient authority.",
     },
   ];
 
@@ -121,10 +121,10 @@ export function SafetyTrustSection() {
                 </span>
               </div>
               <h4 className="font-display text-xl text-[#F5EBD6] font-medium">
-                EchoSoul is an emotional companion, not clinical therapy.
+                Solenne is an emotional companion, not clinical therapy.
               </h4>
               <p className="font-ui text-xs sm:text-sm text-[#CFC5B5] leading-relaxed font-light">
-                EchoSoul is designed to offer solace, reflective space, and literary companionship. It cannot diagnose, treat, or replace licensed medical care, psychiatric therapy, or emergency crisis response. If you are experiencing acute mental health distress or crisis, human help is available immediately.
+                Solenne is designed to offer solace, reflective space, and literary companionship. It cannot diagnose, treat, or replace licensed medical care, psychiatric therapy, or emergency crisis response. If you are experiencing acute mental health distress or crisis, human help is available immediately.
               </p>
             </div>
           </div>

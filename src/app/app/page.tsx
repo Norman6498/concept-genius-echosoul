@@ -3,8 +3,8 @@ import { AuthenticatedHome } from "@/components/home/AuthenticatedHome";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sanctuary | EchoSoul",
-  description: "Your personalized EchoSoul sanctuary, reflecting your inner world, authentic literature, and mindful experiences.",
+  title: "Sanctuary | Solenne",
+  description: "Your personalized Solenne sanctuary, reflecting your inner world, authentic literature, and mindful experiences.",
 };
 
 export default function AppPage() {

@@ -250,7 +250,7 @@ export function OnboardingStep3() {
               </h1>
 
               <p className="font-ui text-xs sm:text-sm text-[#CFC5B5] leading-relaxed">
-                Where you are. What you see. How you live. It all helps EchoSoul understand you better.
+                Where you are. What you see. How you live. It all helps Solenne understand you better.
               </p>
             </div>
 
@@ -258,7 +258,7 @@ export function OnboardingStep3() {
               <p className="font-display italic text-xs sm:text-sm text-[#F2D78A] leading-relaxed">
                 &ldquo;The world you live in influences the stories you carry within.&rdquo;
               </p>
-              <p className="font-ui text-[11px] text-[#CFC5B5] mt-1 text-right">— EchoSoul</p>
+              <p className="font-ui text-[11px] text-[#CFC5B5] mt-1 text-right">— Solenne</p>
             </div>
           </div>
 
@@ -272,7 +272,7 @@ export function OnboardingStep3() {
                   3. Your world
                 </h1>
                 <p className="font-ui text-xs sm:text-sm text-[#9AA8B0] mt-1">
-                  Tell us a bit about your world so EchoSoul can understand your context and give more meaningful support.
+                  Tell us a bit about your world so Solenne can understand your context and give more meaningful support.
                 </p>
               </div>
 
@@ -469,7 +469,7 @@ export function OnboardingStep3() {
                   <div className="relative p-3.5 rounded-xl bg-gradient-to-r from-[#F2D78A]/10 via-[#F2D78A]/5 to-transparent border border-[#F2D78A]/25 flex items-center justify-center text-center">
                     <p className="font-display italic text-xs sm:text-sm text-[#F2D78A]">
                       &ldquo;Every environment holds a story. Yours matters too.&rdquo;{" "}
-                      <span className="font-ui not-italic text-[11px] text-[#CFC5B5]">— EchoSoul</span>
+                      <span className="font-ui not-italic text-[11px] text-[#CFC5B5]">— Solenne</span>
                     </p>
                   </div>
                 </div>
@@ -607,7 +607,7 @@ export function OnboardingStep3() {
 
       {/* ── Footer ─────────────────────────────────── */}
       <footer className="relative z-20 w-full max-w-[1536px] mx-auto px-6 sm:px-10 h-16 flex items-center justify-between border-t border-white/5 font-ui text-[11px] text-[#9AA8B0]">
-        <span>© 2026 EchoSoul. All rights reserved.</span>
+        <span>© 2026 Solenne. All rights reserved.</span>
         <span>A Concept Genius Project</span>
       </footer>
     </div>

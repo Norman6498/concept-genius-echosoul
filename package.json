@@ -1,8 +1,8 @@
 {
-  "name": "echosoul",
+  "name": "solenne",
   "version": "0.1.0",
   "private": true,
-  "description": "EchoSoul — Adaptive AI emotional companion by Concept Genius",
+  "description": "Solenne — Adaptive AI emotional companion by Concept Genius",
   "engines": {
     "node": ">=22.0.0"
   },
@@ -19,6 +19,7 @@
     "catalog:cities": "node scripts/catalog/cities.mjs",
     "catalog:enrich": "node scripts/catalog/enrich.mjs",
     "catalog:validate": "node scripts/catalog/validate.mjs",
+    "test:trial": "npx tsx scripts/test-music-meaning-trial.ts",
     "catalog:all": "node scripts/catalog/books.mjs && node scripts/catalog/music.mjs && node scripts/catalog/cities.mjs && node scripts/catalog/enrich.mjs && node scripts/catalog/validate.mjs"
   },
   "dependencies": {

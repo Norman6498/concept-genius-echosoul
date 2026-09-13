@@ -80,7 +80,7 @@ async function openRouterFetch(
       "Content-Type": "application/json",
       // OpenRouter routing headers — identify the app (no secrets here)
       "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-      "X-Title": "EchoSoul",
+      "X-Title": "Solenne",
     },
     body: JSON.stringify(body),
   });

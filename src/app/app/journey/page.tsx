@@ -706,7 +706,7 @@ export default function JourneyPage() {
                   The Life Novel of {userName}
                 </h2>
                 <p className="text-xs font-ui text-[#CFC5B5] max-w-xl">
-                  EchoSoul weaves your real discussions, breakthroughs, and honest questions into a timeless biographical narrative.
+                  Solenne weaves your real discussions, breakthroughs, and honest questions into a timeless biographical narrative.
                 </p>
               </div>
 

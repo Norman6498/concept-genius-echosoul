@@ -166,7 +166,7 @@ export const MASTER_MUSIC_CATALOG: MusicTrack[] = [
   {
     id: "track_en_01",
     title: "Mountain Focus & Solfeggio 174 Hz",
-    artist_name: "EchoSoul Audio Labs",
+    artist_name: "Solenne Audio Labs",
     album_title: "Binaural Sanctuary",
     primary_language: "en",
     genre: "Binaural Meditation",
@@ -181,7 +181,7 @@ export const MASTER_MUSIC_CATALOG: MusicTrack[] = [
   {
     id: "track_en_02",
     title: "Night Piano for Quiet Minds",
-    artist_name: "EchoSoul Classical Ensemble",
+    artist_name: "Solenne Classical Ensemble",
     album_title: "Midnight Solitude",
     primary_language: "en",
     genre: "Solo Piano",
@@ -360,7 +360,7 @@ export const MASTER_QUOTES_CATALOG: QuoteRecord[] = [
   {
     id: "quote_01",
     exact_text: "The right words find you at exactly the right time.",
-    author_name: "EchoSoul",
+    author_name: "Solenne",
     language: "en",
     script: "latin",
     theme: "presence",

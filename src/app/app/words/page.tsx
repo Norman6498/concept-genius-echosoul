@@ -743,7 +743,7 @@ export default function WordsPage() {
                 </button>
               </div>
               <span className="text-[11px] font-manrope text-[#9AA8B0]">
-                Curated by EchoSoul Literature Engine
+                Curated by Solenne Literature Engine
               </span>
             </div>
           </div>

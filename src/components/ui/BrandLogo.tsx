@@ -27,7 +27,7 @@ export function BrandLogo({ className = "", size = "md", href = "/", showText = 
     <Link
       href={href}
       className={`inline-flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2D78A] rounded-lg ${className}`}
-      aria-label="EchoSoul Home"
+      aria-label="Solenne Home"
     >
       {/* Crescent Moon + Star Crest inside concentric circles */}
       <div className={`relative ${iconDimensions} flex items-center justify-center shrink-0`}>
@@ -59,7 +59,7 @@ export function BrandLogo({ className = "", size = "md", href = "/", showText = 
       {showText && (
         <div className="flex flex-col leading-none">
           <span className={`font-display font-medium text-[#FFF8E1] tracking-wide transition-colors group-hover:text-[#F2D78A] ${titleSize}`}>
-            EchoSoul
+            Solenne
           </span>
           <span className="font-ui text-[8.5px] sm:text-[9.5px] tracking-[0.24em] uppercase text-[#F2D78A] font-medium mt-1">
             YOUR STORY MATTERS

@@ -206,7 +206,7 @@ export async function POST(req: NextRequest) {
         `,
         available_verified_literature: [
           '“You have power over your mind - not outside events. Realize this, and you will find strength.” — Marcus Aurelius',
-          '“The right words find you at exactly the right time.” — EchoSoul',
+          '“The right words find you at exactly the right time.” — Solenne',
           '“Two roads diverged in a wood, and I— I took the one less traveled by, And that has made all the difference.” — Robert Frost',
           '“Waqt rehta nahi kahin tik kar, aadat is ki bhi aadmi si hai.” — Gulzar',
           '“Dheere dheere re mana, dheere sab kuch hoy. Maali seenche sau ghada, ritu aaye phal hoy.” — Kabir Das',

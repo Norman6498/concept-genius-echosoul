@@ -15,7 +15,7 @@ interface AuthRealmProps {
 const CAROUSEL_SLIDES = [
   {
     quote: "Not just an AI. A companion for your becoming.",
-    author: "EchoSoul Sanctuary",
+    author: "Solenne Sanctuary",
   },
   {
     quote: "Where your feelings aren't problems to fix, but stories to honor.",
@@ -249,7 +249,7 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
           // Direct session created for brand-new account
           setMessage({
             type: "success",
-            text: `Welcome to EchoSoul, ${name || "friend"}! Entering Step 1...`,
+            text: `Welcome to Solenne, ${name || "friend"}! Entering Step 1...`,
           });
           await refreshAuth();
           setTimeout(() => {
@@ -351,7 +351,7 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#08131B]/80 border border-[#F2D78A]/30 mb-4 backdrop-blur-md">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#F2D78A] animate-pulse" />
                 <span className="font-ui text-[11px] uppercase tracking-[0.2em] text-[#F2D78A] font-medium">
-                  EchoSoul Sanctuary
+                  Solenne Sanctuary
                 </span>
               </div>
 
@@ -362,7 +362,7 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
               </h1>
 
               <p className="mt-5 font-ui text-sm sm:text-base lg:text-[17px] text-[#CFC5B5] font-light leading-relaxed max-w-[480px]">
-                Join EchoSoul, and take the first step towards understanding, healing, and becoming the story you&apos;re proud of.
+                Join Solenne, and take the first step towards understanding, healing, and becoming the story you&apos;re proud of.
               </p>
             </div>
 
@@ -440,7 +440,7 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
                   {mode === "otp" ? "Email Verification" : mode === "signup" ? "Welcome to" : "Welcome back to"}
                 </span>
                 <h2 className="font-display text-3xl sm:text-4xl text-[#FFF8E1] font-normal tracking-tight mt-1">
-                  EchoSoul
+                  Solenne
                 </h2>
                 <p className="font-ui text-xs sm:text-[13px] text-[#9AA8B0] mt-1.5">
                   {mode === "otp"
@@ -574,7 +574,7 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
                       disabled={isLoading || otpCode.length < 6}
                       className="w-full h-12 rounded-xl btn-gold-primary text-xs sm:text-sm font-semibold tracking-wide flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
                     >
-                      {isLoading ? "Verifying..." : "Verify & Enter EchoSoul →"}
+                      {isLoading ? "Verifying..." : "Verify & Enter Solenne →"}
                     </button>
 
                     <button
@@ -686,7 +686,7 @@ export function AuthRealm({ initialMode = "signup" }: AuthRealmProps) {
 
       {/* ── Footer Layer ─────────────────────────────────── */}
       <footer className="relative z-20 w-full max-w-[1440px] mx-auto px-6 sm:px-10 h-16 flex items-center justify-between border-t border-white/5 font-ui text-[11px] text-[#9AA8B0]">
-        <span>© 2026 EchoSoul. All rights reserved.</span>
+        <span>© 2026 Solenne. All rights reserved.</span>
         <span>A Concept Genius Project</span>
       </footer>
     </div>

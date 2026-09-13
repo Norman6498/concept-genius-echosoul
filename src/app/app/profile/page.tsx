@@ -173,7 +173,7 @@ export default function ProfilePage() {
   };
 
   const handleLogout = async () => {
-    if (confirm("Are you sure you want to sign out of EchoSoul? All local caches will be cleanly cleared.")) {
+    if (confirm("Are you sure you want to sign out of Solenne? All local caches will be cleanly cleared.")) {
       setIsLoggingOut(true);
       const supabase = createClient();
       await performSecureLogout(supabase, "/login");
@@ -311,7 +311,7 @@ export default function ProfilePage() {
                   {/* Supportive Tagline */}
                   <div className="p-5 rounded-2xl bg-[#0C1B25]/60 border border-white/5 flex items-center justify-between gap-4">
                     <p className="font-display italic text-sm text-[#F2D78A] leading-relaxed">
-                      &ldquo;The more you share, the more personal EchoSoul becomes.&rdquo;
+                      &ldquo;The more you share, the more personal Solenne becomes.&rdquo;
                     </p>
                   </div>
                 </div>
@@ -322,7 +322,7 @@ export default function ProfilePage() {
                   <div>
                     <h3 className="text-base font-editorial text-[#FFF8E1]">Select Your Focus Areas</h3>
                     <p className="text-xs font-ui text-[#9AA8B0]">
-                      Click to toggle what books, music, and thought letters EchoSoul personalizes for you.
+                      Click to toggle what books, music, and thought letters Solenne personalizes for you.
                     </p>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
@@ -352,7 +352,7 @@ export default function ProfilePage() {
                   <div>
                     <h3 className="text-base font-editorial text-[#FFF8E1]">Personal Aspirations</h3>
                     <p className="text-xs font-ui text-[#9AA8B0]">
-                      EchoSoul connects your conversations and reflection prompts to these goals.
+                      Solenne connects your conversations and reflection prompts to these goals.
                     </p>
                   </div>
                   <div className="space-y-2">
@@ -374,7 +374,7 @@ export default function ProfilePage() {
                   <div>
                     <h3 className="text-base font-editorial text-[#FFF8E1]">Sanctuary Tone &amp; Style</h3>
                     <p className="text-xs font-ui text-[#9AA8B0]">
-                      Choose how EchoSoul speaks and crafts reflections for you.
+                      Choose how Solenne speaks and crafts reflections for you.
                     </p>
                   </div>
                   <div className="space-y-2.5">
@@ -402,9 +402,9 @@ export default function ProfilePage() {
 
               {activeTab === "About" && (
                 <div className="space-y-3 p-5 rounded-2xl bg-[#0C1B25] border border-white/10 text-xs font-ui text-[#CFC5B5] leading-relaxed">
-                  <h3 className="text-base font-editorial text-[#FFF8E1]">EchoSoul Philosophy</h3>
+                  <h3 className="text-base font-editorial text-[#FFF8E1]">Solenne Philosophy</h3>
                   <p>
-                    EchoSoul was designed as an authentic refuge against the noise of modern life.
+                    Solenne was designed as an authentic refuge against the noise of modern life.
                     It is neither an aggressive productivity tracker nor a clinical bot. It is a quiet space
                     where your thoughts are heard without judgment, and where authentic literature and calm
                     scenery accompany your journey.

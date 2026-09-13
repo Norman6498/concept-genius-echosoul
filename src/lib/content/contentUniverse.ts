@@ -658,7 +658,7 @@ export const AUDIO_CATALOG: AudioItemEntity[] = [
   {
     id: "track_solfeggio_432",
     title: "Mountain Calm (432 Hz)",
-    artist: "EchoSoul Sanctuary Acoustics",
+    artist: "Solenne Sanctuary Acoustics",
     genre: "Solfeggio Natural Frequency",
     audio_source_type: "echosoul_original",
     solfeggio_frequency_hz: 432,
@@ -671,7 +671,7 @@ export const AUDIO_CATALOG: AudioItemEntity[] = [
   {
     id: "track_solfeggio_528",
     title: "Forest Retreat (528 Hz)",
-    artist: "EchoSoul Sanctuary Acoustics",
+    artist: "Solenne Sanctuary Acoustics",
     genre: "Solfeggio Transformation Tone",
     audio_source_type: "echosoul_original",
     solfeggio_frequency_hz: 528,
@@ -684,7 +684,7 @@ export const AUDIO_CATALOG: AudioItemEntity[] = [
   {
     id: "track_solfeggio_174",
     title: "Cozy Room (174 Hz)",
-    artist: "EchoSoul Sanctuary Acoustics",
+    artist: "Solenne Sanctuary Acoustics",
     genre: "Solfeggio Anesthetic Grounding",
     audio_source_type: "echosoul_original",
     solfeggio_frequency_hz: 174,

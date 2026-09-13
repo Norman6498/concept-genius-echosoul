@@ -214,7 +214,7 @@ export function OnboardingStep5() {
                 </h1>
 
                 <p className="font-ui text-xs sm:text-sm text-[#CFC5B5] leading-relaxed">
-                  Shapes, colors, and environments can make a space feel more like home. Customize your EchoSoul experience.
+                  Shapes, colors, and environments can make a space feel more like home. Customize your Solenne experience.
                 </p>
               </div>
 
@@ -243,7 +243,7 @@ export function OnboardingStep5() {
                     </span>
                   </div>
                   <p className="font-ui text-xs text-[#9AA8B0] mt-1">
-                    Customize the look and feel of EchoSoul. You can always change this later.
+                    Customize the look and feel of Solenne. You can always change this later.
                   </p>
                 </div>
 
@@ -454,7 +454,7 @@ export function OnboardingStep5() {
                 <div className="p-3 rounded-xl bg-gradient-to-r from-[#F2D78A]/10 via-[#F2D78A]/5 to-transparent border border-[#F2D78A]/25 text-center">
                   <p className="font-display italic text-xs sm:text-sm text-[#F2D78A]">
                     &ldquo;Surround yourself with what feels like you.&rdquo;{" "}
-                    <span className="font-ui not-italic text-[11px] text-[#CFC5B5]">— EchoSoul</span>
+                    <span className="font-ui not-italic text-[11px] text-[#CFC5B5]">— Solenne</span>
                   </p>
                 </div>
               </div>
@@ -533,7 +533,7 @@ export function OnboardingStep5() {
           <Link href="/about" className="hover:text-[#FFF8E1] transition-colors">Terms</Link>
         </div>
         <div>
-          © 2026 EchoSoul. All rights reserved.
+          © 2026 Solenne. All rights reserved.
         </div>
       </footer>
     </div>

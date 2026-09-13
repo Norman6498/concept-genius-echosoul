@@ -77,7 +77,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "EchoSoul — Enter a realm where you can finally be you.",
+  title: "Solenne — Enter a realm where you can finally be you.",
   description:
     "An AI companion for your thoughts, feelings, questions and the stories you're living. Concept Genius.",
 };

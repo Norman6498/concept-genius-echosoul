@@ -140,7 +140,7 @@ export function ExperiencesPreview() {
               <span className="italic text-[#F2C86A] font-light">ordinary words cannot.</span>
             </h2>
             <p className="mt-3 font-ui text-sm sm:text-base text-[#CFC5B5] font-light leading-relaxed">
-              When you tell EchoSoul what hurts or what you wonder about, it doesn&apos;t generate sterile answers.
+              When you tell Solenne what hurts or what you wonder about, it doesn&apos;t generate sterile answers.
               It searches humanity&apos;s most resonant verses and places them into your hands on archival parchment.
             </p>
           </div>
@@ -153,7 +153,7 @@ export function ExperiencesPreview() {
                 {/* Vintage Parchment Seal / Stamp */}
                 <div className="flex items-center justify-between border-b border-[#2b261f]/15 pb-4 mb-6">
                   <div className="flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-[#6B5E4F]">
-                    <span>EchoSoul Literature Vault</span>
+                    <span>Solenne Literature Vault</span>
                     <span>&bull;</span>
                     <span>No. {currentLiterature.id.toUpperCase()}</span>
                   </div>
@@ -219,7 +219,7 @@ export function ExperiencesPreview() {
                 {/* Companion Reflection Note */}
                 <div className="mt-6 p-4 rounded-xl bg-[#ede3cf] border border-[#d6cabb] text-xs font-ui text-[#44382c] leading-relaxed">
                   <strong className="font-semibold block mb-1 text-[#241c14]">
-                    EchoSoul Companion Reflection:
+                    Solenne Companion Reflection:
                   </strong>
                   {currentLiterature.reflection}
                 </div>
@@ -283,7 +283,7 @@ export function ExperiencesPreview() {
                 <span className="italic text-[#F2C86A] font-light">that never interrupts.</span>
               </h2>
               <p className="font-ui text-sm sm:text-base text-[#CFC5B5] font-light leading-relaxed">
-                EchoSoul listens with real-time vocal empathy. The breathing companion orb responds to
+                Solenne listens with real-time vocal empathy. The breathing companion orb responds to
                 the timbre of your voice, slowing its pace as your heart rate settles, accompanied by
                 natural acoustic soundscapes.
               </p>
@@ -388,7 +388,7 @@ export function ExperiencesPreview() {
               <span className="italic text-[#F2C86A] font-light">with the hour of your day.</span>
             </h2>
             <p className="mt-3 font-ui text-sm sm:text-base text-[#CFC5B5] font-light leading-relaxed">
-              EchoSoul surrounds your conversations with dynamic environmental art that responds to your local
+              Solenne surrounds your conversations with dynamic environmental art that responds to your local
               time, weather, and emotional state — bringing peace to your physical space.
             </p>
           </div>

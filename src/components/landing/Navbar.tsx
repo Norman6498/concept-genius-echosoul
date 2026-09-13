@@ -11,8 +11,9 @@ export function Navbar() {
   const navLinks = [
     { label: "How it works", href: "#how-it-works" },
     { label: "Experiences", href: "#experiences" },
+    { label: "Stories", href: "/stories" },
     { label: "Safety", href: "#safety" },
-    { label: "Pricing", href: "#pricing" },
+    { label: "Pricing", href: "/pricing" },
     { label: "Blog", href: "#experiences" },
   ];
 
@@ -38,7 +39,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Right Actions: Sign In + Enter EchoSoul CTA (Matching Reference) */}
+        {/* Right Actions: Sign In + Enter Solenne CTA (Matching Reference) */}
         <div className="hidden md:flex items-center gap-4">
           <Link
             href="/login"
@@ -56,7 +57,7 @@ export function Navbar() {
               </svg>
             }
           >
-            Enter EchoSoul
+            Enter Solenne
           </Button>
         </div>
 
@@ -133,7 +134,7 @@ export function Navbar() {
               fullWidth
               onClick={() => setMobileMenuOpen(false)}
             >
-              Enter EchoSoul
+              Enter Solenne
             </Button>
           </div>
         </div>

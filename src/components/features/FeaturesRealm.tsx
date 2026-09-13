@@ -196,10 +196,10 @@ export function FeaturesRealm() {
                 <span className="w-1.5 h-1.5 rounded-full bg-[#F2D78A] animate-pulse" />
                 Features
               </Link>
-              <Link href="/#stories" className="hover:text-[#F2D78A] transition-colors">
+              <Link href="/stories" className="hover:text-[#F2D78A] transition-colors">
                 Stories
               </Link>
-              <Link href="/#pricing" className="hover:text-[#F2D78A] transition-colors">
+              <Link href="/pricing" className="hover:text-[#F2D78A] transition-colors">
                 Pricing
               </Link>
             </nav>
@@ -285,14 +285,14 @@ export function FeaturesRealm() {
             </h1>
 
             <p className="font-ui text-sm sm:text-base text-[#CFC5B5] leading-relaxed max-w-xl">
-              Explore everything EchoSoul offers to help you feel, reflect, and grow — through
+              Explore everything Solenne offers to help you feel, reflect, and grow — through
               conversations, real literature, music, visuals, and your personal journey.
             </p>
           </div>
 
           <div className="relative z-10 flex items-center justify-between pt-4 border-t border-white/10 text-xs font-display italic text-[#F2D78A]">
             <span>&ldquo;A brighter tomorrow begins with a kinder you.&rdquo;</span>
-            <span className="hidden sm:inline font-ui not-italic text-[11px] text-[#9AA8B0]">EchoSoul Sanctuary Features</span>
+            <span className="hidden sm:inline font-ui not-italic text-[11px] text-[#9AA8B0]">Solenne Sanctuary Features</span>
           </div>
         </div>
 
@@ -384,7 +384,7 @@ export function FeaturesRealm() {
               &ldquo;Not just another AI. A companion for a more meaningful you.&rdquo;
             </p>
             <p className="font-ui text-xs text-[#F2D78A] tracking-wider uppercase font-semibold">
-              — EchoSoul Sanctuary
+              — Solenne Sanctuary
             </p>
           </div>
 
@@ -413,13 +413,13 @@ export function FeaturesRealm() {
               <Link href="/" className="hover:text-[#F2D78A] transition-colors">Home</Link>
               <Link href="/about" className="hover:text-[#F2D78A] transition-colors">About</Link>
               <Link href="/features" className="text-[#F2D78A] font-medium">Features</Link>
-              <Link href="/#stories" className="hover:text-[#F2D78A] transition-colors">Stories</Link>
-              <Link href="/#pricing" className="hover:text-[#F2D78A] transition-colors">Pricing</Link>
+              <Link href="/stories" className="hover:text-[#F2D78A] transition-colors">Stories</Link>
+              <Link href="/pricing" className="hover:text-[#F2D78A] transition-colors">Pricing</Link>
             </nav>
           </div>
 
           <div>
-            <span>© 2026 EchoSoul. All rights reserved.</span>
+            <span>© 2026 Solenne. All rights reserved.</span>
           </div>
         </div>
       </footer>

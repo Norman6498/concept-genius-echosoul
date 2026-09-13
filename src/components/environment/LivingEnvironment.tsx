@@ -203,7 +203,7 @@ export function LivingEnvironment({
               &ldquo;Sometimes the right words find you at exactly the right time.&rdquo;
             </p>
             <div className="flex items-center justify-between pt-1 border-t border-[#D9A441]/15 text-[11px] text-[#F2C86A]">
-              <span>— EchoSoul</span>
+              <span>— Solenne</span>
               <span className="w-1.5 h-1.5 rounded-full bg-[#8DBA8F]" />
             </div>
           </div>

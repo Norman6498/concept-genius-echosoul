@@ -872,10 +872,10 @@ export function AuthenticatedHome() {
                   <p className="font-display italic text-xs sm:text-sm text-[#F2D78A]/95 leading-snug">
                     &ldquo;The right words find you at exactly the right time.&rdquo;
                   </p>
-                  <span className="font-ui text-[10px] text-[#9AA8B0] block mt-0.5">— EchoSoul</span>
+                  <span className="font-ui text-[10px] text-[#9AA8B0] block mt-0.5">— Solenne</span>
                 </div>
 
-                {/* Talk to EchoSoul Input Pill */}
+                {/* Talk to Solenne Input Pill */}
                 <div className="pt-2 space-y-2.5">
                   <div className="relative flex items-center rounded-full bg-[#070D12]/90 border border-[#F2D78A]/45 backdrop-blur-xl p-1 shadow-2xl focus-within:ring-2 focus-within:ring-[#F2D78A]/50">
                     <button
@@ -900,7 +900,7 @@ export function AuthenticatedHome() {
                           handleSendTalk();
                         }
                       }}
-                      placeholder={isVoiceRecording ? "Listening to your voice... speak freely" : "Talk to EchoSoul..."}
+                      placeholder={isVoiceRecording ? "Listening to your voice... speak freely" : "Talk to Solenne..."}
                       className="w-full h-10 bg-transparent text-xs sm:text-sm text-[#FFF8E1] placeholder-[#9AA8B0]/70 focus:outline-none pr-2"
                     />
 
@@ -1023,7 +1023,7 @@ export function AuthenticatedHome() {
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#F2D78A] animate-pulse" />
                   <span className="font-ui text-xs uppercase tracking-widest text-[#F2D78A] font-medium">
-                    EchoSoul Parchment Reflection
+                    Solenne Parchment Reflection
                   </span>
                 </div>
                 <button
@@ -1246,7 +1246,7 @@ export function AuthenticatedHome() {
                 ) : (
                   <div className="py-6 text-center text-xs font-ui text-[#9AA8B0] space-y-1">
                     <p className="text-[#CFC5B5]">No recent conversations.</p>
-                    <p className="text-[11px] text-[#9AA8B0]/70">Talk to EchoSoul above to begin.</p>
+                    <p className="text-[11px] text-[#9AA8B0]/70">Talk to Solenne above to begin.</p>
                   </div>
                 )}
               </div>
@@ -1561,8 +1561,8 @@ export function AuthenticatedHome() {
             <nav className="flex items-center gap-4 text-xs">
               <Link href="/about" className="hover:text-[#F2D78A] transition-colors">About</Link>
               <Link href="/features" className="hover:text-[#F2D78A] transition-colors">Features</Link>
-              <Link href="/#stories" className="hover:text-[#F2D78A] transition-colors">Stories</Link>
-              <Link href="/#pricing" className="hover:text-[#F2D78A] transition-colors">Pricing</Link>
+              <Link href="/stories" className="hover:text-[#F2D78A] transition-colors">Stories</Link>
+              <Link href="/pricing" className="hover:text-[#F2D78A] transition-colors">Pricing</Link>
               <Link href="/#help" className="hover:text-[#F2D78A] transition-colors">Help</Link>
               <Link href="/privacy" className="hover:text-[#F2D78A] transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-[#F2D78A] transition-colors">Terms</Link>
@@ -1571,7 +1571,7 @@ export function AuthenticatedHome() {
 
           <div className="flex items-center gap-6">
             <span className="italic text-[#F2D78A]">More than an AI. A place for what you feel.</span>
-            <span>© 2026 EchoSoul. All rights reserved.</span>
+            <span>© 2026 Solenne. All rights reserved.</span>
           </div>
         </div>
       </footer>

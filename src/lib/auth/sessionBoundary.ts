@@ -27,6 +27,25 @@ const KNOWN_UNSCOPED_KEYS = [
   "echosoul_show_recs",
   "echosoul_show_moments",
   "echosoul_guest_mode",
+  "solenne_user_personalization",
+  "solenne_user_interests",
+  "solenne_user_world",
+  "solenne_user_preferences",
+  "solenne_user_appearance",
+  "solenne_user_settings",
+  "solenne_talk_messages",
+  "solenne_recent_conversations",
+  "solenne_journal_entries",
+  "solenne_moments",
+  "solenne_moments_v2",
+  "solenne_goals",
+  "solenne_goals_v2",
+  "solenne_active_session_id",
+  "solenne_display_personalization",
+  "solenne_show_conversations",
+  "solenne_show_recs",
+  "solenne_show_moments",
+  "solenne_guest_mode",
 ];
 
 /**
@@ -35,7 +54,7 @@ const KNOWN_UNSCOPED_KEYS = [
  * e.g., 'echosoul_usr_123e4567_personalization' or 'echosoul_guest_personalization'
  */
 export function getUserStorageKey(userId: string | null | undefined, baseKey: string): string {
-  const cleanBase = baseKey.replace(/^echosoul_/, "");
+  const cleanBase = baseKey.replace(/^(echosoul|solenne)_/, "");
   if (!userId) {
     return `echosoul_guest_${cleanBase}`;
   }
@@ -48,12 +67,14 @@ export function getUserStorageKey(userId: string | null | undefined, baseKey: st
  */
 export function isUserScopedKey(key: string, userId: string | null | undefined): boolean {
   if (!key) return false;
-  if (key === "onboarding" || key === "echosoul_onboarding") {
+  if (key === "onboarding" || key === "echosoul_onboarding" || key === "solenne_onboarding") {
     // Unscoped onboarding cache key is strictly forbidden
     return false;
   }
-  const expectedPrefix = userId ? `echosoul_usr_${userId.replace(/[^a-zA-Z0-9_-]/g, "")}_` : "echosoul_guest_";
-  return key.startsWith(expectedPrefix);
+  const sanitizedId = userId ? userId.replace(/[^a-zA-Z0-9_-]/g, "") : "";
+  const expectedEchoSoul = userId ? `echosoul_usr_${sanitizedId}_` : "echosoul_guest_";
+  const expectedSolenne = userId ? `solenne_usr_${sanitizedId}_` : "solenne_guest_";
+  return key.startsWith(expectedEchoSoul) || key.startsWith(expectedSolenne);
 }
 
 /**
@@ -105,11 +126,12 @@ export function invalidateUserCaches(userId: string | null | undefined): void {
   if (typeof window === "undefined" || !userId) return;
   try {
     const sanitizedId = userId.replace(/[^a-zA-Z0-9_-]/g, "");
-    const prefix = `echosoul_usr_${sanitizedId}_`;
+    const prefix1 = `echosoul_usr_${sanitizedId}_`;
+    const prefix2 = `solenne_usr_${sanitizedId}_`;
     const keysToRemove: string[] = [];
     for (let i = 0; i < window.localStorage.length; i++) {
       const k = window.localStorage.key(i);
-      if (k && k.startsWith(prefix)) {
+      if (k && (k.startsWith(prefix1) || k.startsWith(prefix2))) {
         keysToRemove.push(k);
       }
     }
@@ -127,11 +149,11 @@ export function purgeAllUserData(): void {
   if (typeof window === "undefined") return;
 
   try {
-    // 1. Remove all keys starting with echosoul_
+    // 1. Remove all keys starting with echosoul_ or solenne_
     const keysToRemove: string[] = [];
     for (let i = 0; i < window.localStorage.length; i++) {
       const k = window.localStorage.key(i);
-      if (k && k.startsWith("echosoul_")) {
+      if (k && (k.startsWith("echosoul_") || k.startsWith("solenne_"))) {
         keysToRemove.push(k);
       }
     }

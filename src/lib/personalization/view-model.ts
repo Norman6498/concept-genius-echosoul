@@ -33,7 +33,7 @@ export const VISUAL_WORLDS_CONFIG: Record<string, {
     background: "/visual-worlds/mountain_calm.jpg",
     ambience: "Alpine breeze & morning bells",
     quote: "Peace isn't a place, it's a way of seeing.",
-    quoteAuthor: "EchoSoul",
+    quoteAuthor: "Solenne",
     accent: "#F2D78A",
   },
   forest_retreat: {
@@ -53,7 +53,7 @@ export const VISUAL_WORLDS_CONFIG: Record<string, {
     background: "/visual-worlds/ocean_breeze.jpg",
     ambience: "Coastal tides & morning horizon",
     quote: "Let the waves remind you — you can begin again as many times as you need.",
-    quoteAuthor: "EchoSoul",
+    quoteAuthor: "Solenne",
     accent: "#76C7C0",
   },
   city_lights: {
@@ -63,7 +63,7 @@ export const VISUAL_WORLDS_CONFIG: Record<string, {
     background: "/visual-worlds/city_lights.jpg",
     ambience: "Quiet skyline murmur & amber glow",
     quote: "A brighter tomorrow is built by what you do today.",
-    quoteAuthor: "EchoSoul",
+    quoteAuthor: "Solenne",
     accent: "#FFB86B",
   },
   starry_skies: {
@@ -73,7 +73,7 @@ export const VISUAL_WORLDS_CONFIG: Record<string, {
     background: "/visual-worlds/starry_skies.jpg",
     ambience: "Celestial stillness & 432Hz night tone",
     quote: "Stars remind us that even in darkness, there is light.",
-    quoteAuthor: "EchoSoul",
+    quoteAuthor: "Solenne",
     accent: "#C4A6F5",
   },
   cozy_room: {
@@ -83,7 +83,7 @@ export const VISUAL_WORLDS_CONFIG: Record<string, {
     background: "/visual-worlds/cozy_room.jpg",
     ambience: "Warm lantern glow & rain against glass",
     quote: "The right words find you at the right time.",
-    quoteAuthor: "EchoSoul",
+    quoteAuthor: "Solenne",
     accent: "#F2D78A",
   },
   fantasy_realm: {
@@ -93,7 +93,7 @@ export const VISUAL_WORLDS_CONFIG: Record<string, {
     background: "/visual-worlds/fantasy_realm.jpg",
     ambience: "Ethereal breeze & twilight wonder",
     quote: "A kinder you creates a kinder world.",
-    quoteAuthor: "EchoSoul",
+    quoteAuthor: "Solenne",
     accent: "#E5A9EC",
   },
   minimal_space: {
@@ -103,7 +103,7 @@ export const VISUAL_WORLDS_CONFIG: Record<string, {
     background: "/visual-worlds/minimal_space.jpg",
     ambience: "Distraction-free silence & pure acoustic light",
     quote: "Less noise. A deeper you.",
-    quoteAuthor: "EchoSoul",
+    quoteAuthor: "Solenne",
     accent: "#E2E8F0",
   },
   anime_aesthetic: {
@@ -113,7 +113,7 @@ export const VISUAL_WORLDS_CONFIG: Record<string, {
     background: "/visual-worlds/anime_aesthetic.jpg",
     ambience: "Melodic piano & summer dusk wind",
     quote: "Every day is a new frame in your story.",
-    quoteAuthor: "EchoSoul",
+    quoteAuthor: "Solenne",
     accent: "#F472B6",
   },
   nature_wildlife: {
@@ -123,7 +123,7 @@ export const VISUAL_WORLDS_CONFIG: Record<string, {
     background: "/visual-worlds/nature_wildlife.jpg",
     ambience: "Morning mist & birdsong over mountain lake",
     quote: "We don't just belong in nature — we belong with it.",
-    quoteAuthor: "EchoSoul",
+    quoteAuthor: "Solenne",
     accent: "#A7D49B",
   },
   space_cosmos: {
@@ -133,7 +133,7 @@ export const VISUAL_WORLDS_CONFIG: Record<string, {
     background: "/visual-worlds/space_cosmos.jpg",
     ambience: "Deep cosmic resonance & stellar harmony",
     quote: "The same stars that light the universe live within you.",
-    quoteAuthor: "EchoSoul",
+    quoteAuthor: "Solenne",
     accent: "#818CF8",
   },
   classic_vintage: {
@@ -143,7 +143,7 @@ export const VISUAL_WORLDS_CONFIG: Record<string, {
     background: "/visual-worlds/classic_vintage.jpg",
     ambience: "Acoustic cello & pages turning in warm library",
     quote: "A well-lived life is the rarest of stories.",
-    quoteAuthor: "EchoSoul",
+    quoteAuthor: "Solenne",
     accent: "#D4AF37",
   },
 };
@@ -203,7 +203,7 @@ export function buildHomeViewModel(input: HomePersonalizationInput): HomePersona
   let primaryAction = {
     id: "talk",
     title: "Start a Conversation",
-    description: "Speak freely without judgment. EchoSoul listens and understands.",
+    description: "Speak freely without judgment. Solenne listens and understands.",
     icon: "message",
     href: "/app/talk",
     accent: accentColor,

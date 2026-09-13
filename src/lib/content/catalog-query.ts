@@ -111,7 +111,7 @@ export async function queryBooksFromDB(params: {
         return {
           item: book,
           rank_score: 0.95,
-          reason: `Selected from EchoSoul's Project Gutenberg master catalog for ${mood || "stillness"}.`,
+          reason: `Selected from Solenne's Project Gutenberg master catalog for ${mood || "stillness"}.`,
           reason_codes: ["database_match", "authoritative_source", "gutenberg_catalog"],
         };
       }
@@ -125,7 +125,7 @@ export async function queryBooksFromDB(params: {
   return {
     item: fallbackItem,
     rank_score: 0.85,
-    reason: "Selected from EchoSoul core literature works.",
+    reason: "Selected from Solenne core literature works.",
     reason_codes: ["static_corpus_fallback"],
   };
 }
@@ -213,7 +213,7 @@ export async function queryMusicFromDB(params: {
   return {
     item: fallbackItem,
     rank_score: 0.85,
-    reason: "Selected from EchoSoul core musical compositions.",
+    reason: "Selected from Solenne core musical compositions.",
     reason_codes: ["static_corpus_fallback"],
   };
 }

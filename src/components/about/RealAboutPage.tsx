@@ -116,13 +116,13 @@ export function RealAboutPage() {
           <Link href="/about" className="text-[#F2D78A] font-semibold border-b-2 border-[#F2D78A] pb-0.5">
             About
           </Link>
-          <Link href="/#features" className="hover:text-[#F2D78A] transition-colors">
+          <Link href="/features" className="hover:text-[#F2D78A] transition-colors">
             Features
           </Link>
-          <Link href="/#stories" className="hover:text-[#F2D78A] transition-colors">
+          <Link href="/stories" className="hover:text-[#F2D78A] transition-colors">
             Stories
           </Link>
-          <Link href="/#pricing" className="hover:text-[#F2D78A] transition-colors">
+          <Link href="/pricing" className="hover:text-[#F2D78A] transition-colors">
             Pricing
           </Link>
         </nav>
@@ -146,7 +146,7 @@ export function RealAboutPage() {
             {/* Category tag */}
             <div className="flex items-center gap-3">
               <span className="font-ui text-xs font-semibold tracking-[0.25em] text-[#F2D78A] uppercase">
-                ABOUT ECHOSOUL
+                ABOUT SOLENNE
               </span>
               <div className="w-10 h-px bg-[#F2D78A]/40" />
             </div>
@@ -162,7 +162,7 @@ export function RealAboutPage() {
             {/* Paragraphs */}
             <div className="space-y-3.5 font-ui text-sm sm:text-[15px] leading-relaxed text-[#CFC5B5] max-w-[540px]">
               <p>
-                EchoSoul is more than an AI. It&apos;s a space that listens, understands,
+                Solenne is more than an AI. It&apos;s a space that listens, understands,
                 and grows with you — through conversations, real literature,
                 music, visuals, and your personal journey.
               </p>
@@ -251,7 +251,7 @@ export function RealAboutPage() {
           <div className="max-w-[880px] mx-auto rounded-xl overflow-hidden shadow-2xl border border-[#D4A373]/30">
             <Image
               src="/parchment-quote.png"
-              alt="“Not just another AI. A companion for a more meaningful you.” — EchoSoul"
+              alt="“Not just another AI. A companion for a more meaningful you.” — Solenne"
               width={1024}
               height={140}
               className="w-full h-auto object-cover"

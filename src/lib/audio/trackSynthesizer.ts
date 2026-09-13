@@ -250,7 +250,7 @@ export const TRACK_AUDIO_PROFILES: Record<string, TrackAudioProfile> = {
   track_en_01: {
     id: "track_en_01",
     title: "Mountain Focus & Solfeggio 174 Hz",
-    artist: "EchoSoul Audio Labs",
+    artist: "Solenne Audio Labs",
     audioUrl: "/audio/track_en_01.mp3",
     solfeggioFreq: 174,
     solfeggioName: "174 Hz • Deep Cognitive Focus & Stability",
@@ -275,7 +275,7 @@ export const TRACK_AUDIO_PROFILES: Record<string, TrackAudioProfile> = {
   track_en_02: {
     id: "track_en_02",
     title: "Night Piano for Quiet Minds",
-    artist: "EchoSoul Classical Ensemble",
+    artist: "Solenne Classical Ensemble",
     audioUrl: "/audio/track_en_02.mp3",
     solfeggioFreq: 432,
     solfeggioName: "432 Hz • Midnight Solitude & Serenity",
@@ -599,3 +599,5 @@ export class EchoSoulMusicEngine {
     }, 450);
   }
 }
+
+export const SolenneMusicEngine = EchoSoulMusicEngine;

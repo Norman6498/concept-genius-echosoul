@@ -146,10 +146,10 @@ export function LiveEchoSoulPreview() {
       </div>
 
       <p className="font-ui text-xs text-[#9AA8B0]">
-        This is a live miniature sample of how your EchoSoul experience will look and converse.
+        This is a live miniature sample of how your Solenne experience will look and converse.
       </p>
 
-      {/* ── Miniature EchoSoul Device Card ───────────────────────────────── */}
+      {/* ── Miniature Solenne Device Card ───────────────────────────────── */}
       <div
         className={`relative rounded-2xl overflow-hidden border shadow-2xl transition-all duration-300 ${fontClass} ${
           isLight ? "bg-[#FAF8F5] text-[#18181B] border-[#E2DED6]" : "bg-[#08131B] text-[#FFF8E1] border-white/20"
@@ -195,7 +195,7 @@ export function LiveEchoSoulPreview() {
               </div>
               <div>
                 <div className="font-display text-xs font-semibold flex items-center gap-1.5">
-                  <span>EchoSoul</span>
+                  <span>Solenne</span>
                   {preferences.privacyPreference && (
                     <span className="text-[10px] text-[#9AA8B0]" title="Private & Encrypted">
                       🔒
@@ -389,3 +389,5 @@ export function LiveEchoSoulPreview() {
     </div>
   );
 }
+
+export const LiveSolennePreview = LiveEchoSoulPreview;

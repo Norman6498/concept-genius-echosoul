@@ -242,7 +242,7 @@ export function OnboardingStep4() {
                 </h1>
 
                 <p className="font-ui text-xs sm:text-sm text-[#CFC5B5] leading-relaxed">
-                  Choose how you want to experience EchoSoul. You can change these anytime.
+                  Choose how you want to experience Solenne. You can change these anytime.
                 </p>
               </div>
 
@@ -271,7 +271,7 @@ export function OnboardingStep4() {
                     </span>
                   </div>
                   <p className="font-ui text-xs text-[#9AA8B0] mt-1">
-                    Tell us how you&apos;d like to experience EchoSoul. This helps us personalize your conversations,
+                    Tell us how you&apos;d like to experience Solenne. This helps us personalize your conversations,
                     recommendations, and creative experiences.
                   </p>
                 </div>
@@ -282,7 +282,7 @@ export function OnboardingStep4() {
                     Communication style
                   </label>
                   <p className="font-ui text-[11px] text-[#9AA8B0] mb-2.5">
-                    How would you like EchoSoul to talk with you?
+                    How would you like Solenne to talk with you?
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                     {COMMUNICATION_STYLES.map((style) => {
@@ -358,7 +358,7 @@ export function OnboardingStep4() {
                     <span className="font-ui text-[11px] text-[#9AA8B0]">Select topics to focus on</span>
                   </div>
                   <p className="font-ui text-[11px] text-[#9AA8B0] mb-2.5">
-                    EchoSoul will weave these themes into guidance and conversations.
+                    Solenne will weave these themes into guidance and conversations.
                   </p>
 
                   <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
@@ -397,7 +397,7 @@ export function OnboardingStep4() {
                   {preferences.selectedTopics.includes("other") && (
                     <div className="mt-2.5 p-2.5 rounded-xl bg-[#08131B]/90 border border-[#F2D78A]/40 animate-fadeIn">
                       <label className="block text-[11px] text-[#F2D78A] font-medium mb-1 font-ui">
-                        What other topics would you like EchoSoul to focus on?
+                        What other topics would you like Solenne to focus on?
                       </label>
                       <input
                         type="text"
@@ -466,7 +466,7 @@ export function OnboardingStep4() {
                 <div className="p-3 rounded-xl bg-gradient-to-r from-[#F2D78A]/10 via-[#F2D78A]/5 to-transparent border border-[#F2D78A]/25 text-center">
                   <p className="font-display italic text-xs sm:text-sm text-[#F2D78A]">
                     &ldquo;You get to choose what enters your world.&rdquo;{" "}
-                    <span className="font-ui not-italic text-[11px] text-[#CFC5B5]">— EchoSoul</span>
+                    <span className="font-ui not-italic text-[11px] text-[#CFC5B5]">— Solenne</span>
                   </p>
                 </div>
               </div>
@@ -579,7 +579,7 @@ export function OnboardingStep4() {
           <Link href="/about" className="hover:text-[#FFF8E1] transition-colors">Terms</Link>
         </div>
         <div>
-          © 2026 EchoSoul. All rights reserved.
+          © 2026 Solenne. All rights reserved.
         </div>
       </footer>
     </div>

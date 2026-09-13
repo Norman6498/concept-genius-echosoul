@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useAuth } from "./context";
 import { useRouter, usePathname } from "next/navigation";
 
-function SanctuaryLoadingScreen({ label = "EchoSoul Sanctuary" }: { label?: string }) {
+function SanctuaryLoadingScreen({ label = "Solenne Sanctuary" }: { label?: string }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#070D12] text-[#FFF8E1]">
       <div className="flex flex-col items-center gap-5 text-center">
@@ -50,7 +50,7 @@ export function AppRouteGuard({ children }: { children: React.ReactNode }) {
 
   // While checking session and DB onboarding status, render calm loading state
   if (isLoading) {
-    return <SanctuaryLoadingScreen label="EchoSoul" />;
+    return <SanctuaryLoadingScreen label="Solenne" />;
   }
 
   // If unauthenticated, render loader while redirect takes effect
@@ -89,7 +89,7 @@ export function OnboardingRouteGuard({ children }: { children: React.ReactNode }
   }, [authStatus, isGuest, isLoading, onboardingCompleted, router]);
 
   if (isLoading) {
-    return <SanctuaryLoadingScreen label="EchoSoul Onboarding" />;
+    return <SanctuaryLoadingScreen label="Solenne Onboarding" />;
   }
 
   if (authStatus === "UNAUTHENTICATED" && !isGuest) {

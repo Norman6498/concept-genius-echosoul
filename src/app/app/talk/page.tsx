@@ -649,7 +649,7 @@ export default function TalkPage() {
                             <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/10">
                               <span className="w-2 h-2 rounded-full bg-[#F2D78A]" />
                               <span className="text-[11px] font-manrope text-[#F2D78A] uppercase tracking-wider font-semibold">
-                                EchoSoul Reflection
+                                Solenne Reflection
                               </span>
                             </div>
                             <div className={`font-cormorant text-base sm:text-lg leading-relaxed text-[#FFF8E1] ${typo?.fontClass || ""} ${typo?.isRtl ? "text-right" : "text-left"}`}>
@@ -667,7 +667,7 @@ export default function TalkPage() {
                       <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/10">
                         <span className="w-2 h-2 rounded-full bg-[#F2D78A] animate-pulse" />
                         <span className="text-[11px] font-manrope text-[#F2D78A] uppercase tracking-wider font-semibold">
-                          EchoSoul Inscribing...
+                          Solenne Inscribing...
                         </span>
                       </div>
                       <p className="font-cormorant italic text-base sm:text-lg leading-relaxed text-[#FFF8E1]">
@@ -680,7 +680,7 @@ export default function TalkPage() {
                   {isLoading && !isWriting && (
                     <div className="flex items-center gap-2 text-xs font-manrope text-[#F2D78A] py-2">
                       <div className="w-2 h-2 rounded-full bg-[#F2D78A] animate-ping" />
-                      <span>EchoSoul is reflecting on your words...</span>
+                      <span>Solenne is reflecting on your words...</span>
                     </div>
                   )}
 

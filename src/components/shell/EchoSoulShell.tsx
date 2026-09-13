@@ -56,7 +56,7 @@ const UNIVERSAL_SEARCH_INDEX: UniversalSearchItem[] = [
   { id: "m2", category: "Music", title: "Kun Faya Kun", subtitle: "A.R. Rahman • 528 Hz Miracle & Spiritual Peace", route: "/app/music" },
   { id: "m3", category: "Music", title: "Phir Le Aya Dil", subtitle: "Arijit Singh • 417 Hz Releasing Sorrow", route: "/app/music" },
   { id: "m4", category: "Music", title: "Kasoor (Acoustic)", subtitle: "Prateek Kuhad • 639 Hz Warmth & Intimacy", route: "/app/music" },
-  { id: "m5", category: "Music", title: "Mountain Focus", subtitle: "EchoSoul Sanctuary • 432 Hz Verdi Sacred Calm", route: "/app/music" },
+  { id: "m5", category: "Music", title: "Mountain Focus", subtitle: "Solenne Sanctuary • 432 Hz Verdi Sacred Calm", route: "/app/music" },
   { id: "m6", category: "Music", title: "Sajjan Raazi", subtitle: "Satinder Sartaaj • 741 Hz Spiritual Clarity", route: "/app/music" },
 
   // Feelings & Guidance
@@ -121,7 +121,7 @@ export function EchoSoulShell({ children, activePath }: EchoSoulShellProps) {
   }, []);
 
   const handleLogout = async () => {
-    if (confirm("Are you sure you want to sign out of EchoSoul? All local caches will be cleanly cleared.")) {
+    if (confirm("Are you sure you want to sign out of Solenne? All local caches will be cleanly cleared.")) {
       const supabase = createClient();
       await performSecureLogout(supabase, "/login");
     }
@@ -264,7 +264,7 @@ export function EchoSoulShell({ children, activePath }: EchoSoulShellProps) {
               <button
                 type="button"
                 onClick={handleLogout}
-                title="Sign Out of EchoSoul"
+                title="Sign Out of Solenne"
                 className="p-1.5 rounded-lg text-[#9AA8B0] hover:text-[#D97777] hover:bg-white/5 transition-colors ml-1 cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
@@ -387,8 +387,8 @@ export function EchoSoulShell({ children, activePath }: EchoSoulShellProps) {
             <nav className="flex items-center gap-4 text-xs">
               <Link href="/about" className="hover:text-[#F2D78A] transition-colors">About</Link>
               <Link href="/features" className="hover:text-[#F2D78A] transition-colors">Features</Link>
-              <Link href="/#stories" className="hover:text-[#F2D78A] transition-colors">Stories</Link>
-              <Link href="/#pricing" className="hover:text-[#F2D78A] transition-colors">Pricing</Link>
+              <Link href="/stories" className="hover:text-[#F2D78A] transition-colors">Stories</Link>
+              <Link href="/pricing" className="hover:text-[#F2D78A] transition-colors">Pricing</Link>
               <Link href="/#help" className="hover:text-[#F2D78A] transition-colors">Help</Link>
               <Link href="/privacy" className="hover:text-[#F2D78A] transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-[#F2D78A] transition-colors">Terms</Link>
@@ -397,10 +397,12 @@ export function EchoSoulShell({ children, activePath }: EchoSoulShellProps) {
 
           <div className="flex items-center gap-6">
             <span className="italic text-[#F2D78A]">More than an AI. A place for what you feel.</span>
-            <span>© 2026 EchoSoul. All rights reserved.</span>
+            <span>© 2026 Solenne. All rights reserved.</span>
           </div>
         </div>
       </footer>
     </div>
   );
 }
+
+export const SolenneShell = EchoSoulShell;

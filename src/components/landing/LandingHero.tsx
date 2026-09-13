@@ -20,8 +20,8 @@ export function Navbar() {
     { label: "Home",        href: "/" },
     { label: "About",       href: "/about" },
     { label: "Features",    href: "/features" },
-    { label: "Stories",     href: "#stories" },
-    { label: "Pricing",     href: "#pricing" },
+    { label: "Stories",     href: "/stories" },
+    { label: "Pricing",     href: "/pricing" },
   ];
 
   return (
@@ -63,7 +63,7 @@ export function Navbar() {
             href="/signup"
             className="font-ui text-[15px] font-semibold bg-[#F2D78A] hover:bg-[#FFB86B] text-[#0B0F14] rounded-full h-11 px-8 flex items-center gap-2 transition-all duration-200 shadow-[0_0_20px_rgba(242,215,138,0.35)] hover:shadow-[0_0_30px_rgba(242,215,138,0.55)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2D78A]"
           >
-            Enter EchoSoul
+            Enter Solenne
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
@@ -102,7 +102,7 @@ export function Navbar() {
           ))}
           <div className="pt-3 border-t border-[#F2D78A]/15 flex flex-col gap-2">
             <Link href="/login" onClick={() => setMobileOpen(false)} className="w-full text-center font-ui text-sm font-medium text-[#FFF8E1] border border-white/30 rounded-full py-2.5">Sign in</Link>
-            <Link href="/signup" onClick={() => setMobileOpen(false)} className="w-full text-center font-ui text-sm font-semibold bg-[#F2D78A] text-[#0B0F14] rounded-full py-2.5">Enter EchoSoul →</Link>
+            <Link href="/signup" onClick={() => setMobileOpen(false)} className="w-full text-center font-ui text-sm font-semibold bg-[#F2D78A] text-[#0B0F14] rounded-full py-2.5">Enter Solenne →</Link>
           </div>
         </div>
       )}
@@ -122,7 +122,7 @@ function StoryModal({ onClose }: { onClose: () => void }) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="The EchoSoul Story"
+      aria-label="The Solenne Story"
       className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0B0F14]/85 backdrop-blur-md p-4"
       onClick={onClose}
     >
@@ -140,7 +140,7 @@ function StoryModal({ onClose }: { onClose: () => void }) {
           </svg>
         </button>
 
-        <span className="font-ui text-xs uppercase tracking-[0.22em] font-semibold text-[#F2D78A] block mb-2">The EchoSoul Origin Story</span>
+        <span className="font-ui text-xs uppercase tracking-[0.22em] font-semibold text-[#F2D78A] block mb-2">The Solenne Origin Story</span>
         <h3 className="font-display text-3xl sm:text-4xl text-[#FFF8E1] font-normal mb-5">Why We Built a Kinder Space</h3>
 
         <div className="space-y-4 font-ui text-sm text-[#CFC5B5] leading-relaxed">
@@ -243,7 +243,7 @@ export function HeroPage() {
                   className="font-ui text-[#CFC5B5] font-light leading-[1.7] max-w-[560px]"
                   style={{ fontSize: "clamp(14px, 1.05vw, 17px)" }}
                 >
-                  EchoSoul is your companion, teacher and guide —<br className="hidden sm:inline" />
+                  Solenne is your companion, teacher and guide —<br className="hidden sm:inline" />
                   bringing together meaningful conversations, real literature,<br className="hidden sm:inline" />
                   music, visuals and your life&apos;s journey in one place.
                 </p>
@@ -256,7 +256,7 @@ export function HeroPage() {
                     className="inline-flex items-center gap-2.5 font-ui font-semibold bg-[#F2D78A] hover:bg-[#FFB86B] text-[#0B0F14] rounded-full transition-all duration-200 shadow-[0_0_25px_rgba(242,215,138,0.4)] hover:shadow-[0_0_35px_rgba(242,215,138,0.6)] hover:-translate-y-0.5"
                     style={{ fontSize: "16px", height: "52px", padding: "0 36px", borderRadius: "33px" }}
                   >
-                    Enter EchoSoul
+                    Enter Solenne
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
@@ -286,7 +286,7 @@ export function HeroPage() {
                     &ldquo;Sometimes the right words find you at exactly the right time.&rdquo;
                   </p>
                   <div className="w-8 h-px bg-[#F2D78A] ml-auto" />
-                  <p className="font-ui text-[11px] text-[#F2D78A] tracking-wider uppercase font-medium">EchoSoul</p>
+                  <p className="font-ui text-[11px] text-[#F2D78A] tracking-wider uppercase font-medium">Solenne</p>
                 </div>
               </div>
             </div>

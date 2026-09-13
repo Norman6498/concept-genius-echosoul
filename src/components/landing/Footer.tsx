@@ -14,7 +14,7 @@ export function Footer() {
           <div className="lg:col-span-2 space-y-4">
             <BrandLogo href="/" />
             <p className="text-xs sm:text-sm text-[#9AA8B0] font-light max-w-sm leading-relaxed">
-              EchoSoul brings together deep listening, authentic world literature, ambient soundscapes,
+              Solenne brings together deep listening, authentic world literature, ambient soundscapes,
               and your private life chronicle in a space designed to hold what you feel.
             </p>
             <div className="pt-2">
@@ -112,8 +112,8 @@ export function Footer() {
                 Text HOME to 741741
               </li>
               <li>
-                <a href="mailto:support@echosoul.space" className="hover:text-[#F2C86A] transition-colors">
-                  support@echosoul.space
+                <a href="mailto:support@solenne.app" className="hover:text-[#F2C86A] transition-colors">
+                  support@solenne.app
                 </a>
               </li>
             </ul>
@@ -122,7 +122,7 @@ export function Footer() {
 
         {/* Ethical Non-Clinical Disclaimer Strip */}
         <div className="p-4 rounded-xl bg-[#08131B] border border-[#D9A441]/20 my-8 text-center text-xs text-[#9AA8B0] leading-relaxed max-w-4xl mx-auto">
-          <span className="text-[#F2C86A] font-medium">Non-Clinical Notice:</span> EchoSoul is an empathetic AI sanctuary and literary space, not a medical clinic, licensed psychotherapist, or crisis helpline. If you are experiencing acute psychological distress or thoughts of harm, please reach out directly to 988 or your local medical professional.
+          <span className="text-[#F2C86A] font-medium">Non-Clinical Notice:</span> Solenne is an empathetic AI sanctuary and literary space, not a medical clinic, licensed psychotherapist, or crisis helpline. If you are experiencing acute psychological distress or thoughts of harm, please reach out directly to 988 or your local medical professional.
         </div>
 
         {/* Bottom Copyright & Links */}

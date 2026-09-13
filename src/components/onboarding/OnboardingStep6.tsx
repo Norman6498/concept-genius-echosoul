@@ -248,7 +248,7 @@ export function OnboardingStep6() {
                     Welcome to
                   </span>
                   <h2 className="font-display text-2xl sm:text-3xl text-[#FFF8E1] font-normal drop-shadow-md">
-                    EchoSoul
+                    Solenne
                   </h2>
                   <span className="font-ui text-[10px] uppercase tracking-[0.2em] text-[#CFC5B5]/90 mt-1 block">
                     A Brighter You Awaits
@@ -305,7 +305,7 @@ export function OnboardingStep6() {
                   className="w-full py-3.5 px-6 rounded-full btn-gold-primary text-xs sm:text-sm font-semibold tracking-wide flex flex-col items-center justify-center gap-0.5 shadow-xl disabled:opacity-50"
                   style={{ backgroundColor: accentColor, color: "#0B0F14" }}
                 >
-                  <span className="font-bold">Enter EchoSoul →</span>
+                  <span className="font-bold">Enter Solenne →</span>
                   <span className="font-ui text-[10px] opacity-85 font-normal">
                     Start your journey to a more meaningful tomorrow.
                   </span>
@@ -319,7 +319,7 @@ export function OnboardingStep6() {
           <div className="mt-8 pt-4 border-t border-white/10 text-center">
             <p className="font-display italic text-xs sm:text-sm text-[#F2D78A]">
               &ldquo;Different worlds. The same you.&rdquo;{" "}
-              <span className="font-ui not-italic text-[11px] text-[#CFC5B5]">— EchoSoul</span>
+              <span className="font-ui not-italic text-[11px] text-[#CFC5B5]">— Solenne</span>
             </p>
           </div>
 
@@ -328,7 +328,7 @@ export function OnboardingStep6() {
 
       {/* ── Footer ─────────────────────────────────── */}
       <footer className="relative z-20 w-full max-w-[1536px] mx-auto px-6 sm:px-10 h-16 flex items-center justify-between border-t border-white/5 font-ui text-[11px] text-[#9AA8B0]">
-        <span>© 2026 EchoSoul. All rights reserved.</span>
+        <span>© 2026 Solenne. All rights reserved.</span>
         <span>A Concept Genius Project</span>
       </footer>
     </div>

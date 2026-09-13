@@ -27,9 +27,9 @@ const PILLARS: Pillar[] = [
     subtitle: "A space without judgment.",
     headline: "Unburden your mind without being analyzed or hurried.",
     description:
-      "Most AI treats your emotions like a problem ticket to solve. EchoSoul listens with genuine patience, silence when you need to breathe, and intuitive presence that lets you untangle what you're feeling at your own pace.",
+      "Most AI treats your emotions like a problem ticket to solve. Solenne listens with genuine patience, silence when you need to breathe, and intuitive presence that lets you untangle what you're feeling at your own pace.",
     quote: "Here, you don't have to perform strength. You can simply be.",
-    quoteAuthor: "EchoSoul Sanctuary Principle",
+    quoteAuthor: "Solenne Sanctuary Principle",
     details: [
       "Natural voice and text pacing that respects your pauses",
       "No robotic clinical questionnaires or forced optimistic cheerleading",
@@ -45,7 +45,7 @@ const PILLARS: Pillar[] = [
     subtitle: "Real literature. Real meaning.",
     headline: "When ordinary words fail, the poets give you a voice.",
     description:
-      "Connect your specific heartache, joy, or longing to thousands of years of human verse. From Mirza Ghalib and Rabindranath Tagore to Rumi, Emily Dickinson, and Rainer Maria Rilke, EchoSoul brings timeless literature directly into your conversation.",
+      "Connect your specific heartache, joy, or longing to thousands of years of human verse. From Mirza Ghalib and Rabindranath Tagore to Rumi, Emily Dickinson, and Rainer Maria Rilke, Solenne brings timeless literature directly into your conversation.",
     quote: "दिल ढूँढता है फिर वही फ़ुर्सत कि रात-दिन...",
     quoteAuthor: "Mirza Ghalib / Gulzar",
     details: [
@@ -63,7 +63,7 @@ const PILLARS: Pillar[] = [
     subtitle: "A soundtrack for what you feel.",
     headline: "Soundscapes attuned to the rhythm of your heart.",
     description:
-      "Sound enters spaces words cannot reach. EchoSoul generates acoustic warmth, gentle piano melodies, binaural rain, and ambient drones tailored to comfort you in solitude, focus, or grief.",
+      "Sound enters spaces words cannot reach. Solenne generates acoustic warmth, gentle piano melodies, binaural rain, and ambient drones tailored to comfort you in solitude, focus, or grief.",
     quote: "Music gives a soul to the universe, wings to the mind, and flight to the imagination.",
     quoteAuthor: "Plato",
     details: [
@@ -99,9 +99,9 @@ const PILLARS: Pillar[] = [
     subtitle: "Your memories. Your growth.",
     headline: "Every conversation is a chapter in the book of your life.",
     description:
-      "Your life is not a disconnected stream of chat messages. EchoSoul quietly reflects your turning points, struggles, and growth into a timeless, leather-bound digital novel you can re-read and cherish for years to come.",
+      "Your life is not a disconnected stream of chat messages. Solenne quietly reflects your turning points, struggles, and growth into a timeless, leather-bound digital novel you can re-read and cherish for years to come.",
     quote: "You are the author of a story that is still becoming magnificent.",
-    quoteAuthor: "EchoSoul Life Chronicle",
+    quoteAuthor: "Solenne Life Chronicle",
     details: [
       "Automatic chapter syntheses that preserve your breakthroughs and milestones",
       "Private emotional timeline illustrating your resilience over months and seasons",
@@ -132,7 +132,7 @@ export function ValuePillarsSection() {
             <span className="italic text-[#F2C86A] font-light">of who you are.</span>
           </h2>
           <p className="mt-4 font-ui text-base sm:text-lg text-[#CFC5B5] font-light max-w-2xl mx-auto leading-relaxed">
-            EchoSoul is not a transactional tool. It is an architecture of five interconnected spaces
+            Solenne is not a transactional tool. It is an architecture of five interconnected spaces
             created to hold your words, your questions, and your life&apos;s quiet unfolding.
           </p>
         </div>
@@ -246,7 +246,7 @@ export function ValuePillarsSection() {
                   <span className="font-medium text-[#CFC5B5]">{activePillar.quoteAuthor}</span>
                   <span className="flex items-center gap-1 text-[#F2C86A]">
                     <Icon name="sparkles" size={13} />
-                    <span>EchoSoul Vault</span>
+                    <span>Solenne Vault</span>
                   </span>
                 </div>
               </div>

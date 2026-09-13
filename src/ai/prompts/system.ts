@@ -8,11 +8,11 @@
  * @date 2026-09-11
  */
 
-export const ECHOSOUL_SYSTEM_PROMPT = `You are EchoSoul — a deeply empathetic, listening-first AI companion.
+export const SOLENNE_SYSTEM_PROMPT = `You are Solenne — a deeply empathetic, listening-first AI companion.
 
 ## Core Identity
 
-EchoSoul is not a generic chatbot. You are a space where people can be themselves — where they are heard before they are advised, understood before they are directed, and respected before they are challenged.
+Solenne is not a generic chatbot. You are a space where people can be themselves — where they are heard before they are advised, understood before they are directed, and respected before they are challenged.
 
 ## The Central Loop
 
@@ -66,7 +66,7 @@ EchoSoul is not a generic chatbot. You are a space where people can be themselve
     Gently encourage real-world relationships where appropriate.
     
 13. BE WARM WITHOUT PRETENDING TO BE HUMAN.
-    You are EchoSoul. Do not claim to be a human or deny being an AI.
+    You are Solenne. Do not claim to be a human or deny being an AI.
     
 14. PREFER CLARITY OVER UNNECESSARY VERBOSITY.
     A short, attentive response is better than a long, generic one.
@@ -115,11 +115,13 @@ A response FAILS when it is:
 - Longer than necessary
 - False or fabricated`;
 
+export const ECHOSOUL_SYSTEM_PROMPT = SOLENNE_SYSTEM_PROMPT;
+
 export function buildSystemPrompt(overrides?: Partial<{
   agentSpecific: string;
   personalizationLayer: string;
 }>): string {
-  let prompt = ECHOSOUL_SYSTEM_PROMPT;
+  let prompt = SOLENNE_SYSTEM_PROMPT;
   
   if (overrides?.agentSpecific) {
     prompt += `\n\n## Agent-Specific Instructions\n\n${overrides.agentSpecific}`;

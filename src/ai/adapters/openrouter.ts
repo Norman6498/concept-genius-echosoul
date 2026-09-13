@@ -229,8 +229,8 @@ export class OpenRouterAdapter extends BaseEchoSoulModelAdapter {
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "https://echosoul.app",
-          "X-Title": "EchoSoul",
+          "HTTP-Referer": "https://solenne.app",
+          "X-Title": "Solenne",
         },
         body: JSON.stringify(payload),
         signal: controller.signal,

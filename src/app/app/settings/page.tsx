@@ -78,7 +78,7 @@ export default function SettingsPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `echosoul-sanctuary-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `solenne-sanctuary-backup-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
@@ -104,7 +104,7 @@ export default function SettingsPage() {
         <div>
           <h1 className="text-3xl font-editorial text-[#FFF8E1]">Your experience. Your control.</h1>
           <p className="text-sm font-ui text-[#CFC5B5]">
-            Customize how EchoSoul works for you.
+            Customize how Solenne works for you.
           </p>
         </div>
 

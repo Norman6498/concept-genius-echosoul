@@ -34,7 +34,7 @@ export function Hero() {
 
               {/* Narrative Description from Copy Deck */}
               <p className="font-ui text-sm sm:text-base md:text-lg text-[#CFC5B5] leading-relaxed max-w-xl font-light">
-                EchoSoul is your companion, teacher and guide — bringing together meaningful
+                Solenne is your companion, teacher and guide — bringing together meaningful
                 conversations, real literature, music, visuals and your life&apos;s journey in one place.
               </p>
 
@@ -61,7 +61,7 @@ export function Hero() {
                     </svg>
                   }
                 >
-                  Enter EchoSoul
+                  Enter Solenne
                 </Button>
 
                 <button
@@ -197,7 +197,7 @@ export function Hero() {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="The EchoSoul Story"
+          aria-label="The Solenne Story"
           className="fixed inset-0 z-50 flex items-center justify-center bg-[#050B10]/85 backdrop-blur-md p-4 animate-in fade-in duration-200"
         >
           <div className="glass-panel max-w-2xl w-full p-8 sm:p-10 border border-[#D9A441]/40 shadow-[0_24px_64px_rgba(0,0,0,0.8)] relative">
@@ -210,7 +210,7 @@ export function Hero() {
             </button>
 
             <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#D9A441] block mb-2">
-              The EchoSoul Origin Story
+              The Solenne Origin Story
             </span>
             <h3 className="font-display text-3xl sm:text-4xl text-[#F5EBD6] font-normal mb-4">
               Why We Built a Kinder Space

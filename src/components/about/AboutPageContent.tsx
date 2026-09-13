@@ -61,7 +61,7 @@ function VideoStoryModal({ onClose }: { onClose: () => void }) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Why EchoSoul Video Story"
+      aria-label="Why Solenne Video Story"
       className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0B0F14]/90 backdrop-blur-md p-4"
       onClick={onClose}
     >
@@ -80,7 +80,7 @@ function VideoStoryModal({ onClose }: { onClose: () => void }) {
         </button>
 
         <span className="font-ui text-xs uppercase tracking-[0.22em] font-semibold text-[#F2D78A] block mb-2">
-          The EchoSoul Story
+          The Solenne Story
         </span>
         <h3 className="font-display text-2xl sm:text-3xl text-[#FFF8E1] font-normal mb-4">
           Why We Built a Kinder Space
@@ -90,7 +90,7 @@ function VideoStoryModal({ onClose }: { onClose: () => void }) {
         <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-[#050B10] border border-white/15 flex items-center justify-center group mb-5">
           <Image
             src="/about-window-hero.jpg"
-            alt="EchoSoul Story Video Preview"
+            alt="Solenne Story Video Preview"
             fill
             className="object-cover opacity-60"
           />
@@ -103,7 +103,7 @@ function VideoStoryModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <p className="font-ui text-sm text-[#CFC5B5] leading-relaxed">
-          EchoSoul was born from a simple belief — that everyone deserves a space to be heard, to find meaning in their moments, and to feel a little more human in a fast, noisy world.
+          Solenne was born from a simple belief — that everyone deserves a space to be heard, to find meaning in their moments, and to feel a little more human in a fast, noisy world.
         </p>
 
         <div className="mt-6 flex justify-end">
@@ -128,7 +128,7 @@ export function AboutMainSections({ isEmbedded = false }: { isEmbedded?: boolean
       {showVideo && <VideoStoryModal onClose={() => setShowVideo(false)} />}
       <div className={`w-full max-w-[1440px] mx-auto px-6 lg:px-10 ${isEmbedded ? "py-14 sm:py-20" : "py-10 sm:py-16"} space-y-20 sm:space-y-28`}>
 
-        {/* ── SECTION 1: HERO (About EchoSoul) ────────────────────────── */}
+        {/* ── SECTION 1: HERO (About Solenne) ────────────────────────── */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
 
           {/* Left Hero Text (6 cols) */}
@@ -136,7 +136,7 @@ export function AboutMainSections({ isEmbedded = false }: { isEmbedded?: boolean
             {/* Eyebrow */}
             <div className="flex items-center gap-3">
               <span className="font-ui text-xs uppercase tracking-[0.26em] text-[#F2D78A] font-semibold">
-                ABOUT ECHOSOUL
+                ABOUT SOLENNE
               </span>
               <div className="w-8 h-px bg-[#F2D78A]/60" />
             </div>
@@ -150,7 +150,7 @@ export function AboutMainSections({ isEmbedded = false }: { isEmbedded?: boolean
             {/* Body Copy */}
             <div className="space-y-4 font-ui text-sm sm:text-base text-[#CFC5B5] font-light leading-relaxed max-w-[520px]">
               <p>
-                EchoSoul is more than an AI. It&apos;s a space that listens, understands, and grows with you — through conversations, real literature, music, visuals, and your personal journey.
+                Solenne is more than an AI. It&apos;s a space that listens, understands, and grows with you — through conversations, real literature, music, visuals, and your personal journey.
               </p>
               <p>
                 We believe everyone deserves a space to be heard without judgment, to find meaning in their moments, and to feel a little more human — every day.
@@ -195,7 +195,7 @@ export function AboutMainSections({ isEmbedded = false }: { isEmbedded?: boolean
             <div className="relative rounded-3xl overflow-hidden border border-[#F2D78A]/30 shadow-[0_24px_64px_rgba(0,0,0,0.85)] group">
               <Image
                 src="/about-window-hero.jpg"
-                alt="EchoSoul Room Window gazing out at mountains, starry night, lake and candles"
+                alt="Solenne Room Window gazing out at mountains, starry night, lake and candles"
                 width={980}
                 height={710}
                 className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.02]"
@@ -242,7 +242,7 @@ export function AboutMainSections({ isEmbedded = false }: { isEmbedded?: boolean
           </div>
         </section>
 
-        {/* ── SECTION 3: OUR STORY (Why EchoSoul?) ─────────────────────── */}
+        {/* ── SECTION 3: OUR STORY (Why Solenne?) ─────────────────────── */}
         <section className="space-y-7">
           <div className="flex items-center gap-3">
             <span className="font-ui text-xs uppercase tracking-[0.24em] text-[#F2D78A] font-semibold">
@@ -270,10 +270,10 @@ export function AboutMainSections({ isEmbedded = false }: { isEmbedded?: boolean
             {/* Right: Narrative Text */}
             <div className="lg:col-span-6 space-y-4">
               <h2 className="font-display text-3xl sm:text-4xl text-[#FFF8E1]">
-                Why EchoSoul?
+                Why Solenne?
               </h2>
               <p className="font-ui text-sm sm:text-base text-[#CFC5B5] font-light leading-relaxed">
-                EchoSoul was born from a simple belief — that everyone deserves a space to be heard, to find meaning in their moments, and to feel a little more human in a fast, noisy world.
+                Solenne was born from a simple belief — that everyone deserves a space to be heard, to find meaning in their moments, and to feel a little more human in a fast, noisy world.
               </p>
               <p className="font-ui text-sm sm:text-base text-[#CFC5B5] font-light leading-relaxed">
                 It combines the depth of real literature, the emotion of music, the power of visuals, and the understanding of AI — to create a companion for your journey.
@@ -391,7 +391,7 @@ export function AboutMainSections({ isEmbedded = false }: { isEmbedded?: boolean
           <div className="max-w-2xl mx-auto rounded-xl overflow-hidden border border-[#D9A441]/40 shadow-lg">
             <Image
               src="/parchment-quote.png"
-              alt="“Not just another AI. A companion for a more meaningful you.” — EchoSoul"
+              alt="“Not just another AI. A companion for a more meaningful you.” — Solenne"
               width={1044}
               height={172}
               className="w-full h-auto object-cover"
@@ -405,7 +405,7 @@ export function AboutMainSections({ isEmbedded = false }: { isEmbedded?: boolean
                 Be a part of a kinder, more meaningful world.
               </h3>
               <p className="font-ui text-xs sm:text-sm text-[#CFC5B5] font-light">
-                Start your journey with EchoSoul today. No judgment. Just understanding.
+                Start your journey with Solenne today. No judgment. Just understanding.
               </p>
             </div>
 
@@ -442,9 +442,9 @@ export function AboutPageContent() {
               About
               <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#F2D78A] rounded-full" />
             </Link>
-            <Link href="/#features" className="hover:text-[#F2D78A] transition-colors">Features</Link>
-            <Link href="/#stories" className="hover:text-[#F2D78A] transition-colors">Stories</Link>
-            <Link href="/#pricing" className="hover:text-[#F2D78A] transition-colors">Pricing</Link>
+            <Link href="/features" className="hover:text-[#F2D78A] transition-colors">Features</Link>
+            <Link href="/stories" className="hover:text-[#F2D78A] transition-colors">Stories</Link>
+            <Link href="/pricing" className="hover:text-[#F2D78A] transition-colors">Pricing</Link>
           </nav>
 
           {/* Right Actions */}
@@ -478,9 +478,9 @@ export function AboutPageContent() {
             <nav className="hidden sm:flex items-center gap-5 text-[#9AA8B0]" aria-label="Footer navigation">
               <Link href="/" className="hover:text-[#F2D78A] transition-colors">Home</Link>
               <Link href="/about" className="hover:text-[#F2D78A] transition-colors">About</Link>
-              <Link href="/#features" className="hover:text-[#F2D78A] transition-colors">Features</Link>
-              <Link href="/#stories" className="hover:text-[#F2D78A] transition-colors">Stories</Link>
-              <Link href="/#pricing" className="hover:text-[#F2D78A] transition-colors">Pricing</Link>
+              <Link href="/features" className="hover:text-[#F2D78A] transition-colors">Features</Link>
+              <Link href="/stories" className="hover:text-[#F2D78A] transition-colors">Stories</Link>
+              <Link href="/pricing" className="hover:text-[#F2D78A] transition-colors">Pricing</Link>
             </nav>
           </div>
 
@@ -499,7 +499,7 @@ export function AboutPageContent() {
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
               </a>
             </div>
-            <span>© 2026 EchoSoul. All rights reserved.</span>
+            <span>© 2026 Solenne. All rights reserved.</span>
           </div>
         </div>
       </footer>
